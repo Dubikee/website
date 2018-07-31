@@ -1,0 +1,15 @@
+D:\WorkSpace\Code\dotNet\luokun.xyz\build\Server.Shared.deps.json
+D:\WorkSpace\Code\dotNet\luokun.xyz\build\Server.Shared.dll
+D:\WorkSpace\Code\dotNet\luokun.xyz\build\Server.Shared.pdb
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Shared\obj\Release\netcoreapp2.1\Server.Shared.csprojAssemblyReference.cache
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Shared\obj\Release\netcoreapp2.1\Server.Shared.csproj.CoreCompileInputs.cache
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Shared\obj\Release\netcoreapp2.1\Server.Shared.AssemblyInfoInputs.cache
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Shared\obj\Release\netcoreapp2.1\Server.Shared.AssemblyInfo.cs
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Shared\obj\Release\netcoreapp2.1\Server.Shared.dll
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Shared\obj\Release\netcoreapp2.1\Server.Shared.pdb
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Shared\bin\Release\netcoreapp2.1\Server.Shared.deps.json
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Shared\bin\Release\netcoreapp2.1\Server.Shared.dll
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Shared\bin\Release\netcoreapp2.1\Server.Shared.pdb
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Shared\bin\Release\netcoreapp2.1\LiteDB.dll
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Shared\bin\Release\netcoreapp2.1\LiteDB.xml
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Shared\obj\Release\netcoreapp2.1\Server.Shared.csproj.CopyComplete

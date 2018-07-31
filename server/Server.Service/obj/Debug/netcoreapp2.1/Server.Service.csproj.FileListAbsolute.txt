@@ -1,0 +1,14 @@
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\bin\Debug\netcoreapp2.1\Server.Service.deps.json
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\bin\Debug\netcoreapp2.1\Server.Service.dll
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\bin\Debug\netcoreapp2.1\Server.Service.pdb
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\bin\Debug\netcoreapp2.1\Server.DB.dll
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\bin\Debug\netcoreapp2.1\Server.Shared.dll
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\bin\Debug\netcoreapp2.1\Server.DB.pdb
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\bin\Debug\netcoreapp2.1\Server.Shared.pdb
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.csprojAssemblyReference.cache
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.csproj.CoreCompileInputs.cache
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.AssemblyInfoInputs.cache
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.AssemblyInfo.cs
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.csproj.CopyComplete
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.dll
+D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.pdb

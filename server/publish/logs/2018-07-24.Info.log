@@ -1,0 +1,6 @@
+2018-07-24 19:18:29.6857|INFO|/api/admin/deleteUser uid=[00000002] => code=[UserNotFind]
+2018-07-24 19:20:09.2423|INFO|/api/admin/AllUsers => users
+2018-07-24 19:20:40.8717|INFO|/api/admin/AllUsers => users
+2018-07-24 19:20:49.1172|INFO|/api/admin/deleteUser uid=[00000002] => code=[UserNotFind]
+2018-07-24 19:21:21.0439|INFO|/api/admin/addUser uid=[00000004] name=[luokun] role=[admin] => code=[Ok]
+2018-07-24 19:22:06.7753|INFO|/api/account/Login uid=[17607105321] pwd=[***] =>code=Ok
