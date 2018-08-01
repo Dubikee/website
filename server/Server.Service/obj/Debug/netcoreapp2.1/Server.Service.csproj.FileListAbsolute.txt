@@ -12,3 +12,17 @@ D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\obj\Debug\netcoreapp2.1\Serve
 D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.csproj.CopyComplete
 D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.dll
 D:\WorkSpace\Code\dotNet\luokun.xyz\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.pdb
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\bin\Debug\netcoreapp2.1\Server.Service.deps.json
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\bin\Debug\netcoreapp2.1\Server.Service.dll
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\bin\Debug\netcoreapp2.1\Server.Service.pdb
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\bin\Debug\netcoreapp2.1\Server.DB.dll
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\bin\Debug\netcoreapp2.1\Server.Shared.dll
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\bin\Debug\netcoreapp2.1\Server.DB.pdb
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\bin\Debug\netcoreapp2.1\Server.Shared.pdb
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.csprojAssemblyReference.cache
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.csproj.CoreCompileInputs.cache
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.AssemblyInfoInputs.cache
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.AssemblyInfo.cs
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.csproj.CopyComplete
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.dll
+D:\WorkSpace\git\www.luokun.com\server\Server.Service\obj\Debug\netcoreapp2.1\Server.Service.pdb

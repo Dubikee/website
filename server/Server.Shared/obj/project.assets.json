@@ -687,11 +687,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\WorkSpace\\Code\\dotNet\\luokun.xyz\\Server.Shared\\Server.Shared.csproj",
+      "projectUniqueName": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Shared\\Server.Shared.csproj",
       "projectName": "Server.Shared",
-      "projectPath": "D:\\WorkSpace\\Code\\dotNet\\luokun.xyz\\Server.Shared\\Server.Shared.csproj",
+      "projectPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Shared\\Server.Shared.csproj",
       "packagesPath": "C:\\Users\\MS485\\.nuget\\packages\\",
-      "outputPath": "D:\\WorkSpace\\Code\\dotNet\\luokun.xyz\\Server.Shared\\obj\\",
+      "outputPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Shared\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

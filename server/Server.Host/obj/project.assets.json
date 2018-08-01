@@ -7900,7 +7900,7 @@
       ]
     },
     "System.Diagnostics.Contracts/4.3.0": {
-      "sha512": "eelRRbnm+OloiQvp9CXS0ixjNQldjjkHO4iIkR5XH2VIP8sUB/SIpa1TdUW6/+HDcQ+MlhP3pNa1u5SbzYuWGA==",
+      "sha512": "RJaR0+HYGZYe3CRPWyRXf6D57oADwIIA/xJ6y/Zc1QG5wpGY57eQ27kAKjdqnrxWkMUgD+d7FcIg1gaDuLbs7Q==",
       "type": "package",
       "path": "system.diagnostics.contracts/4.3.0",
       "files": [
@@ -8088,7 +8088,7 @@
       ]
     },
     "System.Diagnostics.StackTrace/4.3.0": {
-      "sha512": "BiHg0vgtd35/DM9jvtaC1eKRpWZxr0gcQd643ABG7GnvSlf5pOkY2uyd42mMOJoOmKvnpNj0F4tuoS1pacTwYw==",
+      "sha512": "0GwL7WVhNQFT6qWVseI71KLrAfUscnOiFnVjciQ6Klh3O5pmh13QW8WD1IKEBUr2rTPvpqWgqKr0IC0bahQhFg==",
       "type": "package",
       "path": "system.diagnostics.stacktrace/4.3.0",
       "files": [
@@ -11719,11 +11719,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\WorkSpace\\Code\\dotNet\\luokun.xyz\\Server.Host\\Server.Host.csproj",
+      "projectUniqueName": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Host\\Server.Host.csproj",
       "projectName": "Server.Host",
-      "projectPath": "D:\\WorkSpace\\Code\\dotNet\\luokun.xyz\\Server.Host\\Server.Host.csproj",
+      "projectPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Host\\Server.Host.csproj",
       "packagesPath": "C:\\Users\\MS485\\.nuget\\packages\\",
-      "outputPath": "D:\\WorkSpace\\Code\\dotNet\\luokun.xyz\\Server.Host\\obj\\",
+      "outputPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Host\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -11742,14 +11742,14 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "D:\\WorkSpace\\Code\\dotNet\\luokun.xyz\\Server.DB\\Server.DB.csproj": {
-              "projectPath": "D:\\WorkSpace\\Code\\dotNet\\luokun.xyz\\Server.DB\\Server.DB.csproj"
+            "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.DB\\Server.DB.csproj": {
+              "projectPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.DB\\Server.DB.csproj"
             },
-            "D:\\WorkSpace\\Code\\dotNet\\luokun.xyz\\Server.Service\\Server.Service.csproj": {
-              "projectPath": "D:\\WorkSpace\\Code\\dotNet\\luokun.xyz\\Server.Service\\Server.Service.csproj"
+            "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Service\\Server.Service.csproj": {
+              "projectPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Service\\Server.Service.csproj"
             },
-            "D:\\WorkSpace\\Code\\dotNet\\luokun.xyz\\Server.Shared\\Server.Shared.csproj": {
-              "projectPath": "D:\\WorkSpace\\Code\\dotNet\\luokun.xyz\\Server.Shared\\Server.Shared.csproj"
+            "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Shared\\Server.Shared.csproj": {
+              "projectPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Shared\\Server.Shared.csproj"
             }
           }
         }
