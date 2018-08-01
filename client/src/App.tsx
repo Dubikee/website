@@ -1,16 +1,14 @@
 import * as React from "react";
-import {Provider} from "mobx-react";
-import {ServicesStore} from "./services";
-import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
-import {PComponent} from "./utils/core";
-import HomeView from "./views/Home/Home.view";
-import TestView from "./views/Test/Test.view";
+import { Provider } from "mobx-react";
+import { ServicesStore } from "./services";
+import { PComponent, renderRouter } from "./utils/core";
 import 'antd/dist/antd.css';
 import './assets/iconfont/iconfont.css'
+import { routes, redirect } from "./routes";
 export default class App extends PComponent {
     render() {
         return <Provider {...ServicesStore}>
-            <BrowserRouter basename="/">
+            {/* <BrowserRouter basename="/">
                 <Switch>
                     <Route path={'/'} component={HomeView} exact/>
                     <Route path={'/home'} component={HomeView}/>
@@ -18,7 +16,8 @@ export default class App extends PComponent {
                     <Redirect from={'/test'} to={'/home'}/>
                     <Redirect to={'/home'}/>
                 </Switch>
-            </BrowserRouter>
+            </BrowserRouter> */}
+            {renderRouter(routes, redirect)}
         </Provider>
     }
 }

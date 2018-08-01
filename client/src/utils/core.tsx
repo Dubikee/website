@@ -1,6 +1,8 @@
 import registerServiceWorker from "./registerServiceWorker";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { RouteProps, RedirectProps, Switch, Route, Redirect } from "react-router";
+import { BrowserRouter } from "react-router-dom";
 export let PComponent = React.PureComponent;
 export let bootstrap = () => {
   return new Bootstrap();
@@ -10,6 +12,17 @@ export interface IBootstrap {
   does(work: () => Promise<void> | void): IBootstrap;
   mount(selector: string): IBootstrap;
   start(): void;
+}
+
+export let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => {
+  return (
+    <BrowserRouter basename="/">
+      <Switch>
+        {routes.map((x, i) => <Route key={i} {...x} />)}
+        {redirect ? redirect.map((x, i) => <Redirect key={i} {...x} />) : null}
+      </Switch>
+    </BrowserRouter>
+  );
 }
 
 class Bootstrap implements IBootstrap {
