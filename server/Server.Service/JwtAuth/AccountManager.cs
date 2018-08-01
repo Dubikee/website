@@ -48,22 +48,22 @@ namespace Server.Service.JwtAuth
         /// <param name="uid"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        public (LoginResult res, string jwt) Login(string uid, string pwd)
+        public (RequestResult res, string jwt) Login(string uid, string pwd)
         {
             // 空值检查
             if (IsNullOrWhiteSpace(uid) || IsNullOrWhiteSpace(pwd))
-                return (LoginResult.ParamsIsEmpty, null);
+                return (RequestResult.ParamsIsEmpty, null);
 
             // 判断用户是否存在
             var u = _db.FindUser(uid);
             if (u == null)
-                return (LoginResult.UIdNotFind, null);
+                return (RequestResult.UIdNotFind, null);
 
             // 检查密码是否正确
             if (!User.MakePwdHash(pwd).SequenceEqual(u.PwHash))
-                return (LoginResult.PasswordWrong, null);
+                return (RequestResult.PasswordWrong, null);
             _user = u;
-            return (LoginResult.Ok, MakeJwt(uid, u.Role));
+            return (RequestResult.Ok, MakeJwt(uid, u.Role));
         }
 
         public bool Logout()
@@ -81,7 +81,7 @@ namespace Server.Service.JwtAuth
         /// <param name="phone"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        public (InsertUserResult res, string jwt) Register(
+        public (RequestResult res, string jwt) Register(
             string uid,
             string name,
             string pwd,
@@ -90,27 +90,27 @@ namespace Server.Service.JwtAuth
         {
             // 空值检查
             if (IsNullOrWhiteSpace(uid) || IsNullOrWhiteSpace(name) || IsNullOrWhiteSpace(pwd))
-                return (InsertUserResult.ParamsIsEmpty, null);
+                return (RequestResult.ParamsIsEmpty, null);
 
             // Uid长度检查
             if (uid.Length < 6)
-                return (InsertUserResult.UidTooShort, null);
+                return (RequestResult.UidTooShort, null);
             // Uid数字检查，只能包含数字
             if (!uid.All(c => (c >= '0' && c <= '9')))
-                return (InsertUserResult.UidIsNotNumbers, null);
+                return (RequestResult.UidIsNotNumbers, null);
 
             // 密码规范检查
             if (pwd.Length < 8)
-                return (InsertUserResult.PasswordTooShort, null);
+                return (RequestResult.PasswordTooShort, null);
             var (hasLetter, hasNumber) = CheckPwd(pwd);
             if (!hasNumber)
-                return (InsertUserResult.PasswordNoNumbers, null);
+                return (RequestResult.PasswordNoNumbers, null);
             if (!hasLetter)
-                return (InsertUserResult.PasswordNoLetters, null);
+                return (RequestResult.PasswordNoLetters, null);
 
             // 判断是否已存在Uid
             if (null != _db.FindUser(uid))
-                return (InsertUserResult.UidHasExist, null);
+                return (RequestResult.UidHasExist, null);
 
             // 符合条件，创建用户，分发Jwt 
             _db.AddUser(new User
@@ -122,7 +122,7 @@ namespace Server.Service.JwtAuth
                 phone: phone,
                 email: email
             ));
-            return (InsertUserResult.Ok, MakeJwt(uid, RoleTypes.Vistor));
+            return (RequestResult.Ok, MakeJwt(uid, RoleTypes.Vistor));
         }
 
         /// <inheritdoc />
@@ -130,11 +130,11 @@ namespace Server.Service.JwtAuth
         /// 移除用户
         /// </summary>
         /// <returns></returns>
-        public DeleteUserResult DeleteUser()
+        public RequestResult DeleteUser()
         {
             if (User == null)
-                return DeleteUserResult.TokenExpired;
-            return _db.DeleteUser(User) ? DeleteUserResult.Ok : DeleteUserResult.UnknownError;
+                return RequestResult.TokenExpired;
+            return _db.DeleteUser(User) ? RequestResult.Ok : RequestResult.UnknownError;
         }
 
         /// <inheritdoc />
@@ -145,22 +145,22 @@ namespace Server.Service.JwtAuth
         /// <param name="phone"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        public UpdateUserResult UpdateUserInfo(string name, string phone, string email)
+        public RequestResult UpdateUserInfo(string name, string phone, string email)
         {
             if (User == null)
-                return UpdateUserResult.TokenExpired;
+                return RequestResult.TokenExpired;
             var n = IsNullOrWhiteSpace(name);
             var p = IsNullOrWhiteSpace(phone);
             var e = IsNullOrWhiteSpace(email);
             if (n && p && e)
-                return UpdateUserResult.ParamsIsEmpty;
+                return RequestResult.ParamsIsEmpty;
             if (!n)
                 User.Name = name;
             if (!p)
                 User.Phone = phone;
             if (!e)
                 User.Email = email;
-            return _db.UpdateUser(User) ? UpdateUserResult.Ok : UpdateUserResult.UnknownError;
+            return _db.UpdateUser(User) ? RequestResult.Ok : RequestResult.UnknownError;
         }
 
         /// <inheritdoc />
@@ -170,27 +170,27 @@ namespace Server.Service.JwtAuth
         /// <param name="oldPwd"></param>
         /// <param name="newPwd"></param>
         /// <returns></returns>
-        public UpdateUserResult UpdateUserPwd(string oldPwd, string newPwd)
+        public RequestResult UpdateUserPwd(string oldPwd, string newPwd)
         {
             // 空值检查
             if (IsNullOrWhiteSpace(oldPwd) || IsNullOrWhiteSpace(newPwd))
-                return UpdateUserResult.ParamsIsEmpty;
+                return RequestResult.ParamsIsEmpty;
             // 长度检查
             if (newPwd.Length < 8)
-                return UpdateUserResult.NewPasswordTooShort;
+                return RequestResult.NewPasswordTooShort;
             var (hasLetter, hasNumber) = CheckPwd(newPwd);
             // 数字检查
             if (!hasNumber)
-                return UpdateUserResult.NewPasswordNoNumbers;
+                return RequestResult.NewPasswordNoNumbers;
             // 字母检查
             if (!hasLetter)
-                return UpdateUserResult.NewPasswordNoLetters;
+                return RequestResult.NewPasswordNoLetters;
             // 验证旧密码是否正确
             if (!User.MakePwdHash(oldPwd).SequenceEqual(User.PwHash))
-                return UpdateUserResult.PasswordWrong;
+                return RequestResult.PasswordWrong;
             User.PwHash = User.MakePwdHash(newPwd);
             _db.UpdateUser(User);
-            return UpdateUserResult.Ok;
+            return RequestResult.Ok;
         }
 
         /// <summary>

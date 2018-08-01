@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Server.Service.Admin;
 using Server.Shared.Core;
 using Server.Shared.Models;
 
-namespace Server.Service.Admin
+namespace Server.Host.Services
 {
     public static class AdminService
     {

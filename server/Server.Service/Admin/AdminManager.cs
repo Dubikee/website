@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Server.Service.JwtAuth;
 using Server.Shared.Core;
 using Server.Shared.Models;
-using Server.Shared.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Server.Shared.Results;
 using static System.String;
 namespace Server.Service.Admin
 {
@@ -40,25 +39,25 @@ namespace Server.Service.Admin
             return _db.Users;
         }
 
-        public DeleteUserResult DeleteUser(string uid)
+        public RequestResult DeleteUser(string uid)
         {
             if (IsNullOrWhiteSpace(uid))
-                return DeleteUserResult.ParamsIsEmpty;
+                return RequestResult.ParamsIsEmpty;
             var u = FindUser(uid);
             if (u == null)
-                return DeleteUserResult.UserNotFind;
+                return RequestResult.UIdNotFind;
             if (u.Role.ToLower() == "master")
-                return DeleteUserResult.NotAllowed;
-            return _db.DeleteUser(u) ? DeleteUserResult.Ok : DeleteUserResult.UnknownError;
+                return RequestResult.NotAllowed;
+            return _db.DeleteUser(u) ? RequestResult.Ok : RequestResult.UnknownError;
         }
 
-        public InsertUserResult AddUser(string uid, string name, string pwd, string role, string phone, string email)
+        public RequestResult AddUser(string uid, string name, string pwd, string role, string phone, string email)
         {
             if (IsNullOrWhiteSpace(uid) || IsNullOrWhiteSpace(name) || IsNullOrWhiteSpace(pwd) ||
                 IsNullOrWhiteSpace(role))
-                return InsertUserResult.ParamsIsEmpty;
+                return RequestResult.ParamsIsEmpty;
             if (_db.FindUser(uid) != null)
-                return InsertUserResult.UidHasExist;
+                return RequestResult.UidHasExist;
             _db.AddUser(new User
             (
                 uid: uid,
@@ -68,17 +67,17 @@ namespace Server.Service.Admin
                 phone: phone,
                 email: email
             ));
-            return InsertUserResult.Ok;
+            return RequestResult.Ok;
         }
 
-        public UpdateUserResult EditUser(string targetUid, string name, string phone, string email, string role,
+        public RequestResult EditUser(string targetUid, string name, string phone, string email, string role,
             string pwd)
         {
             if (IsNullOrWhiteSpace(targetUid))
-                return UpdateUserResult.ParamsIsEmpty;
+                return RequestResult.ParamsIsEmpty;
             var user = FindUser(targetUid);
             if (user == null)
-                return UpdateUserResult.UserNotFind;
+                return RequestResult.UIdNotFind;
             if (IsNullOrWhiteSpace(name))
                 user.Name = name;
             if (IsNullOrWhiteSpace(phone))
@@ -89,7 +88,7 @@ namespace Server.Service.Admin
                 user.Role = role;
             if (!IsNullOrWhiteSpace(pwd))
                 user.PwHash = User.MakePwdHash(pwd);
-            return UpdateUserResult.Ok;
+            return RequestResult.Ok;
         }
     }
 }

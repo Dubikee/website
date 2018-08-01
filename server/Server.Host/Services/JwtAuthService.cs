@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
-using Server.Shared.Options;
-using System;
-using System.Text;
+using Server.Service.JwtAuth;
 using Server.Shared.Core;
 using Server.Shared.Models;
+using Server.Shared.Options;
 
-namespace Server.Service.JwtAuth
+namespace Server.Host.Services
 {
     public static class JwtAuthService
     {

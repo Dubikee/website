@@ -22,3 +22,15 @@ D:\WorkSpace\git\www.luokun.com\server\Server.DB\obj\Debug\netcoreapp2.1\Server.
 D:\WorkSpace\git\www.luokun.com\server\Server.DB\obj\Debug\netcoreapp2.1\Server.DB.csproj.CopyComplete
 D:\WorkSpace\git\www.luokun.com\server\Server.DB\obj\Debug\netcoreapp2.1\Server.DB.dll
 D:\WorkSpace\git\www.luokun.com\server\Server.DB\obj\Debug\netcoreapp2.1\Server.DB.pdb
+D:\WorkSpace\git\www.luokun.xyz\server\Server.DB\bin\Debug\netcoreapp2.1\Server.DB.deps.json
+D:\WorkSpace\git\www.luokun.xyz\server\Server.DB\bin\Debug\netcoreapp2.1\Server.DB.dll
+D:\WorkSpace\git\www.luokun.xyz\server\Server.DB\bin\Debug\netcoreapp2.1\Server.DB.pdb
+D:\WorkSpace\git\www.luokun.xyz\server\Server.DB\bin\Debug\netcoreapp2.1\Server.Shared.dll
+D:\WorkSpace\git\www.luokun.xyz\server\Server.DB\bin\Debug\netcoreapp2.1\Server.Shared.pdb
+D:\WorkSpace\git\www.luokun.xyz\server\Server.DB\obj\Debug\netcoreapp2.1\Server.DB.csprojAssemblyReference.cache
+D:\WorkSpace\git\www.luokun.xyz\server\Server.DB\obj\Debug\netcoreapp2.1\Server.DB.csproj.CoreCompileInputs.cache
+D:\WorkSpace\git\www.luokun.xyz\server\Server.DB\obj\Debug\netcoreapp2.1\Server.DB.AssemblyInfoInputs.cache
+D:\WorkSpace\git\www.luokun.xyz\server\Server.DB\obj\Debug\netcoreapp2.1\Server.DB.AssemblyInfo.cs
+D:\WorkSpace\git\www.luokun.xyz\server\Server.DB\obj\Debug\netcoreapp2.1\Server.DB.csproj.CopyComplete
+D:\WorkSpace\git\www.luokun.xyz\server\Server.DB\obj\Debug\netcoreapp2.1\Server.DB.dll
+D:\WorkSpace\git\www.luokun.xyz\server\Server.DB\obj\Debug\netcoreapp2.1\Server.DB.pdb

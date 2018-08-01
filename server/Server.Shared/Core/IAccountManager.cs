@@ -16,7 +16,7 @@ namespace Server.Shared.Core
         /// <param name="uid"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        (LoginResult res, string jwt) Login(string uid, string pwd);
+        (RequestResult res, string jwt) Login(string uid, string pwd);
 
         /// <summary>
         /// 注册
@@ -24,17 +24,16 @@ namespace Server.Shared.Core
         /// <param name="uid"></param> 
         /// <param name="name"></param>
         /// <param name="pwd"></param>
-        /// <param name="role"></param>
         /// <param name="phone"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        (InsertUserResult res, string jwt) Register(string uid, string name, string pwd, string phone, string email);
+        (RequestResult res, string jwt) Register(string uid, string name, string pwd, string phone, string email);
 
         /// <summary>
         /// 删除当前用户
         /// </summary>
         /// <returns></returns>
-        DeleteUserResult DeleteUser();
+        RequestResult DeleteUser();
 
         /// <summary>
         /// 更新信息
@@ -43,7 +42,7 @@ namespace Server.Shared.Core
         /// <param name="phone"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        UpdateUserResult UpdateUserInfo(string name, string phone, string email);
+        RequestResult UpdateUserInfo(string name, string phone, string email);
 
         /// <summary>
         /// 更改密码
@@ -51,6 +50,6 @@ namespace Server.Shared.Core
         /// <param name="oldPwd"></param>
         /// <param name="newPwd"></param>
         /// <returns></returns>
-        UpdateUserResult UpdateUserPwd(string oldPwd, string newPwd);
+        RequestResult UpdateUserPwd(string oldPwd, string newPwd);
     }
 }

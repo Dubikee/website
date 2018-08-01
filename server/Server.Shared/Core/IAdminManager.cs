@@ -30,7 +30,7 @@ namespace Server.Shared.Core
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        DeleteUserResult DeleteUser(string uid);
+        RequestResult DeleteUser(string uid);
         /// <summary>
         /// 
         /// </summary>
@@ -41,7 +41,7 @@ namespace Server.Shared.Core
         /// <param name="phone"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        InsertUserResult AddUser(string uid, string name, string pwd, string role, string phone, string email);
+        RequestResult AddUser(string uid, string name, string pwd, string role, string phone, string email);
         /// <summary>
         /// 
         /// </summary>
@@ -52,6 +52,6 @@ namespace Server.Shared.Core
         /// <param name="role"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        UpdateUserResult EditUser(string targetUid, string name, string phone, string email, string role,string pwd);
+        RequestResult EditUser(string targetUid, string name, string phone, string email, string role,string pwd);
     }
 }

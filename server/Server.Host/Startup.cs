@@ -9,6 +9,7 @@ using Server.Service.Admin;
 using Server.Service.JwtAuth;
 using Server.Service.UserDb;
 using System;
+using Server.Host.Services;
 
 namespace Server.Host
 {

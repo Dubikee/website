@@ -14,13 +14,14 @@ namespace Server.Host.Controllers
     {
         private readonly IAdminManager<User> _manager;
         private static readonly ILogger _log = LogManager.GetCurrentClassLogger();
+
         public AdminController(IAdminManager<User> manager)
         {
             _manager = manager;
         }
 
         [HttpGet]
-        public ActionResult<IUser> FindUser(string uid)
+        public IActionResult FindUser(string uid)
         {
             var user = _manager.FindUser(uid);
             _log.Info($"{Request.Path} uid=[{uid}] => user=[{user}]");
@@ -28,35 +29,35 @@ namespace Server.Host.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<IUser>> AllUsers()
+        public IActionResult AllUsers()
         {
             _log.Info($"{Request.Path} => users");
             return Ok(_manager.FindAllUsers());
         }
 
         [HttpGet]
-        public ActionResult<DeleteUserResult> DeleteUser(string uid)
+        public IActionResult DeleteUser(string uid)
         {
             var code = _manager.DeleteUser(uid);
             _log.Info($"{Request.Path} uid=[{uid}] => code=[{code}]");
-            return Ok(new { code });
+            return Ok(new {code});
         }
 
         [HttpPost]
-        public ActionResult<InsertUserResult> AddUser(UserModel m)
+        public IActionResult AddUser(UserModel m)
         {
             var code = _manager.AddUser(m.Uid, m.Name, m.Pwd, m.Role, m.Phone, m.Email);
             _log.Info($"{Request.Path} uid=[{m.Uid}] name=[{m.Name}] role=[{m.Role}] => code=[{code}]");
-            return Ok(new { code });
+            return Ok(new {code});
 
         }
 
         [HttpPost]
-        public ActionResult<UpdateUserResult> EditUser(UserModel m)
+        public IActionResult EditUser(UserModel m)
         {
             var code = _manager.EditUser(m.Uid, m.Name, m.Phone, m.Email, m.Role, m.Pwd);
             _log.Info($"{Request.Path} uid=[{m.Uid}] name=[{m.Name}] role=[{m.Role}] => code=[{code}]");
-            return Ok(new { code });
+            return Ok(new {code});
         }
     }
 }
