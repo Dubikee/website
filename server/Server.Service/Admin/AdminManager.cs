@@ -6,9 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Server.Shared.Results;
 using static System.String;
+
 namespace Server.Service.Admin
 {
-    public class AdminManager:IAdminManager<User>
+    public class AdminManager : IAdminManager<User>
     {
         private readonly HttpContext _ctx;
         private readonly IUserDbContext<User> _db;
@@ -24,14 +25,12 @@ namespace Server.Service.Admin
             //_ctx.Response.StatusCode = 403;
         }
 
-        public User FindUser(string uid)
+        public (RequestResult res, User user) FindUser(string uid)
         {
-            return IsNullOrWhiteSpace(uid) ? null : _db.FindUser(uid);
-        }
-
-        public IEnumerable<User> FindUser(Func<User, bool> selecter)
-        {
-            return _db.Users.Where(selecter);
+            if (IsNullOrWhiteSpace(uid))
+                return (RequestResult.ParamsIsEmpty, null);
+            var u = _db.FindUser(uid);
+            return u == null ? (RequestResult.UIdNotFind, null) : (RequestResult.Ok, u);
         }
 
         public IEnumerable<User> FindAllUsers()
@@ -41,14 +40,12 @@ namespace Server.Service.Admin
 
         public RequestResult DeleteUser(string uid)
         {
-            if (IsNullOrWhiteSpace(uid))
-                return RequestResult.ParamsIsEmpty;
-            var u = FindUser(uid);
-            if (u == null)
-                return RequestResult.UIdNotFind;
-            if (u.Role.ToLower() == "master")
+            var (res, user) = FindUser(uid);
+            if (res != RequestResult.Ok)
+                return res;
+            if (user.Role.ToLower() == "master")
                 return RequestResult.NotAllowed;
-            return _db.DeleteUser(u) ? RequestResult.Ok : RequestResult.UnknownError;
+            return _db.DeleteUser(user) ? RequestResult.Ok : RequestResult.UnknownError;
         }
 
         public RequestResult AddUser(string uid, string name, string pwd, string role, string phone, string email)
@@ -73,11 +70,9 @@ namespace Server.Service.Admin
         public RequestResult EditUser(string targetUid, string name, string phone, string email, string role,
             string pwd)
         {
-            if (IsNullOrWhiteSpace(targetUid))
-                return RequestResult.ParamsIsEmpty;
-            var user = FindUser(targetUid);
-            if (user == null)
-                return RequestResult.UIdNotFind;
+            var (res, user) = FindUser(targetUid);
+            if (res != RequestResult.Ok)
+                return res;
             if (IsNullOrWhiteSpace(name))
                 user.Name = name;
             if (IsNullOrWhiteSpace(phone))

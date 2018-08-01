@@ -6,33 +6,30 @@ using Server.Shared.Results;
 
 namespace Server.Shared.Core
 {
-    public interface IAdminManager<out TUser> where TUser : class, IUser
+    public interface IAdminManager<TUser> where TUser : IUser
     {
         /// <summary>
-        /// 
+        /// Find User by uid
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        TUser FindUser(string uid);
+        (RequestResult res, TUser user) FindUser(string uid);
+
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="selecter"></param>
-        /// <returns></returns>
-        IEnumerable<User> FindUser(Func<TUser, bool> selecter);
-        /// <summary>
-        /// 
+        /// find all users
         /// </summary>
         /// <returns></returns>
-        IEnumerable<User> FindAllUsers();
+        IEnumerable<TUser> FindAllUsers();
+
         /// <summary>
-        /// 
+        /// delete user by id
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
         RequestResult DeleteUser(string uid);
+
         /// <summary>
-        /// 
+        /// add user
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="name"></param>
@@ -42,6 +39,7 @@ namespace Server.Shared.Core
         /// <param name="email"></param>
         /// <returns></returns>
         RequestResult AddUser(string uid, string name, string pwd, string role, string phone, string email);
+
         /// <summary>
         /// 
         /// </summary>
@@ -52,6 +50,6 @@ namespace Server.Shared.Core
         /// <param name="role"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        RequestResult EditUser(string targetUid, string name, string phone, string email, string role,string pwd);
+        RequestResult EditUser(string targetUid, string name, string phone, string email, string role, string pwd);
     }
 }

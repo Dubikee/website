@@ -23,9 +23,9 @@ namespace Server.Host.Controllers
         [HttpGet]
         public IActionResult FindUser(string uid)
         {
-            var user = _manager.FindUser(uid);
+            var (code, user) = _manager.FindUser(uid);
             _log.Info($"{Request.Path} uid=[{uid}] => user=[{user}]");
-            return Ok(user);
+            return Ok(new {code, user});
         }
 
         [HttpGet]
@@ -49,7 +49,6 @@ namespace Server.Host.Controllers
             var code = _manager.AddUser(m.Uid, m.Name, m.Pwd, m.Role, m.Phone, m.Email);
             _log.Info($"{Request.Path} uid=[{m.Uid}] name=[{m.Name}] role=[{m.Role}] => code=[{code}]");
             return Ok(new {code});
-
         }
 
         [HttpPost]
