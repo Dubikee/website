@@ -11019,11 +11019,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Test\\Server.Test.csproj",
+      "projectUniqueName": "D:\\WorkSpace\\git\\www.luokun.xyz\\server\\Server.Test\\Server.Test.csproj",
       "projectName": "Server.Test",
-      "projectPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Test\\Server.Test.csproj",
+      "projectPath": "D:\\WorkSpace\\git\\www.luokun.xyz\\server\\Server.Test\\Server.Test.csproj",
       "packagesPath": "C:\\Users\\MS485\\.nuget\\packages\\",
-      "outputPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Test\\obj\\",
+      "outputPath": "D:\\WorkSpace\\git\\www.luokun.xyz\\server\\Server.Test\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -11042,17 +11042,17 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.DB\\Server.DB.csproj": {
-              "projectPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.DB\\Server.DB.csproj"
+            "D:\\WorkSpace\\git\\www.luokun.xyz\\server\\Server.DB\\Server.DB.csproj": {
+              "projectPath": "D:\\WorkSpace\\git\\www.luokun.xyz\\server\\Server.DB\\Server.DB.csproj"
             },
-            "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Host\\Server.Host.csproj": {
-              "projectPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Host\\Server.Host.csproj"
+            "D:\\WorkSpace\\git\\www.luokun.xyz\\server\\Server.Host\\Server.Host.csproj": {
+              "projectPath": "D:\\WorkSpace\\git\\www.luokun.xyz\\server\\Server.Host\\Server.Host.csproj"
             },
-            "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Service\\Server.Service.csproj": {
-              "projectPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Service\\Server.Service.csproj"
+            "D:\\WorkSpace\\git\\www.luokun.xyz\\server\\Server.Service\\Server.Service.csproj": {
+              "projectPath": "D:\\WorkSpace\\git\\www.luokun.xyz\\server\\Server.Service\\Server.Service.csproj"
             },
-            "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Shared\\Server.Shared.csproj": {
-              "projectPath": "D:\\WorkSpace\\git\\www.luokun.com\\server\\Server.Shared\\Server.Shared.csproj"
+            "D:\\WorkSpace\\git\\www.luokun.xyz\\server\\Server.Shared\\Server.Shared.csproj": {
+              "projectPath": "D:\\WorkSpace\\git\\www.luokun.xyz\\server\\Server.Shared\\Server.Shared.csproj"
             }
           }
         }
@@ -11079,7 +11079,6 @@
             "version": "[15.7.0, )"
           },
           "Microsoft.NETCore.App": {
-            "suppressParent": "All",
             "target": "Package",
             "version": "[2.1.0, )",
             "autoReferenced": true

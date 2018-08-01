@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Extensions.DependencyInjection;
-using Server.DB.UserDb;
-using Server.Shared.Core;
+﻿using Server.DB.UserDb;
 using Server.Shared.Models;
 using Server.Shared.Options;
-using static Server.Host.Program;
+using System.Linq;
 using Xunit;
 
 namespace Server.Test

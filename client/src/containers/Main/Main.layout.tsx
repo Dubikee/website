@@ -1,7 +1,7 @@
 import { PComponent } from "../../utils/core";
 import * as React from "react";
 import { NavLink } from "react-router-dom";
-import './Main.layout.less';
+import './Main.layout.styl';
 export default function MainLayout(View: any) {
     return class MainLayout extends PComponent {
         render() {
@@ -9,7 +9,7 @@ export default function MainLayout(View: any) {
                 <div className={'nav'}>
                     <span>
                         <NavLink to={'/home'}>Home</NavLink>
-                        <br/>
+                        <br />
                         <NavLink to={'/test/2'}>Test</NavLink>
                     </span>
                 </div>
