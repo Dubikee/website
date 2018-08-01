@@ -5,8 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using Server.Host.Services;
 using System;
+using Server.Service.Extension;
 
 namespace Server.Host
 {

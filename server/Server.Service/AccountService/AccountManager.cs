@@ -1,17 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using Server.Shared.Core;
 using Server.Shared.Models;
 using Server.Shared.Options;
 using Server.Shared.Results;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography;
 using static System.String;
-using static System.Text.Encoding;
-namespace Server.Service.JwtAuth
+namespace Server.Service.AccountService
 {
     public class AccountManager : IAccountManager<User>
     {
@@ -54,7 +53,7 @@ namespace Server.Service.JwtAuth
             if (IsNullOrWhiteSpace(uid) || IsNullOrWhiteSpace(pwd))
                 return (RequestResult.ParamsIsEmpty, null);
 
-            // 判断用户是否存在
+            // 判断Uid是否存在
             var u = _db.FindUser(uid);
             if (u == null)
                 return (RequestResult.UIdNotFind, null);
@@ -165,7 +164,7 @@ namespace Server.Service.JwtAuth
 
         /// <inheritdoc />
         /// <summary>
-        ///  update password
+        ///  更改密码
         /// </summary>
         /// <param name="oldPwd"></param>
         /// <param name="newPwd"></param>
@@ -194,7 +193,7 @@ namespace Server.Service.JwtAuth
         }
 
         /// <summary>
-        ///  make Jwt
+        /// 产生Jwt
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="role"></param>
@@ -206,7 +205,7 @@ namespace Server.Service.JwtAuth
                 new Claim(UidClaimType, uid),
                 new Claim(ClaimTypes.Role, role)
             };
-            var key = new SymmetricSecurityKey(UTF8.GetBytes(_opt.Key));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_opt.Key));
             var jwt = new JwtSecurityToken(
                 issuer: _opt.Issuer,
                 audience: _opt.Audience,
@@ -219,7 +218,7 @@ namespace Server.Service.JwtAuth
         }
 
         /// <summary>
-        ///  check Password 
+        ///  检查密码是否含有数字与字母
         /// </summary>
         /// <param name="pwd"></param>
         /// <returns></returns>

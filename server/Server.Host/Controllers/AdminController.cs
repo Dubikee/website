@@ -20,6 +20,11 @@ namespace Server.Host.Controllers
             _manager = manager;
         }
 
+        /// <summary>
+        /// 通过Uid查询用户
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult FindUser(string uid)
         {
@@ -28,6 +33,11 @@ namespace Server.Host.Controllers
             return Ok(new {code, user});
         }
 
+
+        /// <summary>
+        /// 查询所有用户
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult AllUsers()
         {
@@ -35,6 +45,11 @@ namespace Server.Host.Controllers
             return Ok(_manager.FindAllUsers());
         }
 
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult DeleteUser(string uid)
         {
@@ -43,6 +58,11 @@ namespace Server.Host.Controllers
             return Ok(new {code});
         }
 
+        /// <summary>
+        /// 添加用户
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult AddUser(UserModel m)
         {
@@ -51,6 +71,11 @@ namespace Server.Host.Controllers
             return Ok(new {code});
         }
 
+        /// <summary>
+        /// 编辑用户
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult EditUser(UserModel m)
         {

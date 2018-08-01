@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Server.Shared.Core;
 using Server.Shared.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Server.Shared.Results;
 using static System.String;
-
-namespace Server.Service.Admin
+namespace Server.Service.AdminService
 {
     public class AdminManager : IAdminManager<User>
     {
@@ -18,11 +16,6 @@ namespace Server.Service.Admin
         {
             _db = db;
             _ctx = accessor.HttpContext;
-            //var claim = _ctx.User.Claims
-            //    .FirstOrDefault(x => x.Type == AccountManager.UidClaimType);
-            //if (claim != null && _db.FindUser(claim.Value) != null)
-            //    return;
-            //_ctx.Response.StatusCode = 403;
         }
 
         public (RequestResult res, User user) FindUser(string uid)

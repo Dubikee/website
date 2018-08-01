@@ -5,15 +5,21 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
-using Server.Service.JwtAuth;
+using Server.Service.AccountService;
 using Server.Shared.Core;
 using Server.Shared.Models;
 using Server.Shared.Options;
 
-namespace Server.Host.Services
+namespace Server.Service.Extension
 {
-    public static class JwtAuthService
+    public static class JwtAuthServiceExtension
     {
+        /// <summary>
+        /// 注入身份验证、授权相关
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="optionAction"></param>
+        /// <returns></returns>
         public static IServiceCollection AddJwtAuth(this IServiceCollection services, Action<JwtOptions> optionAction = null)
         {
             var op = new JwtOptions();

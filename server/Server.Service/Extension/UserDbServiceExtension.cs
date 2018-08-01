@@ -6,9 +6,9 @@ using Server.Shared.Core;
 using Server.Shared.Models;
 using Server.Shared.Options;
 
-namespace Server.Host.Services
+namespace Server.Service.Extension
 {
-    public static class UserDbService
+    public static class UserDbServiceExtension
     {
         /// <summary>
         /// 注入用户数据库依赖

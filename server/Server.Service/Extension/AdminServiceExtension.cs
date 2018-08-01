@@ -1,12 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Server.Service.Admin;
+using Server.Service.AdminService;
 using Server.Shared.Core;
 using Server.Shared.Models;
 
-namespace Server.Host.Services
+namespace Server.Service.Extension
 {
-    public static class AdminService
+    public static class AdminServiceExtension
     {
+        /// <summary>
+        /// 注入AdminManager
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection AddAdminService(this IServiceCollection services)
         {
             services.AddScoped<IAdminManager<User>, AdminManager>();
