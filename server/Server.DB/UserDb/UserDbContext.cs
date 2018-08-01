@@ -37,7 +37,7 @@ namespace Server.DB.UserDb
         /// <returns></returns>
         public User FindUser(string uid)
         {
-            return _users.FindOne(x => x.UId == uid);
+            return _users.FindOne(x => x.Uid == uid);
         }
 
 

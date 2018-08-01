@@ -21,21 +21,21 @@ namespace Server.Test
         {
             new User()
             {
-                UId = "00000001",
+                Uid = "00000001",
                 Name = "a",
                 Role = RoleTypes.Master,
                 PwHash = User.MakePwdHash("abcd1234")
             },
             new User()
             {
-                UId = "00000002",
+                Uid = "00000002",
                 Name = "b",
                 Role = RoleTypes.Admin,
                 PwHash = User.MakePwdHash("abcd1234")
             },
             new User()
             {
-                UId = "00000003",
+                Uid = "00000003",
                 Name = "c",
                 Role = RoleTypes.Vistor,
                 PwHash = User.MakePwdHash("abcd1234")
@@ -59,9 +59,9 @@ namespace Server.Test
         public AccountManagerTest()
         {
             _db = new TestUserDbContext(_users);
-            _masterctx = new TestContextAccessor(_users[0].UId);
-            _adminctx = new TestContextAccessor(_users[1].UId);
-            _vistorctx = new TestContextAccessor(_users[2].UId);
+            _masterctx = new TestContextAccessor(_users[0].Uid);
+            _adminctx = new TestContextAccessor(_users[1].Uid);
+            _vistorctx = new TestContextAccessor(_users[2].Uid);
             _anoctx = new TestContextAccessor("");
 
         }
@@ -73,9 +73,9 @@ namespace Server.Test
 
             Assert.Equal(_users[0], m.User);
             Assert.True(m.Login(null, null).res == LoginResult.ParamsIsEmpty);
-            Assert.True(m.Login(_users[1].UId, "____").res == LoginResult.PasswordWrong);
+            Assert.True(m.Login(_users[1].Uid, "____").res == LoginResult.PasswordWrong);
             Assert.True(m.Login("____", "____").res == LoginResult.UIdNotFind);
-            Assert.True(m.Login(_users[1].UId, "abcd1234").res == LoginResult.Ok);
+            Assert.True(m.Login(_users[1].Uid, "abcd1234").res == LoginResult.Ok);
             Assert.Equal(m.User, _users[1]);
         }
 
@@ -92,7 +92,7 @@ namespace Server.Test
             Assert.True(m.Register("00000004", "d", "abcdefgh").res == InsertUserResult.PasswordNoNumbers);
             Assert.True(m.Register("00000001", "d", "abcd1234").res == InsertUserResult.UidHasExist);
             Assert.True(m.Register("00000004", "d", "abcd1234").res == InsertUserResult.Ok);
-            Assert.NotNull(_db.Users.FirstOrDefault(x => x.UId == "00000004"));
+            Assert.NotNull(_db.Users.FirstOrDefault(x => x.Uid == "00000004"));
         }
 
         [Fact]
@@ -153,7 +153,7 @@ namespace Server.Test
 
             public User FindUser(string uid)
             {
-                return _users.Find(x => x.UId == uid);
+                return _users.Find(x => x.Uid == uid);
 
             }
 

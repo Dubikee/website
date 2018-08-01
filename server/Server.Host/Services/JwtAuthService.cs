@@ -19,7 +19,7 @@ namespace Server.Host.Services
             var op = new JwtOptions();
             optionAction?.Invoke(op);
             services.TryAddSingleton(op);
-            services.TryAddScoped<IAccountManager<IUser>, AccountManager>();
+            services.TryAddScoped<IAccountManager<User>, AccountManager>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddAuthentication(o =>
             {

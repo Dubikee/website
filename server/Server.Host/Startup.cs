@@ -5,11 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using Server.Service.Admin;
-using Server.Service.JwtAuth;
-using Server.Service.UserDb;
-using System;
 using Server.Host.Services;
+using System;
 
 namespace Server.Host
 {
@@ -47,7 +44,7 @@ namespace Server.Host
 
             log.AddNLog();
             app.UseAuthentication();
-            app.UseMvc(routes => { routes.MapRoute("api", "/api/{controller}/{action}"); });
+            app.UseMvc(routes => { routes.MapRoute("api", "/api/{controller}/{action}/{uid?}"); });
         }
     }
 }

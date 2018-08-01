@@ -3,7 +3,7 @@
     public interface IUser
     {
         int Id { get; set; }
-        string UId { get; set; }
+        string Uid { get; set; }
         string Name { get; set; }
         string Phone { get; set; }
         string Email { get; set; }

@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Server.DB;
-using System;
 using Server.DB.UserDb;
 using Server.Shared.Core;
 using Server.Shared.Models;
 using Server.Shared.Options;
 
-namespace Server.Service.UserDb
+namespace Server.Host.Services
 {
     public static class UserDbService
     {
@@ -22,8 +20,8 @@ namespace Server.Service.UserDb
         {
             var opt = new DbOptions();
             optionAction?.Invoke(opt);
-            services.AddSingleton(opt);
-            services.AddScoped<IUserDbContext<User>, UserDbContext>();
+            services.TryAddSingleton(opt);
+            services.TryAddScoped<IUserDbContext<User>, UserDbContext>();
             return services;
         }
     }

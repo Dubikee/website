@@ -66,7 +66,7 @@ namespace Server.Host.Controllers
             _log.Info($"{Request.Path} => uid=[{_manager.User.Id}] ...");
             return Ok(new
             {
-                uid = _manager.User.UId,
+                uid = _manager.User.Uid,
                 name = _manager.User.Name,
                 phone = _manager.User.Phone,
                 email = _manager.User.Email,

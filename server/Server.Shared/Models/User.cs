@@ -8,7 +8,7 @@ namespace Server.Shared.Models
     public class User : IUser
     {
         public int Id { get; set; }
-        public string UId { get; set; }
+        public string Uid { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
@@ -28,7 +28,7 @@ namespace Server.Shared.Models
 
         public User(string uid, string name, string role, string pwd, string phone = null, string email = null)
         {
-            UId = uid;
+            Uid = uid;
             Name = name;
             Phone = phone;
             Email = email;

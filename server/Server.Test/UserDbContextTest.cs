@@ -19,12 +19,12 @@ namespace Server.Test
         {
             var u = new User()
             {
-                UId = "001",
+                Uid = "001",
                 Email = null,
                 Name = "a"
             };
             db.AddUser(u);
-            Assert.True(db.Users.FirstOrDefault(x => x.UId == u.UId) != null);
+            Assert.True(db.Users.FirstOrDefault(x => x.Uid == u.Uid) != null);
             Assert.True(db.FindUser("001") != null);
             u.Name = "b";
             db.UpdateUser(u);
