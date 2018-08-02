@@ -1,5 +1,4 @@
-import { PComponent } from "../../utils/core";
-import * as React from "react";
+import { PComponent, React } from "../../utils/core";
 import { NavLink } from "react-router-dom";
 import './Main.layout.styl';
 export default function MainLayout(View: any) {

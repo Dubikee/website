@@ -1,8 +1,8 @@
-import * as React from "react";
 import "./Home.view.styl";
 import MainLayout from "../../containers/Main/Main.layout";
 import { Row, Col, Form, Checkbox, Button, Input, Icon } from "antd";
-class HomeView extends React.Component {
+import { PComponent, React } from "../../utils/core";
+class HomeView extends PComponent {
     state = {
         uid: "",
         pwd: "",
@@ -21,7 +21,7 @@ class HomeView extends React.Component {
                         xxl={4}
                         className='form-col'
                     >
-                    <h1>LOGIN</h1>
+                        <h1>LOGIN</h1>
                         <Form className="login-form">
                             <Form.Item>
                                 <Input
@@ -42,7 +42,7 @@ class HomeView extends React.Component {
                             </Form.Item>
                             <Form.Item className="form-item-last">
                                 <Checkbox>Remember me</Checkbox>
-                                <br/>
+                                <br />
                                 <Button
                                     type="primary"
                                     htmlType="submit"

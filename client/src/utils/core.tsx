@@ -4,6 +4,7 @@ import * as ReactDOM from "react-dom";
 import { RouteProps, RedirectProps, Switch, Route, Redirect } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 export let PComponent = React.PureComponent;
+export { React }
 export let bootstrap = () => {
   return new Bootstrap();
 };
