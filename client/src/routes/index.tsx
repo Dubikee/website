@@ -7,7 +7,7 @@ export let routes: RouteProps[] = [
         path: '/',
         exact: true,
         component: HomeView
-    },
+	},
     {
         path: '/home',
         component: HomeView
