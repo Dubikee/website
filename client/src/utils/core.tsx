@@ -17,7 +17,14 @@ export interface IBootstrap {
 	start(): void;
 };
 
-export let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => {
+export /**
+ * 简化路由配置
+ *
+ * @param {RouteProps[]} routes
+ * @param {RedirectProps[]} [redirect]
+ * @returns
+ */
+let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => {
 	return (
 		<BrowserRouter basename="/">
 			<Switch>
@@ -29,26 +36,50 @@ export let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => 
 };
 
 class Bootstrap implements IBootstrap {
+
 	private works: Array<() => Promise<void> | void> = [registerServiceWorker];
 	private App: React.ComponentClass;
 	private ele: Element;
 
-	with(App: React.ComponentClass) {
+
+	/**
+	 * 设置启动根组件
+	 * @param {React.ComponentClass} App
+	 * @returns
+	 * @memberof Bootstrap
+	 */
+	public with(App: React.ComponentClass) {
 		this.App = App;
 		return this;
 	}
 
-	does(work: () => Promise<void> | void) {
+
+	/**
+	 * 添加启动时的任务，有顺序，默认为registerServiceWorker
+	 * @param {(() => Promise<void> | void)} work
+	 * @returns
+	 * @memberof Bootstrap
+	 */
+	public does(work: () => Promise<void> | void) {
 		this.works.push(work);
 		return this;
 	}
-	mount(selector: string) {
+	
+
+	/**
+	 * 设置启动挂载点
+	 * @param {string} selector
+	 * @returns
+	 * @memberof Bootstrap
+	 */
+	public mount(selector: string) {
 		let e = document.querySelector(selector);
 		if (e) this.ele = e;
 		else throw Error("找不到挂载点");
 		return this;
 	}
-	start() {
+
+	public start() {
 		if (!this.ele || !this.App) throw Error("根组件与挂载点不可为空");
 		let { works, App, ele } = this;
 		ReactDOM.render(<App />, ele);
