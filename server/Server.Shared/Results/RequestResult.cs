@@ -13,7 +13,6 @@
         /// </summary>
         ParamsIsEmpty = 100,
 
-
         /// <summary>
         /// 2~
         /// 身份验证与权限错误
@@ -41,7 +40,6 @@
         NewPasswordTooShort = 404,
         NewPasswordNoNumbers = 405,
         NewPasswordNoLetters = 406,
-
 
         /// <summary>
         /// 9~
