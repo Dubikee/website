@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Server.DB.UserDb;
 using Server.Shared.Core;
 using Server.Shared.Models;
 using Server.Shared.Options;
+using System;
 
 namespace Server.Service.Extension
 {

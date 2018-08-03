@@ -6,6 +6,9 @@ using Xunit;
 
 namespace Server.Test
 {
+    /// <summary>
+    /// UseerDb测试
+    /// </summary>
     public class UserDbContextTest
     {
         private static UserDbContext db = new UserDbContext(new DbOptions()

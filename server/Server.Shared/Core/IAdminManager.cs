@@ -9,27 +9,27 @@ namespace Server.Shared.Core
     public interface IAdminManager<TUser> where TUser : IUser
     {
         /// <summary>
-        /// Find User by uid
+        /// Uid查询用户
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
         (RequestResult res, TUser user) FindUser(string uid);
 
         /// <summary>
-        /// find all users
+        /// 查找所有用户
         /// </summary>
         /// <returns></returns>
         IEnumerable<TUser> FindAllUsers();
 
         /// <summary>
-        /// delete user by id
+        /// 通过Uid删除用户
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
         RequestResult DeleteUser(string uid);
 
         /// <summary>
-        /// add user
+        /// 添加用户
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="name"></param>
@@ -41,7 +41,7 @@ namespace Server.Shared.Core
         RequestResult AddUser(string uid, string name, string pwd, string role, string phone, string email);
 
         /// <summary>
-        /// 
+        /// 更改用户
         /// </summary>
         /// <param name="targetUid"></param>
         /// <param name="name"></param>

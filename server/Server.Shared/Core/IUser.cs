@@ -1,4 +1,4 @@
-﻿namespace Server.Shared.Core
+﻿ namespace Server.Shared.Core
 {
     public interface IUser
     {

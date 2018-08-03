@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Server.Shared.Core;
 using System.Security.Cryptography;
-using Server.Shared.Core;
 using static System.Text.Encoding;
 
 namespace Server.Shared.Models
@@ -16,16 +15,21 @@ namespace Server.Shared.Models
         public byte[] PwHash { get; set; }
 
         /// <summary>
-        ///  make Hash 
+        /// 无参构造函数
         /// </summary>
-        /// <param name="pwd"></param>
-        /// <returns></returns>
-        public static byte[] MakePwdHash(string pwd) => MD5.Create().ComputeHash(UTF8.GetBytes(pwd));
-
         public User()
         {
         }
 
+        /// <summary>
+        /// 有参构造函数
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="name"></param>
+        /// <param name="role"></param>
+        /// <param name="pwd"></param>
+        /// <param name="phone"></param>
+        /// <param name="email"></param>
         public User(string uid, string name, string role, string pwd, string phone = null, string email = null)
         {
             Uid = uid;
@@ -35,5 +39,12 @@ namespace Server.Shared.Models
             Role = role;
             PwHash = MakePwdHash(pwd);
         }
+
+        /// <summary>
+        ///  密码哈希加密
+        /// </summary>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
+        public static byte[] MakePwdHash(string pwd) => MD5.Create().ComputeHash(UTF8.GetBytes(pwd));
     }
 }

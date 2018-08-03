@@ -1,5 +1,4 @@
-﻿using Server.Shared.Models;
-using Server.Shared.Results;
+﻿using Server.Shared.Results;
 
 namespace Server.Shared.Core
 {

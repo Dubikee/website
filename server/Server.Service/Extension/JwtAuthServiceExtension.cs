@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -9,6 +7,8 @@ using Server.Service.AccountService;
 using Server.Shared.Core;
 using Server.Shared.Models;
 using Server.Shared.Options;
+using System;
+using System.Text;
 
 namespace Server.Service.Extension
 {

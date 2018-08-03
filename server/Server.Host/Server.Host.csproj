@@ -9,10 +9,12 @@
     <PackageReference Include="NLog" Version="4.5.7" />
     <PackageReference Include="NLog.Config" Version="4.5.7" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.2.0" />
+    <PackageReference Include="Quartz" Version="3.0.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Server.DB\Server.DB.csproj" />
+    <ProjectReference Include="..\Server.Jobs\Server.Jobs.csproj" />
     <ProjectReference Include="..\Server.Service\Server.Service.csproj" />
     <ProjectReference Include="..\Server.Shared\Server.Shared.csproj" />
   </ItemGroup>

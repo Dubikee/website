@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Quartz" Version="3.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Server.DB\Server.DB.csproj" />
+    <ProjectReference Include="..\Server.Service\Server.Service.csproj" />
+    <ProjectReference Include="..\Server.Shared\Server.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

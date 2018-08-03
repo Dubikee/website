@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http.Features;
 using Server.Service.AccountService;
@@ -11,6 +6,11 @@ using Server.Shared.Core;
 using Server.Shared.Models;
 using Server.Shared.Options;
 using Server.Shared.Results;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
 using Xunit;
 
 namespace Server.Test
@@ -66,6 +66,9 @@ namespace Server.Test
 
         }
 
+        /// <summary>
+        /// 登陆测试
+        /// </summary>
         [Fact]
         public void LoginTest()
         {
@@ -79,6 +82,9 @@ namespace Server.Test
             Assert.Equal(m.User, _users[1]);
         }
 
+        /// <summary>
+        /// 注册测试
+        /// </summary>
         [Fact]
         public void RegisterTest()
         {
@@ -95,6 +101,9 @@ namespace Server.Test
             Assert.NotNull(_db.Users.FirstOrDefault(x => x.Uid == "00000004"));
         }
 
+        /// <summary>
+        /// 删除测试
+        /// </summary>
         [Fact]
         public void DeleteUserTest()
         {
@@ -106,6 +115,9 @@ namespace Server.Test
             Assert.DoesNotContain(_db.Users, x => x.Name == "c");
         }
 
+        /// <summary>
+        /// 更改测试
+        /// </summary>
         [Fact]
         public void UpdateUserTest()
         {
@@ -114,6 +126,9 @@ namespace Server.Test
             m = new AccountManager(_db, _adminctx, _opt);
         }
 
+        /// <summary>
+        /// 测试Context类
+        /// </summary>
         private class TestHttpContext : HttpContext
         {
             public override void Abort()
@@ -135,6 +150,9 @@ namespace Server.Test
             public override ISession Session { get; set; }
         }
 
+        /// <summary>
+        /// 测试数据库类
+        /// </summary>
         private class TestUserDbContext : IUserDbContext<User>
         {
             private List<User> _users;
@@ -168,6 +186,9 @@ namespace Server.Test
             }
         }
 
+        /// <summary>
+        /// 测试HttpContextAccessor类
+        /// </summary>
         private class TestContextAccessor : IHttpContextAccessor
         {
             public HttpContext HttpContext { get; set; }
