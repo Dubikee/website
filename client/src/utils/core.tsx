@@ -5,15 +5,17 @@ import { RouteProps, RedirectProps, Switch, Route, Redirect } from "react-router
 import { BrowserRouter } from "react-router-dom";
 export let PComponent = React.PureComponent;
 export { React }
+
 export let bootstrap = () => {
 	return new Bootstrap();
 };
+
 export interface IBootstrap {
 	with(App: React.ComponentClass): IBootstrap;
 	does(work: () => Promise<void> | void): IBootstrap;
 	mount(selector: string): IBootstrap;
 	start(): void;
-}
+};
 
 export let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => {
 	return (
@@ -24,7 +26,7 @@ export let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => 
 			</Switch>
 		</BrowserRouter>
 	);
-}
+};
 
 class Bootstrap implements IBootstrap {
 	private works: Array<() => Promise<void> | void> = [registerServiceWorker];
