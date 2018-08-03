@@ -69,3 +69,5 @@ D:\WorkSpace\git\www.luokun.xyz\server\Server.Test\obj\Debug\netcoreapp2.1\Serve
 D:\WorkSpace\git\www.luokun.xyz\server\Server.Test\obj\Debug\netcoreapp2.1\Server.Test.csproj.CopyComplete
 D:\WorkSpace\git\www.luokun.xyz\server\Server.Test\obj\Debug\netcoreapp2.1\Server.Test.dll
 D:\WorkSpace\git\www.luokun.xyz\server\Server.Test\obj\Debug\netcoreapp2.1\Server.Test.pdb
+D:\WorkSpace\git\www.luokun.xyz\server\Server.Test\bin\Debug\netcoreapp2.1\Server.Jobs.dll
+D:\WorkSpace\git\www.luokun.xyz\server\Server.Test\bin\Debug\netcoreapp2.1\Server.Jobs.pdb

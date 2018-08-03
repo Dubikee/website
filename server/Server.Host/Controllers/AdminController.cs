@@ -31,7 +31,6 @@ namespace Server.Host.Controllers
             return Ok(new {code, user});
         }
 
-
         /// <summary>
         /// 查询所有用户
         /// </summary>
