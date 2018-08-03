@@ -40,7 +40,7 @@ namespace Server.Host.Controllers
         public IActionResult AllUsers()
         {
             Log.Info($"{Request.Path} => users");
-            return Ok(_manager.FindAllUsers());
+            return Ok(_manager.Users);
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace Server.Test
     /// </summary>
     public class UserDbContextTest
     {
-        private static UserDbContext db = new UserDbContext(new DbOptions()
+        private static readonly UserDbContext Db = new UserDbContext(new DbOptions()
         {
             UserDbPath = "./user.db",
             CollectionName = "users"
@@ -26,14 +26,14 @@ namespace Server.Test
                 Email = null,
                 Name = "a"
             };
-            db.AddUser(u);
-            Assert.True(db.Users.FirstOrDefault(x => x.Uid == u.Uid) != null);
-            Assert.True(db.FindUser("001") != null);
+            Db.AddUser(u);
+            Assert.True(Db.Users.FirstOrDefault(x => x.Uid == u.Uid) != null);
+            Assert.True(Db.FindUser("001") != null);
             u.Name = "b";
-            db.UpdateUser(u);
-            Assert.True(db.FindUser("001").Name == "b");
-            db.DeleteUser(u);
-            Assert.True(db.FindUser("001") == null);
+            Db.UpdateUser(u);
+            Assert.True(Db.FindUser("001").Name == "b");
+            Db.DeleteUser(u);
+            Assert.True(Db.FindUser("001") == null);
         }
     }
 }

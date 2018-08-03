@@ -9,17 +9,17 @@ namespace Server.Shared.Core
     public interface IAdminManager<TUser> where TUser : IUser
     {
         /// <summary>
+        /// 查找所有用户
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<TUser> Users { get; }
+
+        /// <summary>
         /// Uid查询用户
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
         (RequestResult res, TUser user) FindUser(string uid);
-
-        /// <summary>
-        /// 查找所有用户
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<TUser> FindAllUsers();
 
         /// <summary>
         /// 通过Uid删除用户
