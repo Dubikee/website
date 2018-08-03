@@ -5,8 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using System;
+using NLog.Web;
 using Server.Service.Extension;
+using System;
 
 namespace Server.Host
 {
@@ -43,6 +44,7 @@ namespace Server.Host
             }
 
             log.AddNLog();
+            env.ConfigureNLog("Nlog.config");
             app.UseAuthentication();
             app.UseMvc(routes => { routes.MapRoute("api", "/api/{controller}/{action}/{uid?}"); });
         }

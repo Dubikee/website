@@ -1974,6 +1974,22 @@
           }
         }
       },
+      "NLog.Web.AspNetCore/4.5.4": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Hosting.Abstractions": "2.0.0",
+          "Microsoft.AspNetCore.Http": "2.0.0",
+          "Microsoft.AspNetCore.Http.Extensions": "2.0.0",
+          "Microsoft.AspNetCore.Routing.Abstractions": "2.0.0",
+          "NLog.Extensions.Logging": "1.0.2"
+        },
+        "compile": {
+          "lib/netstandard2.0/NLog.Web.AspNetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/NLog.Web.AspNetCore.dll": {}
+        }
+      },
       "Quartz/3.0.6": {
         "type": "package",
         "dependencies": {
@@ -4030,6 +4046,7 @@
           "NLog": "4.5.7",
           "NLog.Config": "4.5.7",
           "NLog.Extensions.Logging": "1.2.0",
+          "NLog.Web.AspNetCore": "4.5.4",
           "Quartz": "3.0.6",
           "Server.DB": "1.0.0",
           "Server.Jobs": "1.0.0",
@@ -6247,6 +6264,23 @@
         "contentFiles/any/any/NLog.xsd",
         "nlog.schema.4.5.7.nupkg.sha512",
         "nlog.schema.nuspec"
+      ]
+    },
+    "NLog.Web.AspNetCore/4.5.4": {
+      "sha512": "dTCjiiUAccDD2XRTg3L74bamYmjFozaA/mXEeV08bOZ0bIez1jM0pXfQTb2awFsiibrgDuCf3JJQ/xf2OJB4fA==",
+      "type": "package",
+      "path": "nlog.web.aspnetcore/4.5.4",
+      "files": [
+        "lib/net451/NLog.Web.AspNetCore.dll",
+        "lib/net451/NLog.Web.AspNetCore.xml",
+        "lib/net461/NLog.Web.AspNetCore.dll",
+        "lib/net461/NLog.Web.AspNetCore.xml",
+        "lib/netstandard1.5/NLog.Web.AspNetCore.dll",
+        "lib/netstandard1.5/NLog.Web.AspNetCore.xml",
+        "lib/netstandard2.0/NLog.Web.AspNetCore.dll",
+        "lib/netstandard2.0/NLog.Web.AspNetCore.xml",
+        "nlog.web.aspnetcore.4.5.4.nupkg.sha512",
+        "nlog.web.aspnetcore.nuspec"
       ]
     },
     "Quartz/3.0.6": {
@@ -11565,7 +11599,6 @@
             "version": "[15.7.0, )"
           },
           "Microsoft.NETCore.App": {
-            "suppressParent": "All",
             "target": "Package",
             "version": "[2.1.0, )",
             "autoReferenced": true
