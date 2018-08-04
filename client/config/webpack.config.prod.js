@@ -169,18 +169,6 @@ module.exports = {
 							},
 						}, ],
 					},
-					// The notation here is somewhat confusing.
-					// "postcss" loader applies autoprefixer to our CSS.
-					// "css" loader resolves paths in CSS and adds assets as dependencies.
-					// "style" loader normally turns CSS into JS modules injecting <style>,
-					// but unlike in development configuration, we do something different.
-					// `ExtractTextPlugin` first applies the "postcss" and "css" loaders
-					// (second argument), then grabs the result CSS and puts it into a
-					// separate file in our build process. This way we actually ship
-					// a single CSS file in production instead of JS code injecting <style>
-					// tags. If you use code splitting, however, any async bundles will still
-					// use the "style" loader inside the async code so CSS from them won't be
-					// in the main CSS file.
 					{
 						test: /\.css$/,
 						loader: ExtractTextPlugin.extract(
@@ -215,33 +203,18 @@ module.exports = {
 						),
 						// Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
 					},
-					// "file" loader makes sure assets end up in the `build` folder.
-					// When you `import` an asset, you get its filename.
-					// This loader doesn't use a "test" so it will catch all modules
-					// that fall through the other loaders.
 					{
 						loader: require.resolve('file-loader'),
-						// Exclude `js` files to keep "css" loader working as it injects
-						// it's runtime that would otherwise processed through "file" loader.
-						// Also exclude `html` and `json` extensions so they get processed
-						// by webpacks internal loaders.
 						exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
 						options: {
 							name: 'static/media/[name].[hash:8].[ext]',
 						},
 					},
-					// ** STOP ** Are you adding a new loader?
-					// Make sure to add the new loader(s) before the "file" loader.
 				],
 			},
 		],
 	},
 	plugins: [
-		// Makes some environment variables available in index.html.
-		// The public URL is available as %PUBLIC_URL% in index.html, e.g.:
-		// <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-		// In production, it will be an empty string unless you specify "homepage"
-		// in `package.json`, in which case it will be the pathname of that URL.
 		new InterpolateHtmlPlugin(env.raw),
 		// Generates an `index.html` file with the <script> injected.
 		new HtmlWebpackPlugin({
@@ -260,19 +233,11 @@ module.exports = {
 				minifyURLs: true,
 			},
 		}),
-		// Makes some environment variables available to the JS code, for example:
-		// if (process.env.NODE_ENV === 'production') { ... }. See `./env.js`.
-		// It is absolutely essential that NODE_ENV was set to production here.
-		// Otherwise React will be compiled in the very slow development mode.
 		new webpack.DefinePlugin(env.stringified),
 		// Minify the code.
 		new UglifyJsPlugin({
 			uglifyOptions: {
 				parse: {
-					// we want uglify-js to parse ecma 8 code. However we want it to output
-					// ecma 5 compliant code, to avoid issues with older browsers, this is
-					// whey we put `ecma: 5` to the compress and output section
-					// https://github.com/facebook/create-react-app/pull/4234
 					ecma: 8,
 				},
 				compress: {
