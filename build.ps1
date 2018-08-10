@@ -9,10 +9,8 @@ else {
 
 Set-Location ./server
 dotnet.exe restore
-dotnet.exe publish -o ../../build/server
+dotnet.exe publish -o ../../build -c Release
 Set-Location ../client
 npm run build
 Set-Location ..
-Copy-Item ./client/build -Recurse ./build/client
-
-
+echo "build successful"
