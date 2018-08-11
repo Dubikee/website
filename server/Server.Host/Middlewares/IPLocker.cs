@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 
 namespace Server.Host.Middlewares
 {
-    // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
-    public class JwtAuth
+    // ReSharper disable once InconsistentNaming
+    public class IPLocker
     {
         private readonly RequestDelegate _next;
 
-        public JwtAuth(RequestDelegate next)
+        public IPLocker(RequestDelegate next)
         {
             _next = next;
         }
@@ -26,7 +26,7 @@ namespace Server.Host.Middlewares
     {
         public static IApplicationBuilder UseJwtAuth(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<JwtAuth>();
+            return builder.UseMiddleware<IPLocker>();
         }
     }
 }
