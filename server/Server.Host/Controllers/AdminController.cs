@@ -4,6 +4,7 @@ using NLog;
 using Server.Host.Models;
 using Server.Shared.Core;
 using Server.Shared.Models;
+using Server.Shared.Results;
 
 namespace Server.Host.Controllers
 {
@@ -26,9 +27,10 @@ namespace Server.Host.Controllers
         [HttpGet]
         public IActionResult FindUser(string uid)
         {
-            var (code, user) = _manager.FindUser(uid);
+
+            var (status, user) = _manager.FindUser(uid);
             Log.Info($"{Request.Path} uid=[{uid}] => user=[{user}]");
-            return Ok(new {code, user});
+            return Ok(new {code = status, user});
         }
 
         /// <summary>
@@ -39,7 +41,11 @@ namespace Server.Host.Controllers
         public IActionResult AllUsers()
         {
             Log.Info($"{Request.Path} => users");
-            return Ok(_manager.Users);
+            return Ok(new
+            {
+                status = AuthStatus.Ok,
+                users = _manager.Users
+            });
         }
 
         /// <summary>

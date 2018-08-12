@@ -15,7 +15,7 @@ namespace Server.DB.UserDb
 
         public UserDbContext(DbOptions opt)
         {
-            _users = new LiteDatabase(opt.UserDbPath).GetCollection<User>(opt.CollectionName);
+            _users = new LiteDatabase(opt.DbPath).GetCollection<User>(opt.UserCollectionName);
         }
 
 

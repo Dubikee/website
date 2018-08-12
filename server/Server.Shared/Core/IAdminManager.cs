@@ -19,14 +19,14 @@ namespace Server.Shared.Core
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        (RequestResult res, TUser user) FindUser(string uid);
+        (AuthStatus status, TUser user) FindUser(string uid);
 
         /// <summary>
         /// 通过Uid删除用户
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        RequestResult DeleteUser(string uid);
+        AuthStatus DeleteUser(string uid);
 
         /// <summary>
         /// 添加用户
@@ -38,7 +38,7 @@ namespace Server.Shared.Core
         /// <param name="phone"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        RequestResult AddUser(string uid, string name, string pwd, string role, string phone, string email);
+        AuthStatus AddUser(string uid, string name, string pwd, string role, string phone, string email);
 
         /// <summary>
         /// 更改用户
@@ -50,6 +50,6 @@ namespace Server.Shared.Core
         /// <param name="role"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        RequestResult EditUser(string targetUid, string name, string phone, string email, string role, string pwd);
+        AuthStatus EditUser(string targetUid, string name, string phone, string email, string role, string pwd);
     }
 }

@@ -2,8 +2,10 @@
 {
     public class DbOptions
     {
-        public string UserDbPath { get; set; }
+        public string DbPath { get; set; }
 
-        public string CollectionName { get; set; }
+        public string UserCollectionName { get; set; }
+
+        public string WhutCollectionName { get; set; }
     }
 }

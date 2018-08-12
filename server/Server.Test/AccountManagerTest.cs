@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http.Features;
-using Server.Service.AccountService;
 using Server.Shared.Core;
 using Server.Shared.Models;
 using Server.Shared.Options;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
+using Server.Service.Auth;
 using Xunit;
 
 namespace Server.Test
@@ -75,10 +75,10 @@ namespace Server.Test
             var m = new AccountManager(_db, _masterctx, _opt);
 
             Assert.Equal(_users[0], m.User);
-            Assert.True(m.Login(null, null).res == RequestResult.ParamsIsEmpty);
-            Assert.True(m.Login(_users[1].Uid, "____").res == RequestResult.PasswordWrong);
-            Assert.True(m.Login("____", "____").res == RequestResult.UIdNotFind);
-            Assert.True(m.Login(_users[1].Uid, "abcd1234").res == RequestResult.Ok);
+            Assert.True(m.Login(null, null).res == AuthStatus.ParamsIsEmpty);
+            Assert.True(m.Login(_users[1].Uid, "____").res == AuthStatus.PasswordWrong);
+            Assert.True(m.Login("____", "____").res == AuthStatus.UIdNotFind);
+            Assert.True(m.Login(_users[1].Uid, "abcd1234").res == AuthStatus.Ok);
             Assert.Equal(m.User, _users[1]);
         }
 
@@ -90,14 +90,14 @@ namespace Server.Test
         {
             var m = new AccountManager(_db, _anoctx, _opt);
             Assert.Null(m.User);
-            Assert.True(m.Register(" ", " ", " ").res == RequestResult.ParamsIsEmpty);
-            Assert.True(m.Register("0000", "d", "abcd1234").res == RequestResult.UidTooShort);
-            Assert.True(m.Register("0000000a", "d", "abcd1234").res == RequestResult.UidIsNotNumbers);
-            Assert.True(m.Register("00000004", "d", "1234").res == RequestResult.PasswordTooShort);
-            Assert.True(m.Register("00000004", "d", "12345678").res == RequestResult.PasswordNoLetters);
-            Assert.True(m.Register("00000004", "d", "abcdefgh").res == RequestResult.PasswordNoNumbers);
-            Assert.True(m.Register("00000001", "d", "abcd1234").res == RequestResult.UidHasExist);
-            Assert.True(m.Register("00000004", "d", "abcd1234").res == RequestResult.Ok);
+            Assert.True(m.Register(" ", " ", " ").res == AuthStatus.ParamsIsEmpty);
+            Assert.True(m.Register("0000", "d", "abcd1234").res == AuthStatus.UidTooShort);
+            Assert.True(m.Register("0000000a", "d", "abcd1234").res == AuthStatus.UidIsNotNumbers);
+            Assert.True(m.Register("00000004", "d", "1234").res == AuthStatus.PasswordTooShort);
+            Assert.True(m.Register("00000004", "d", "12345678").res == AuthStatus.PasswordNoLetters);
+            Assert.True(m.Register("00000004", "d", "abcdefgh").res == AuthStatus.PasswordNoNumbers);
+            Assert.True(m.Register("00000001", "d", "abcd1234").res == AuthStatus.UidHasExist);
+            Assert.True(m.Register("00000004", "d", "abcd1234").res == AuthStatus.Ok);
             Assert.NotNull(_db.Users.FirstOrDefault(x => x.Uid == "00000004"));
         }
 
@@ -109,9 +109,9 @@ namespace Server.Test
         {
             var m = new AccountManager(_db, _anoctx, _opt);
             Assert.Null(m.User);
-            Assert.True(m.DeleteUser() == RequestResult.TokenExpired);
+            Assert.True(m.DeleteUser() == AuthStatus.TokenExpired);
             m = new AccountManager(_db, _vistorctx, _opt);
-            Assert.True(m.DeleteUser() == RequestResult.Ok);
+            Assert.True(m.DeleteUser() == AuthStatus.Ok);
             Assert.DoesNotContain(_db.Users, x => x.Name == "c");
         }
 
@@ -122,7 +122,7 @@ namespace Server.Test
         public void UpdateUserTest()
         {
             var m = new AccountManager(_db, _anoctx, _opt);
-            Assert.True(m.UpdateUserInfo("a", null, null) == RequestResult.TokenExpired);
+            Assert.True(m.UpdateUserInfo("a", null, null) == AuthStatus.TokenExpired);
             m = new AccountManager(_db, _adminctx, _opt);
         }
 

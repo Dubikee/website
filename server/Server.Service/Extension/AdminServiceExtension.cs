@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Server.Service.AdminService;
+using Server.Service.Auth;
 using Server.Shared.Core;
 using Server.Shared.Models;
 

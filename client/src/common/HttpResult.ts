@@ -1,3 +1,9 @@
+
+export interface ResponseData {
+	status: HttpResult;
+}
+
+
 /**
  * 与服务端一致
  *

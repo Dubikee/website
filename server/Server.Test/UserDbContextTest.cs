@@ -13,8 +13,8 @@ namespace Server.Test
     {
         private static readonly UserDbContext Db = new UserDbContext(new DbOptions()
         {
-            UserDbPath = "./user.db",
-            CollectionName = "users"
+            DbPath = "./user.db",
+            UserCollectionName = "users"
         });
 
         [Fact]

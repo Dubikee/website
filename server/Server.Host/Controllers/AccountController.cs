@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite.Internal.ApacheModRewrite;
 using NLog;
 using Server.Host.Models;
 using Server.Shared.Core;
 using Server.Shared.Models;
+using Server.Shared.Results;
 
 namespace Server.Host.Controllers
 {
@@ -28,9 +30,9 @@ namespace Server.Host.Controllers
         [AllowAnonymous]
         public ActionResult Login(string uid, string pwd)
         {
-            var (code, jwt) = _manager.Login(uid, pwd);
-            Log.Info($"{Request.Path} uid=[{uid}] pwd=[***] =>code=[{code}]");
-            return Ok(new { code, jwt });
+            var (status, jwt) = _manager.Login(uid, pwd);
+            Log.Info($"{Request.Path} uid=[{uid}] pwd=[***] =>code=[{status}]");
+            return Ok(new {status, jwt});
         }
 
         /// <summary>
@@ -42,15 +44,15 @@ namespace Server.Host.Controllers
         [AllowAnonymous]
         public ActionResult Register(UserModel m)
         {
-            var (code, jwt) = _manager.Register(
+            var (status, jwt) = _manager.Register(
                 uid: m.Uid,
                 name: m.Name,
                 pwd: m.Pwd,
                 phone: m.Phone,
                 email: m.Email);
-            Log.Info($"{Request.Path} uid=[{m.Uid}] name=[{m.Name}]... =>code=[{code}]");
+            Log.Info($"{Request.Path} uid=[{m.Uid}] name=[{m.Name}]... =>code=[{status}]");
 
-            return Ok(new { code, jwt });
+            return Ok(new {status, jwt});
         }
 
         /// <summary>
@@ -63,9 +65,9 @@ namespace Server.Host.Controllers
         [HttpPost]
         public ActionResult UpdateInfo(string name, string phone, string email)
         {
-            var code = _manager.UpdateUserInfo(name, phone, email);
-            Log.Info($"{Request.Path} name=[{name}] phone=[{phone}] email=[{email}] =>code=[{code}]");
-            return Ok(new { code });
+            var status = _manager.UpdateUserInfo(name, phone, email);
+            Log.Info($"{Request.Path} name=[{name}] phone=[{phone}] email=[{email}] =>code=[{status}]");
+            return Ok(new {status});
         }
 
         /// <summary>
@@ -77,9 +79,9 @@ namespace Server.Host.Controllers
         [HttpPost]
         public ActionResult UpdatePwd(string oldPwd, string newPwd)
         {
-            var code = _manager.UpdateUserPwd(oldPwd, newPwd);
-            Log.Info($"{Request.Path} oldPwd=[{oldPwd}] newPwd=[{newPwd}] =>code=[{code}]");
-            return Ok(new { code });
+            var status = _manager.UpdateUserPwd(oldPwd, newPwd);
+            Log.Info($"{Request.Path} oldPwd=[{oldPwd}] newPwd=[{newPwd}] =>code=[{status}]");
+            return Ok(new {code = status});
         }
 
         [HttpPost]
@@ -90,6 +92,7 @@ namespace Server.Host.Controllers
             Log.Info($"{Request.Path} => uid=[{_manager.User.Id}] ...");
             return Ok(new
             {
+                status = AuthStatus.Ok,
                 uid = _manager.User.Uid,
                 name = _manager.User.Name,
                 phone = _manager.User.Phone,
@@ -97,5 +100,6 @@ namespace Server.Host.Controllers
                 role = _manager.User.Role
             });
         }
+
     }
 }

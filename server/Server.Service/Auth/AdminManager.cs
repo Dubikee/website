@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Server.Shared.Core;
 using Server.Shared.Models;
 using Server.Shared.Results;
-using System.Collections.Generic;
-using static System.String;
 
-namespace Server.Service.AdminService
+namespace Server.Service.Auth
 {
     public class AdminManager : IAdminManager<User>
     {
@@ -30,12 +30,12 @@ namespace Server.Service.AdminService
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public (RequestResult res, User user) FindUser(string uid)
+        public (AuthStatus status, User user) FindUser(string uid)
         {
-            if (IsNullOrWhiteSpace(uid))
-                return (RequestResult.ParamsIsEmpty, null);
+            if (String.IsNullOrWhiteSpace(uid))
+                return (AuthStatus.ParamsIsEmpty, null);
             var u = _db.FindUser(uid);
-            return u == null ? (RequestResult.UIdNotFind, null) : (RequestResult.Ok, u);
+            return u == null ? (AuthStatus.UIdNotFind, null) : (AuthStatus.Ok, u);
         }
 
         /// <inheritdoc />
@@ -44,14 +44,14 @@ namespace Server.Service.AdminService
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public RequestResult DeleteUser(string uid)
+        public AuthStatus DeleteUser(string uid)
         {
             var (res, user) = FindUser(uid);
-            if (res != RequestResult.Ok)
+            if (res != AuthStatus.Ok)
                 return res;
             if (user.Role.ToLower() == "master")
-                return RequestResult.NotAllowed;
-            return _db.DeleteUser(user) ? RequestResult.Ok : RequestResult.UnknownError;
+                return AuthStatus.NotAllowed;
+            return _db.DeleteUser(user) ? AuthStatus.Ok : AuthStatus.UnknownError;
         }
 
         /// <inheritdoc />
@@ -65,13 +65,13 @@ namespace Server.Service.AdminService
         /// <param name="phone"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        public RequestResult AddUser(string uid, string name, string pwd, string role, string phone, string email)
+        public AuthStatus AddUser(string uid, string name, string pwd, string role, string phone, string email)
         {
-            if (IsNullOrWhiteSpace(uid) || IsNullOrWhiteSpace(name) || IsNullOrWhiteSpace(pwd) ||
-                IsNullOrWhiteSpace(role))
-                return RequestResult.ParamsIsEmpty;
+            if (String.IsNullOrWhiteSpace(uid) || String.IsNullOrWhiteSpace(name) || String.IsNullOrWhiteSpace(pwd) ||
+                String.IsNullOrWhiteSpace(role))
+                return AuthStatus.ParamsIsEmpty;
             if (_db.FindUser(uid) != null)
-                return RequestResult.UidHasExist;
+                return AuthStatus.UidHasExist;
             _db.AddUser(new User
             (
                 uid: uid,
@@ -81,7 +81,7 @@ namespace Server.Service.AdminService
                 phone: phone,
                 email: email
             ));
-            return RequestResult.Ok;
+            return AuthStatus.Ok;
         }
 
         /// <inheritdoc />
@@ -95,23 +95,23 @@ namespace Server.Service.AdminService
         /// <param name="role"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        public RequestResult EditUser(string targetUid, string name, string phone, string email, string role,
+        public AuthStatus EditUser(string targetUid, string name, string phone, string email, string role,
             string pwd)
         {
             var (res, user) = FindUser(targetUid);
-            if (res != RequestResult.Ok)
+            if (res != AuthStatus.Ok)
                 return res;
-            if (IsNullOrWhiteSpace(name))
+            if (String.IsNullOrWhiteSpace(name))
                 user.Name = name;
-            if (IsNullOrWhiteSpace(phone))
+            if (String.IsNullOrWhiteSpace(phone))
                 user.Phone = phone;
-            if (IsNullOrWhiteSpace(email))
+            if (String.IsNullOrWhiteSpace(email))
                 user.Email = email;
-            if (IsNullOrWhiteSpace(role))
+            if (String.IsNullOrWhiteSpace(role))
                 user.Role = role;
-            if (!IsNullOrWhiteSpace(pwd))
+            if (!String.IsNullOrWhiteSpace(pwd))
                 user.PwHash = User.MakePwdHash(pwd);
-            return RequestResult.Ok;
+            return AuthStatus.Ok;
         }
     }
 }

@@ -23,17 +23,22 @@ namespace Server.Host
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddJwtAuth(opt =>
-            {
-                opt.Key = Configuration["JwtOptions:Key"];
-                opt.Audience = Configuration["JwtOptions:Audience"];
-                opt.Issuer = Configuration["JwtOptions:Audience"];
-                opt.Expires = TimeSpan.FromDays(30);
-            }).AddUserDbContext(opt =>
-            {
-                opt.UserDbPath = Configuration["DbOptions:UserDbPath"];
-                opt.CollectionName = Configuration["DbOptions:CollectionName"];
-            }).AddAdminService();
+            services
+                .AddAdminService()
+                .AddWhutService()
+                .AddJwtAuth(opt =>
+                {
+                    opt.Key = Configuration["JwtOptions:Key"];
+                    opt.Audience = Configuration["JwtOptions:Audience"];
+                    opt.Issuer = Configuration["JwtOptions:Audience"];
+                    opt.Expires = TimeSpan.FromDays(30);
+                })
+                .AddUserDbContext(opt =>
+                {
+                    opt.DbPath = Configuration["DbOptions:DbPath"];
+                    opt.UserCollectionName = Configuration["DbOptions:UserCollectionName"];
+                    opt.WhutCollectionName = Configuration["DbOptions:WhutCollectionName"];
+                });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory log)

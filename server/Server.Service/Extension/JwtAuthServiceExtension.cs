@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
-using Server.Service.AccountService;
 using Server.Shared.Core;
 using Server.Shared.Models;
 using Server.Shared.Options;
 using System;
 using System.Text;
+using Server.Service.Auth;
 
 namespace Server.Service.Extension
 {

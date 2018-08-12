@@ -1,6 +1,6 @@
 ﻿namespace Server.Shared.Results
 {
-    public enum RequestResult
+    public enum AuthStatus
     {
         /// <summary>
         /// 0~ ，Ok

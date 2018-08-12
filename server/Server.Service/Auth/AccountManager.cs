@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using Server.Shared.Core;
 using Server.Shared.Models;
 using Server.Shared.Options;
 using Server.Shared.Results;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using static System.String;
-namespace Server.Service.AccountService
+
+namespace Server.Service.Auth
 {
     public class AccountManager : IAccountManager<User>
     {
@@ -47,22 +47,22 @@ namespace Server.Service.AccountService
         /// <param name="uid"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        public (RequestResult res, string jwt) Login(string uid, string pwd)
+        public (AuthStatus status, string jwt) Login(string uid, string pwd)
         {
             // 空值检查
-            if (IsNullOrWhiteSpace(uid) || IsNullOrWhiteSpace(pwd))
-                return (RequestResult.ParamsIsEmpty, null);
+            if (String.IsNullOrWhiteSpace(uid) || String.IsNullOrWhiteSpace(pwd))
+                return (AuthStatus.ParamsIsEmpty, null);
 
             // 判断Uid是否存在
             var u = _db.FindUser(uid);
             if (u == null)
-                return (RequestResult.UIdNotFind, null);
+                return (AuthStatus.UIdNotFind, null);
 
             // 检查密码是否正确
             if (!User.MakePwdHash(pwd).SequenceEqual(u.PwHash))
-                return (RequestResult.PasswordWrong, null);
+                return (AuthStatus.PasswordWrong, null);
             _user = u;
-            return (RequestResult.Ok, MakeJwt(uid, u.Role));
+            return (AuthStatus.Ok, MakeJwt(uid, u.Role));
         }
 
         public bool Logout()
@@ -80,7 +80,7 @@ namespace Server.Service.AccountService
         /// <param name="phone"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        public (RequestResult res, string jwt) Register(
+        public (AuthStatus status, string jwt) Register(
             string uid,
             string name,
             string pwd,
@@ -88,28 +88,28 @@ namespace Server.Service.AccountService
             string email = null)
         {
             // 空值检查
-            if (IsNullOrWhiteSpace(uid) || IsNullOrWhiteSpace(name) || IsNullOrWhiteSpace(pwd))
-                return (RequestResult.ParamsIsEmpty, null);
+            if (String.IsNullOrWhiteSpace(uid) || String.IsNullOrWhiteSpace(name) || String.IsNullOrWhiteSpace(pwd))
+                return (AuthStatus.ParamsIsEmpty, null);
 
             // Uid长度检查
             if (uid.Length < 6)
-                return (RequestResult.UidTooShort, null);
+                return (AuthStatus.UidTooShort, null);
             // Uid数字检查，只能包含数字
             if (!uid.All(c => (c >= '0' && c <= '9')))
-                return (RequestResult.UidIsNotNumbers, null);
+                return (AuthStatus.UidIsNotNumbers, null);
 
             // 密码规范检查
             if (pwd.Length < 8)
-                return (RequestResult.PasswordTooShort, null);
+                return (AuthStatus.PasswordTooShort, null);
             var (hasLetter, hasNumber) = CheckPwd(pwd);
             if (!hasNumber)
-                return (RequestResult.PasswordNoNumbers, null);
+                return (AuthStatus.PasswordNoNumbers, null);
             if (!hasLetter)
-                return (RequestResult.PasswordNoLetters, null);
+                return (AuthStatus.PasswordNoLetters, null);
 
             // 判断是否已存在Uid
             if (null != _db.FindUser(uid))
-                return (RequestResult.UidHasExist, null);
+                return (AuthStatus.UidHasExist, null);
 
             // 符合条件，创建用户，分发Jwt 
             _db.AddUser(new User
@@ -121,7 +121,7 @@ namespace Server.Service.AccountService
                 phone: phone,
                 email: email
             ));
-            return (RequestResult.Ok, MakeJwt(uid, RoleTypes.Vistor));
+            return (AuthStatus.Ok, MakeJwt(uid, RoleTypes.Vistor));
         }
 
         /// <inheritdoc />
@@ -129,11 +129,11 @@ namespace Server.Service.AccountService
         /// 移除用户
         /// </summary>
         /// <returns></returns>
-        public RequestResult DeleteUser()
+        public AuthStatus DeleteUser()
         {
             if (User == null)
-                return RequestResult.TokenExpired;
-            return _db.DeleteUser(User) ? RequestResult.Ok : RequestResult.UnknownError;
+                return AuthStatus.TokenExpired;
+            return _db.DeleteUser(User) ? AuthStatus.Ok : AuthStatus.UnknownError;
         }
 
         /// <inheritdoc />
@@ -144,22 +144,22 @@ namespace Server.Service.AccountService
         /// <param name="phone"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        public RequestResult UpdateUserInfo(string name, string phone, string email)
+        public AuthStatus UpdateUserInfo(string name, string phone, string email)
         {
             if (User == null)
-                return RequestResult.TokenExpired;
-            var n = IsNullOrWhiteSpace(name);
-            var p = IsNullOrWhiteSpace(phone);
-            var e = IsNullOrWhiteSpace(email);
+                return AuthStatus.TokenExpired;
+            var n = String.IsNullOrWhiteSpace(name);
+            var p = String.IsNullOrWhiteSpace(phone);
+            var e = String.IsNullOrWhiteSpace(email);
             if (n && p && e)
-                return RequestResult.ParamsIsEmpty;
+                return AuthStatus.ParamsIsEmpty;
             if (!n)
                 User.Name = name;
             if (!p)
                 User.Phone = phone;
             if (!e)
                 User.Email = email;
-            return _db.UpdateUser(User) ? RequestResult.Ok : RequestResult.UnknownError;
+            return _db.UpdateUser(User) ? AuthStatus.Ok : AuthStatus.UnknownError;
         }
 
         /// <inheritdoc />
@@ -169,27 +169,27 @@ namespace Server.Service.AccountService
         /// <param name="oldPwd"></param>
         /// <param name="newPwd"></param>
         /// <returns></returns>
-        public RequestResult UpdateUserPwd(string oldPwd, string newPwd)
+        public AuthStatus UpdateUserPwd(string oldPwd, string newPwd)
         {
             // 空值检查
-            if (IsNullOrWhiteSpace(oldPwd) || IsNullOrWhiteSpace(newPwd))
-                return RequestResult.ParamsIsEmpty;
+            if (String.IsNullOrWhiteSpace(oldPwd) || String.IsNullOrWhiteSpace(newPwd))
+                return AuthStatus.ParamsIsEmpty;
             // 长度检查
             if (newPwd.Length < 8)
-                return RequestResult.NewPasswordTooShort;
+                return AuthStatus.NewPasswordTooShort;
             var (hasLetter, hasNumber) = CheckPwd(newPwd);
             // 数字检查
             if (!hasNumber)
-                return RequestResult.NewPasswordNoNumbers;
+                return AuthStatus.NewPasswordNoNumbers;
             // 字母检查
             if (!hasLetter)
-                return RequestResult.NewPasswordNoLetters;
+                return AuthStatus.NewPasswordNoLetters;
             // 验证旧密码是否正确
             if (!User.MakePwdHash(oldPwd).SequenceEqual(User.PwHash))
-                return RequestResult.PasswordWrong;
+                return AuthStatus.PasswordWrong;
             User.PwHash = User.MakePwdHash(newPwd);
             _db.UpdateUser(User);
-            return RequestResult.Ok;
+            return AuthStatus.Ok;
         }
 
         /// <summary>

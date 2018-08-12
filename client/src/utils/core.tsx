@@ -3,12 +3,16 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { RouteProps, RedirectProps, Switch, Route, Redirect } from "react-router";
 import { BrowserRouter } from "react-router-dom";
+import { ResponseData } from './../common/HttpResult';
+import Axios, { AxiosRequestConfig } from 'axios';
+import * as qs from 'querystring';
+
 export let PComponent = React.PureComponent;
+
 export { React }
 
-export let bootstrap = () => {
-	return new Bootstrap();
-};
+export let request = (url: string) => new HttpClient(url)
+export let bootstrap = () => new Bootstrap();
 
 export interface IBootstrap {
 	with(App: React.ComponentClass): IBootstrap;
@@ -24,16 +28,16 @@ export /**
  * @param {RedirectProps[]} [redirect]
  * @returns
  */
-let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => {
-	return (
-		<BrowserRouter basename="/">
-			<Switch>
-				{routes.map((x, i) => <Route key={i} {...x} />)}
-				{redirect ? redirect.map((x, i) => <Redirect key={i} {...x} />) : null}
-			</Switch>
-		</BrowserRouter>
-	);
-};
+	let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => {
+		return (
+			<BrowserRouter basename="/">
+				<Switch>
+					{routes.map((x, i) => <Route key={i} {...x} />)}
+					{redirect ? redirect.map((x, i) => <Redirect key={i} {...x} />) : null}
+				</Switch>
+			</BrowserRouter>
+		);
+	};
 
 class Bootstrap implements IBootstrap {
 
@@ -64,7 +68,7 @@ class Bootstrap implements IBootstrap {
 		this.works.push(work);
 		return this;
 	}
-	
+
 
 	/**
 	 * 设置启动挂载点
@@ -84,5 +88,86 @@ class Bootstrap implements IBootstrap {
 		let { works, App, ele } = this;
 		ReactDOM.render(<App />, ele);
 		works.forEach(f => f());
+	}
+}
+
+
+/**
+ * 发送Http请求的类
+ *
+ * @export
+ * @class HttpClient
+ */
+export class HttpClient {
+	private headers: any;
+	private data: any;
+	constructor(private url: string) {
+		this.url = url;
+	}
+	/**
+	 * 添加头
+	 *
+	 * @param {string} key
+	 * @param {string} value
+	 * @memberof HttpClient
+	 */
+	public header(key: string, value: string) {
+		this.headers = { [key]: value, ...this.headers }
+	}
+	/**
+	 * 添加表单数据
+	 *
+	 * @param {string} key
+	 * @param {string} value
+	 * @memberof HttpClient
+	 */
+	public form(key: string, value: string) {
+		this.data = { [key]: value, ...this.data }
+	}
+	/**
+	 * 设置表单数据
+	 *
+	 * @param {*} data
+	 * @memberof HttpClient
+	 */
+	public forms(data: any) {
+		this.data = data
+	}
+	/**
+	 *	设置Jwt验证
+	 *
+	 * @param {string} jwt
+	 * @memberof HttpClient
+	 */
+	public auth(jwt: string) {
+		this.headers = { 'Authorization': 'Bearer ' + jwt, ...this.headers }
+	}
+	/**
+	 * 发起Get请求
+	 *
+	 * @template T
+	 * @returns
+	 * @memberof HttpClient
+	 */
+	public async get<T extends ResponseData>() {
+		let config: AxiosRequestConfig = {}
+		if (this.headers)
+			config.headers = this.headers;
+		if (this.data)
+			config.params = this.data;
+		return Axios.get<T>(this.url, config)
+	}
+	/**
+	 * 发起post请求
+	 *
+	 * @template T
+	 * @returns
+	 * @memberof HttpClient
+	 */
+	public async post<T extends ResponseData>() {
+		let config: AxiosRequestConfig = {}
+		if (this.headers)
+			config.headers = this.headers;
+		return Axios.post<T>(this.url, qs.stringify(this.data), config)
 	}
 }
