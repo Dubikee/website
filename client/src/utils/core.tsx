@@ -3,7 +3,6 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { RouteProps, RedirectProps, Switch, Route, Redirect } from "react-router";
 import { BrowserRouter } from "react-router-dom";
-import { ResponseData } from './../common/HttpResult';
 import Axios, { AxiosRequestConfig } from 'axios';
 import * as qs from 'querystring';
 
@@ -149,7 +148,7 @@ export class HttpClient {
 	 * @returns
 	 * @memberof HttpClient
 	 */
-	public async get<T extends ResponseData>() {
+	public async get<T>() {
 		let config: AxiosRequestConfig = {}
 		if (this.headers)
 			config.headers = this.headers;
@@ -164,7 +163,7 @@ export class HttpClient {
 	 * @returns
 	 * @memberof HttpClient
 	 */
-	public async post<T extends ResponseData>() {
+	public async post<T>() {
 		let config: AxiosRequestConfig = {}
 		if (this.headers)
 			config.headers = this.headers;

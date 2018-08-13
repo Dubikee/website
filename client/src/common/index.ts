@@ -1,5 +1,5 @@
-import { HttpResult } from "./HttpResult";
+import { AuthStatus } from "./Status";
 import { User } from './User';
 
 
-export { HttpResult, User };
+export { AuthStatus, User };

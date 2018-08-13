@@ -12,6 +12,6 @@ namespace Server.Shared.Core
         string Pwd { get; set; }
         string[,] TimeTable { get; set; }
         IEnumerable<ScoreInfo> Scores { get; set; }
-        GPARinks Rinks { get; set; }
+        GpaRinks Rinks { get; set; }
     }
 }

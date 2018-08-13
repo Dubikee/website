@@ -68,12 +68,13 @@ namespace Server.Service.Whut
 
             if (Student == null)
             {
-                _db.AddStudent(new WhutStudent
+                var isAdded = _db.AddStudent(new WhutStudent
                 {
                     StudentId = studentId,
-                    Pwd = pwd
+                    Pwd = pwd,
+                    Uid = _manager.User.Uid
                 });
-                return WhutStatus.CreateStudent;
+                return isAdded ? WhutStatus.CreateStudent : WhutStatus.UnknownError;
             }
 
             Student.StudentId = studentId;
@@ -109,6 +110,26 @@ namespace Server.Service.Whut
                     return WhutStatus.PwdWrong;
                 CerLogin = cerLogin;
                 return WhutStatus.Ok;
+            }
+            catch
+            {
+                return WhutStatus.WhutServerCrashed;
+            }
+        }
+
+        public async Task<WhutStatus> TryLogin(string studentId, string pwd)
+        {
+            if (IsNullOrWhiteSpace(studentId) || IsNullOrWhiteSpace(pwd))
+                return WhutStatus.ParamsIsEmpty;
+            try
+            {
+                var res = await WhutClient.Request(LoginUrl)
+                    .Form("userName", studentId)
+                    .Form("password", pwd)
+                    .Form("type", "xs")
+                    .PostAsync();
+                var cerLogin = res.Headers.GetCookie("CERLOGIN");
+                return IsNullOrWhiteSpace(cerLogin) ? WhutStatus.PwdWrong : WhutStatus.Ok;
             }
             catch
             {

@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Server.Shared.Core.Database;
 using Server.Shared.Core.Services;
-using Server.Shared.Models;
+using Server.Shared.Models.Auth;
 using Server.Shared.Results;
 using System;
 using System.Collections.Generic;
-using Server.Shared.Models.Auth;
 
 namespace Server.Service.Auth
 {
@@ -34,7 +33,7 @@ namespace Server.Service.Auth
         /// <returns></returns>
         public (AuthStatus status, User user) FindUser(string uid)
         {
-            if (String.IsNullOrWhiteSpace(uid))
+            if (string.IsNullOrWhiteSpace(uid))
                 return (AuthStatus.ParamsIsEmpty, null);
             var u = _db.FindUser(uid);
             return u == null ? (AuthStatus.UIdNotFind, null) : (AuthStatus.Ok, u);

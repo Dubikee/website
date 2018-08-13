@@ -20,11 +20,19 @@ namespace Server.Host.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> Validate(string studentId, string pwd)
+        {
+            var status = await _whut.TryLogin(studentId, pwd);
+            Log.Info($"{Request.Path} 学号=[{studentId}] 密码=[{pwd}] => status=[{status}]");
+            return Ok(new {status});
+        }
+
+        [HttpPost]
         public IActionResult UpdateInfo(string studentId, string pwd)
         {
             var status = _whut.UpdateInfo(studentId, pwd);
             Log.Info($"{Request.Path} 学号=[{studentId}] 密码=[{pwd}] => status=[{status}]");
-            return Ok(status);
+            return Ok(new {status});
         }
 
 

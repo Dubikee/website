@@ -1,17 +1,11 @@
-
-export interface ResponseData {
-	status: HttpResult;
-}
-
-
 /**
  * 与服务端一致
  *
  * @export
  * @enum {number}
  */
-export enum HttpResult {
-
+export enum AuthStatus
+{
 	/// <summary>
 	/// 0~ ，Ok
 	/// </summary>

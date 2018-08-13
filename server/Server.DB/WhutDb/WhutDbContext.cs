@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using LiteDB;
-using Server.Shared.Core;
+﻿using LiteDB;
 using Server.Shared.Core.Database;
-using Server.Shared.Models;
 using Server.Shared.Models.Whut;
 using Server.Shared.Options;
+using System.Collections.Generic;
 
 namespace Server.DB.WhutDb
 {
@@ -29,7 +25,12 @@ namespace Server.DB.WhutDb
 
         public bool AddStudent(WhutStudent student)
         {
-            return _students.Insert(student);
+            if (string.IsNullOrWhiteSpace(student.Uid))
+            {
+                return false;
+            }
+            _students.Insert(student);
+            return true;
         }
 
         public bool DeleteStudent(string uid)

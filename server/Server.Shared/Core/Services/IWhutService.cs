@@ -5,9 +5,10 @@ namespace Server.Shared.Core.Services
 {
     public interface IWhutService<T> where T : IWhutStudent
     {
-        WhutStatus UpdateInfo(string studentId, string pwd);
         T Student { get; }
         Task<WhutStatus> TryLogin();
+        WhutStatus UpdateInfo(string studentId, string pwd);
+        Task<WhutStatus> TryLogin(string studentId, string pwd);
         Task<WhutStatus> RefreshTimeTable();
         Task<WhutStatus> RefreshScores();
         Task<int> Evaluate();

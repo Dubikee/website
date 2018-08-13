@@ -77,7 +77,7 @@ namespace Server.Service.Whut
                     BestScore = arr[8],
                     FirstScore = arr[9],
                     IsRetrain = arr[12],
-                    GPA = arr[13]
+                    Gpa = arr[13]
                 };
             });
         }
@@ -101,7 +101,7 @@ namespace Server.Service.Whut
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        public static async Task<GPARinks> ParseRinksAsync(this string html)
+        public static async Task<GpaRinks> ParseRinksAsync(this string html)
         {
             if (string.IsNullOrWhiteSpace(html)) return default;
             var doc = await new HtmlParser().ParseAsync(html);
@@ -110,10 +110,10 @@ namespace Server.Service.Whut
                 .Where(x => x != null)
                 .ToArray();
             return arr.Length == 5
-                ? new GPARinks
+                ? new GpaRinks
                 {
-                    PureGPA = arr[0],
-                    TotalGPA = arr[1],
+                    PureGpa = arr[0],
+                    TotalGpa = arr[1],
                     ClassRink = arr[2],
                     GradeRink = arr[4]
                 }
