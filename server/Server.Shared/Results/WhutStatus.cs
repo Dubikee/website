@@ -4,6 +4,11 @@
     {
         Ok,
         PwdWrong,
-        Failed
+        StudentNotFind,
+        ParamsIsEmpty,
+        UserNotFind,
+        WhutServerCrashed,
+        UnknownError,
+        CreateStudent
     }
 }

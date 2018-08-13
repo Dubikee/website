@@ -60,6 +60,6 @@
         /// 学分绩点
         /// </summary>
         /// <value></value>
-        public string GPA { get; set; }
+        public string Gpa { get; set; }
     }
 }

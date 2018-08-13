@@ -1,17 +1,16 @@
 ﻿namespace Server.Shared.Models.Whut
 {
-    public class GPARinks
+    public class GpaRinks
     {
         /// <summary>
         /// 必修课绩点
         /// </summary>
-        public string PureGPA { get; set; }
+        public string PureGpa { get; set; }
 
-        /*---其他信息---*/
         /// <summary>
         /// 所有课程的绩点
         /// </summary>
-        public string TotalGPA { get; set; }
+        public string TotalGpa { get; set; }
 
         /// <summary>
         /// 班级排名

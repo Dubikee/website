@@ -5,12 +5,33 @@ namespace Server.Shared.Models.Whut
 {
     public class WhutStudent : IWhutStudent
     {
+        /// <summary>
+        /// 数据库主键
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 用户账号
+        /// </summary>
         public string Uid { get; set; }
+        /// <summary>
+        /// 学号
+        /// </summary>
         public string StudentId { get; set; }
+        /// <summary>
+        /// 密码
+        /// </summary>
         public string Pwd { get; set; }
+        /// <summary>
+        /// 课表
+        /// </summary>
         public string[,] TimeTable { get; set; }
+        /// <summary>
+        /// 分数
+        /// </summary>
         public IEnumerable<ScoreInfo> Scores { get; set; }
-        public GPARinks Rinks { get; set; }
+        /// <summary>
+        /// 绩点,排名
+        /// </summary>
+        public GpaRinks Rinks { get; set; }
     }
 }

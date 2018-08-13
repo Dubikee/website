@@ -4,6 +4,9 @@ using Server.Shared.Models.Whut;
 using Server.Shared.Results;
 using System;
 using System.Threading.Tasks;
+using AngleSharp.Dom.Events;
+using Server.Shared.Models.Auth;
+using static System.String;
 
 namespace Server.Service.Whut
 {
@@ -44,22 +47,56 @@ namespace Server.Service.Whut
         /// </summary>
         private string CerLogin { get; set; }
 
-        private readonly IWhutDbContext<WhutStudent> _db;
+        private WhutStudent _whutStudent;
 
-        public WhutService(IWhutDbContext<WhutStudent> db)
+        private readonly IWhutDbContext<WhutStudent> _db;
+        private readonly IAccountManager<User> _manager;
+
+        public WhutService(IWhutDbContext<WhutStudent> db, IAccountManager<User> manager)
         {
             _db = db;
+            _manager = manager;
         }
 
         public WhutStatus UpdateInfo(string studentId, string pwd)
         {
-            throw new NotImplementedException();
+            if (_manager.User == null)
+                return WhutStatus.UserNotFind;
+
+            if (IsNullOrWhiteSpace(studentId) || IsNullOrWhiteSpace(pwd))
+                return WhutStatus.ParamsIsEmpty;
+
+            if (Student == null)
+            {
+                _db.AddStudent(new WhutStudent
+                {
+                    StudentId = studentId,
+                    Pwd = pwd
+                });
+                return WhutStatus.CreateStudent;
+            }
+
+            Student.StudentId = studentId;
+            Student.Pwd = pwd;
+            _db.UpdateStudent(Student);
+            return WhutStatus.Ok;
         }
 
-        public WhutStudent Student { get; }
+        public WhutStudent Student
+        {
+            get
+            {
+                if (_whutStudent != null) return _whutStudent;
+                if (_manager.User == null) return null;
+                _whutStudent = _db.FindStudent(_manager.User.Uid);
+                return _whutStudent;
+            }
+        }
 
         public async Task<WhutStatus> TryLogin()
         {
+            if (Student == null)
+                return WhutStatus.StudentNotFind;
             try
             {
                 var res = await WhutClient.Request(LoginUrl)
@@ -68,19 +105,21 @@ namespace Server.Service.Whut
                     .Form("type", "xs")
                     .PostAsync();
                 var cerLogin = res.Headers.GetCookie("CERLOGIN");
-                if (string.IsNullOrWhiteSpace(cerLogin))
+                if (IsNullOrWhiteSpace(cerLogin))
                     return WhutStatus.PwdWrong;
                 CerLogin = cerLogin;
                 return WhutStatus.Ok;
             }
             catch
             {
-                return WhutStatus.Failed;
+                return WhutStatus.WhutServerCrashed;
             }
         }
 
         public async Task<WhutStatus> RefreshTimeTable()
         {
+            if (Student == null)
+                return WhutStatus.StudentNotFind;
             try
             {
                 var html = await WhutClient.Request(LoginUrl)
@@ -89,31 +128,36 @@ namespace Server.Service.Whut
                     .Form("type", "xs")
                     .PostStringAsync();
                 var timetable = await html.ParseTimeTable();
+                if (timetable == null)
+                    return WhutStatus.PwdWrong;
+                Student.TimeTable = timetable;
                 return WhutStatus.Ok;
             }
             catch
             {
-                return WhutStatus.Failed;
+                return WhutStatus.WhutServerCrashed;
             }
         }
 
         public async Task<WhutStatus> RefreshScores()
         {
+            if (Student == null)
+                return WhutStatus.StudentNotFind;
             try
             {
                 //检查登陆凭证是否为空
-                if (string.IsNullOrWhiteSpace(CerLogin))
+                if (IsNullOrWhiteSpace(CerLogin))
                 {
                     //为空重新登陆
                     var r = await TryLogin();
                     if (r != WhutStatus.Ok)
-                        return default;
+                        return r;
                 }
 
                 //得到SessionId和位置
                 var (sessionid, location) = await GetSessionAndLocation(CerLogin, ScoreEntryUrl);
                 if (sessionid == null || location == null)
-                    return default;
+                    return WhutStatus.UnknownError;
 
                 //分数查询主页面
                 var html = await WhutClient.Request(location)
@@ -122,8 +166,8 @@ namespace Server.Service.Whut
                     .GetStringAsync();
                 //学科学分查询
                 var snkey = await html.ParseSnkeyAsync();
-                if (string.IsNullOrWhiteSpace(snkey))
-                    return default;
+                if (IsNullOrWhiteSpace(snkey))
+                    return WhutStatus.PwdWrong;
                 html = await WhutClient.Request(ScoreQueryUrl)
                     .Cookie(sessionid)
                     .Form("numPerPage", "100")
@@ -131,20 +175,24 @@ namespace Server.Service.Whut
                     .Form("snkey", snkey)
                     .Form("xh", Student.StudentId)
                     .PostStringAsync();
-                var infos = await html.ParseScoresAsync();
-                if (infos == null)
-                    return default;
+                var scores = await html.ParseScoresAsync();
+                if (scores == null)
+                    return WhutStatus.WhutServerCrashed;
 
                 //绩点及排名查询查询请求
                 html = await WhutClient.Request(RinkQueryUrl)
                     .Cookie(sessionid)
                     .GetStringAsync();
                 var rinks = await html.ParseRinksAsync();
+                if (rinks == null)
+                    return WhutStatus.WhutServerCrashed;
+                Student.Scores = scores;
+                Student.Rinks = rinks;
                 return WhutStatus.Ok;
             }
             catch
             {
-                return WhutStatus.Ok;
+                return WhutStatus.WhutServerCrashed;
             }
 
         }

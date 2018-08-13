@@ -13,7 +13,7 @@ namespace Server.Shared.Options
         public string Key { get; set; }
 
         /// <summary>
-        /// 颁发这者
+        /// 颁发者
         /// </summary>
         public string Issuer { get; set; }
 

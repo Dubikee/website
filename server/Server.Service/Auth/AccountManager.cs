@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using Server.Shared.Core.Database;
 using Server.Shared.Core.Services;
-using Server.Shared.Models;
+using Server.Shared.Models.Auth;
 using Server.Shared.Options;
 using Server.Shared.Results;
 using System;
@@ -10,7 +10,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using Server.Shared.Models.Auth;
 
 namespace Server.Service.Auth
 {
@@ -22,6 +21,10 @@ namespace Server.Service.Auth
         private readonly IUserDbContext<User> _db;
         public static readonly string UidClaimType = "www.luokun.xyz/uid";
 
+        /// <inheritdoc />
+        /// <summary>
+        /// 当前用户
+        /// </summary>
         public User User
         {
             get
@@ -67,6 +70,10 @@ namespace Server.Service.Auth
             return (AuthStatus.Ok, MakeJwt(uid, u.Role));
         }
 
+        /// <summary>
+        /// 登出
+        /// </summary>
+        /// <returns></returns>
         public bool Logout()
         {
             throw new NotImplementedException();
@@ -174,7 +181,7 @@ namespace Server.Service.Auth
         public AuthStatus UpdateUserPwd(string oldPwd, string newPwd)
         {
             // 空值检查
-            if (String.IsNullOrWhiteSpace(oldPwd) || String.IsNullOrWhiteSpace(newPwd))
+            if (string.IsNullOrWhiteSpace(oldPwd) || string.IsNullOrWhiteSpace(newPwd))
                 return AuthStatus.ParamsIsEmpty;
             // 长度检查
             if (newPwd.Length < 8)
