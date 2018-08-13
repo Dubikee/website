@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Server.Service.Whut;
-using Server.Shared.Core;
-using Server.Shared.Options;
+using Server.Shared.Core.Services;
+using Server.Shared.Models.Whut;
 
 namespace Server.Service.Extension
 {
@@ -17,7 +14,7 @@ namespace Server.Service.Extension
         /// <returns></returns>
         public static IServiceCollection AddWhutService(this IServiceCollection services)
         {
-            return services.AddScoped<IWhutService, WhutService>();
+            return services.AddScoped<IWhutService<WhutStudent>, WhutService>();
         }
     }
 }

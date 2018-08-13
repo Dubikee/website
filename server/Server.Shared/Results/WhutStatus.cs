@@ -1,4 +1,4 @@
-﻿namespace Server.Whut.Models
+﻿namespace Server.Shared.Results
 {
     public enum WhutStatus
     {

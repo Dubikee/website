@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Server.Whut.Core
+namespace Server.Service.Whut
 {
     public class WhutClient
     {

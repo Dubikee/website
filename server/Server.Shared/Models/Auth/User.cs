@@ -1,8 +1,8 @@
-﻿using Server.Shared.Core;
-using System.Security.Cryptography;
-using static System.Text.Encoding;
+﻿using System.Security.Cryptography;
+using System.Text;
+using Server.Shared.Core;
 
-namespace Server.Shared.Models
+namespace Server.Shared.Models.Auth
 {
     public class User : IUser
     {
@@ -45,6 +45,6 @@ namespace Server.Shared.Models
         /// </summary>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        public static byte[] MakePwdHash(string pwd) => MD5.Create().ComputeHash(UTF8.GetBytes(pwd));
+        public static byte[] MakePwdHash(string pwd) => MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(pwd));
     }
 }

@@ -1,14 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
+using Server.Shared.Core.Database;
+using Server.Shared.Core.Services;
+using Server.Shared.Models;
+using Server.Shared.Options;
+using Server.Shared.Results;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.Tokens;
-using Server.Shared.Core;
-using Server.Shared.Models;
-using Server.Shared.Options;
-using Server.Shared.Results;
+using Server.Shared.Models.Auth;
 
 namespace Server.Service.Auth
 {

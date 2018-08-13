@@ -1,4 +1,4 @@
-﻿namespace Server.Whut.Models
+﻿namespace Server.Shared.Models.Whut
 {
     public class ScoreInfo
     {

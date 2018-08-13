@@ -1,13 +1,13 @@
-﻿using System;
+﻿using AngleSharp.Extensions;
+using AngleSharp.Parser.Html;
+using Server.Shared.Models.Whut;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using AngleSharp.Extensions;
-using AngleSharp.Parser.Html;
-using Server.Whut.Models;
 
-namespace Server.Whut.Extension
+namespace Server.Service.Whut
 {
     public static class WhutUtils
     {

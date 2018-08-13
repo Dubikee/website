@@ -1,54 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Server.Shared.Core.Database;
+using Server.Shared.Core.Services;
+using Server.Shared.Models.Whut;
+using Server.Shared.Results;
+using System;
 using System.Threading.Tasks;
-using Server.Shared.Core;
-using Server.Shared.Models;
-using Server.Whut.Core;
-using Server.Whut.Extension;
-using Server.Whut.Models;
 
 namespace Server.Service.Whut
 {
-    public class WhutService : IWhutService
+    public class WhutService : IWhutService<WhutStudent>
     {
-        private WhutStudent _whutStudent;
-        private StudentInfo _studentInfo;
-        private readonly IAccountManager<User> _manager;
-        private readonly IWhutDbContext _db;
+        /// <summary>
+        /// 登陆地址
+        /// </summary>
+        public static readonly string LoginUrl = "http://sso.jwc.whut.edu.cn/Certification//login.do";
 
-        public StudentInfo StudentInfo
-        {
-            get
-            {
-                if (_studentInfo != null) return _studentInfo;
-                if (_manager.User == null) return null;
-                _studentInfo = _db.FindStudent(_manager.User.Uid);
-                return _studentInfo;
-            }
-        }
+        /// <summary>
+        /// 分数入口地址
+        /// </summary>
+        public static readonly string ScoreEntryUrl = "http://202.114.90.180/Score";
 
-        private WhutStudent WhutStudent
-        {
-            get
-            {
-                if (_whutStudent != null) return _whutStudent;
-                if (StudentInfo == null) return null;
-                try
-                {
-                    _whutStudent = new WhutStudent(StudentInfo.StudentId, StudentInfo.Pwd);
-                    return _whutStudent;
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-        }
+        /// <summary>
+        /// 学科分数查询地址
+        /// </summary>
+        public static readonly string ScoreQueryUrl = "http://202.114.90.180/Score/lscjList.do";
 
-        public WhutService(IAccountManager<User> manager, IWhutDbContext db)
+        /// <summary>
+        /// 成绩排名查询地址
+        /// </summary>
+        public static readonly string RinkQueryUrl = "http://202.114.90.180/Score/xftjList1.do";
+
+        /// <summary>
+        /// 评教模块入口
+        /// </summary>
+        public static readonly string EotEntryUrl = "http://202.114.90.180/EOT";
+
+        /// <summary>
+        /// 评教列表
+        /// </summary>
+        public static readonly string EotListUrl = "http://202.114.90.180/EOT/pjkcList.do";
+
+        /// <summary>
+        /// 登陆凭证
+        /// </summary>
+        private string CerLogin { get; set; }
+
+        private readonly IWhutDbContext<WhutStudent> _db;
+
+        public WhutService(IWhutDbContext<WhutStudent> db)
         {
-            _manager = manager;
             _db = db;
         }
 
@@ -57,36 +56,137 @@ namespace Server.Service.Whut
             throw new NotImplementedException();
         }
 
+        public WhutStudent Student { get; }
+
         public async Task<WhutStatus> TryLogin()
         {
-            if (WhutStudent == null)
-                throw new Exception("Student不可为空");
-            return await WhutStudent.LoginAsync();
+            try
+            {
+                var res = await WhutClient.Request(LoginUrl)
+                    .Form("userName", Student.StudentId)
+                    .Form("password", Student.Pwd)
+                    .Form("type", "xs")
+                    .PostAsync();
+                var cerLogin = res.Headers.GetCookie("CERLOGIN");
+                if (string.IsNullOrWhiteSpace(cerLogin))
+                    return WhutStatus.PwdWrong;
+                CerLogin = cerLogin;
+                return WhutStatus.Ok;
+            }
+            catch
+            {
+                return WhutStatus.Failed;
+            }
         }
 
         public async Task<WhutStatus> RefreshTimeTable()
         {
-            if (WhutStudent == null)
-                throw new Exception("Student不可为空");
-            var timeTable = await WhutStudent.GetTimeTableAsync();
-            _studentInfo.TimeTable = timeTable;
-            return WhutStatus.Ok;
+            try
+            {
+                var html = await WhutClient.Request(LoginUrl)
+                    .Form("userName", Student.StudentId)
+                    .Form("password", Student.Pwd)
+                    .Form("type", "xs")
+                    .PostStringAsync();
+                var timetable = await html.ParseTimeTable();
+                return WhutStatus.Ok;
+            }
+            catch
+            {
+                return WhutStatus.Failed;
+            }
         }
 
         public async Task<WhutStatus> RefreshScores()
         {
-            if (WhutStudent == null)
-                throw new Exception("Student不可为空");
-            var (scores, rinks) = await WhutStudent.GetScoresAsync();
-            _studentInfo.Scores = scores;
-            _studentInfo.Rinks = rinks;
-            return WhutStatus.Ok;
-        }
+            try
+            {
+                //检查登陆凭证是否为空
+                if (string.IsNullOrWhiteSpace(CerLogin))
+                {
+                    //为空重新登陆
+                    var r = await TryLogin();
+                    if (r != WhutStatus.Ok)
+                        return default;
+                }
 
+                //得到SessionId和位置
+                var (sessionid, location) = await GetSessionAndLocation(CerLogin, ScoreEntryUrl);
+                if (sessionid == null || location == null)
+                    return default;
+
+                //分数查询主页面
+                var html = await WhutClient.Request(location)
+                    .Cookie(CerLogin)
+                    .Cookie(sessionid)
+                    .GetStringAsync();
+                //学科学分查询
+                var snkey = await html.ParseSnkeyAsync();
+                if (string.IsNullOrWhiteSpace(snkey))
+                    return default;
+                html = await WhutClient.Request(ScoreQueryUrl)
+                    .Cookie(sessionid)
+                    .Form("numPerPage", "100")
+                    .Form("pageNum", "1")
+                    .Form("snkey", snkey)
+                    .Form("xh", Student.StudentId)
+                    .PostStringAsync();
+                var infos = await html.ParseScoresAsync();
+                if (infos == null)
+                    return default;
+
+                //绩点及排名查询查询请求
+                html = await WhutClient.Request(RinkQueryUrl)
+                    .Cookie(sessionid)
+                    .GetStringAsync();
+                var rinks = await html.ParseRinksAsync();
+                return WhutStatus.Ok;
+            }
+            catch
+            {
+                return WhutStatus.Ok;
+            }
+
+        }
 
         public Task<int> Evaluate()
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 四次重定向获得SessionId和Location
+        /// </summary>
+        /// <param name="cerlogin"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private static async Task<(string sessionid, Uri location)> GetSessionAndLocation(string cerlogin, string url)
+        {
+            //第一次请求
+            var res = await WhutClient.Request(url)
+                .Cookie(cerlogin)
+                .GetAsync();
+            if (res.Headers.Location == null) return default;
+
+            //第二次请求
+            res = await WhutClient.Request(res.Headers.Location)
+                .Cookie(cerlogin)
+                .GetAsync();
+            var sessionid = res.Headers.GetCookie("JSESSIONID");
+            if (res.Headers.Location == null || sessionid == null) return default;
+
+            //第三次请求
+            res = await WhutClient.Request(res.Headers.Location)
+                .Cookie(cerlogin)
+                .GetAsync();
+            if (res.Headers.Location == null) return default;
+
+            //第四次请求
+            res = await WhutClient.Request(res.Headers.Location)
+                .Cookie(cerlogin)
+                .GetAsync();
+            return (sessionid, res.Headers.Location);
+        }
+
     }
 }

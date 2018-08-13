@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using LiteDB;
-using Server.Shared.Core;
-using Server.Shared.Models;
+﻿using LiteDB;
+using Server.Shared.Core.Database;
+using Server.Shared.Models.Auth;
 using Server.Shared.Options;
+using System.Collections.Generic;
 
 namespace Server.DB.UserDb
 {

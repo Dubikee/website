@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Server.Service.Auth;
-using Server.Shared.Core;
-using Server.Shared.Models;
+using Server.Shared.Core.Services;
+using Server.Shared.Models.Auth;
 
 namespace Server.Service.Extension
 {

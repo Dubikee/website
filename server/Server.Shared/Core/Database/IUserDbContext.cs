@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Server.Shared.Core
+namespace Server.Shared.Core.Database
 {
     public interface IUserDbContext<TUser> where TUser : IUser
     {

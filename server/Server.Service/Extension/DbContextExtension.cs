@@ -1,14 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Server.DB.UserDb;
-using Server.Shared.Core;
-using Server.Shared.Models;
+using Server.DB.WhutDb;
+using Server.Shared.Core.Database;
+using Server.Shared.Models.Auth;
+using Server.Shared.Models.Whut;
 using Server.Shared.Options;
 using System;
 
 namespace Server.Service.Extension
 {
-    public static class UserDbServiceExtension
+    public static class DbContextExtension
     {
         /// <summary>
         /// 注入用户数据库依赖
@@ -16,12 +18,14 @@ namespace Server.Service.Extension
         /// <param name="services"></param>
         /// <param name="optionAction"></param>
         /// <returns></returns>
-        public static IServiceCollection AddUserDbContext(this IServiceCollection services, Action<DbOptions> optionAction = null)
+        public static IServiceCollection AddAppDbContext(this IServiceCollection services,
+            Action<DbOptions> optionAction = null)
         {
             var opt = new DbOptions();
             optionAction?.Invoke(opt);
             services.TryAddSingleton(opt);
             services.TryAddScoped<IUserDbContext<User>, UserDbContext>();
+            services.AddScoped<IWhutDbContext<WhutStudent>, WhutDbContext>();
             return services;
         }
     }

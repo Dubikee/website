@@ -1,4 +1,4 @@
-﻿namespace Server.Shared.Models
+﻿namespace Server.Shared.Models.Auth
 {
     public class RoleTypes
     {

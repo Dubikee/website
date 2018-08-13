@@ -11,6 +11,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using Server.Service.Auth;
+using Server.Shared.Core.Database;
+using Server.Shared.Models.Auth;
 using Xunit;
 
 namespace Server.Test

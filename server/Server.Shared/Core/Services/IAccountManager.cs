@@ -1,6 +1,6 @@
 ﻿using Server.Shared.Results;
 
-namespace Server.Shared.Core
+namespace Server.Shared.Core.Services
 {
     public interface IAccountManager<out TUser> where TUser : IUser
     {

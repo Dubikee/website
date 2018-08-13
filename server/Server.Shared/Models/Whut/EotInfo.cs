@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Server.Whut.Models
+namespace Server.Shared.Models.Whut
 {
     public class EotInfo
     {

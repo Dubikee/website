@@ -33,7 +33,7 @@ namespace Server.Host
                     opt.Issuer = Configuration["JwtOptions:Audience"];
                     opt.Expires = TimeSpan.FromDays(30);
                 })
-                .AddUserDbContext(opt =>
+                .AddAppDbContext(opt =>
                 {
                     opt.DbPath = Configuration["DbOptions:DbPath"];
                     opt.UserCollectionName = Configuration["DbOptions:UserCollectionName"];

@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using Server.Host.Models;
-using Server.Shared.Core;
-using Server.Shared.Models;
+using Server.Shared.Core.Services;
+using Server.Shared.Models.Auth;
 using Server.Shared.Results;
 
 namespace Server.Host.Controllers

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Server.Shared.Models;
+﻿using System.Collections.Generic;
 using Server.Shared.Results;
 
-namespace Server.Shared.Core
+namespace Server.Shared.Core.Services
 {
     public interface IAdminManager<TUser> where TUser : IUser
     {

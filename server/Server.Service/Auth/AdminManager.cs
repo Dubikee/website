@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
-using Server.Shared.Core;
+﻿using Microsoft.AspNetCore.Http;
+using Server.Shared.Core.Database;
+using Server.Shared.Core.Services;
 using Server.Shared.Models;
 using Server.Shared.Results;
+using System;
+using System.Collections.Generic;
+using Server.Shared.Models.Auth;
 
 namespace Server.Service.Auth
 {

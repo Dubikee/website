@@ -20,7 +20,6 @@
     <ProjectReference Include="..\Server.Jobs\Server.Jobs.csproj" />
     <ProjectReference Include="..\Server.Service\Server.Service.csproj" />
     <ProjectReference Include="..\Server.Shared\Server.Shared.csproj" />
-    <ProjectReference Include="..\WHUTSdk\Server.Whut.csproj" />
   </ItemGroup>
 
   <ItemGroup>

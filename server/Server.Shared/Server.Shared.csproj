@@ -8,8 +8,4 @@
     <PackageReference Include="LiteDB" Version="4.1.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\WHUTSdk\Server.Whut.csproj" />
-  </ItemGroup>
-
 </Project>

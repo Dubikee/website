@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Server.Shared.Core;
 using System.Collections.Generic;
-using System.Text;
-using Server.Whut.Models;
 
-namespace Server.Shared.Models
+namespace Server.Shared.Models.Whut
 {
-    public class StudentInfo
+    public class WhutStudent : IWhutStudent
     {
         public int Id { get; set; }
         public string Uid { get; set; }

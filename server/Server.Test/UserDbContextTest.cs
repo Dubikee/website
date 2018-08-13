@@ -1,5 +1,5 @@
 ﻿using Server.DB.UserDb;
-using Server.Shared.Models;
+using Server.Shared.Models.Auth;
 using Server.Shared.Options;
 using System.Linq;
 using Xunit;

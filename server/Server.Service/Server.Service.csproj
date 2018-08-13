@@ -13,21 +13,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AngleSharp" Version="0.9.10" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.2.4" />
     <PackageReference Include="NLog" Version="4.5.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Server.DB\Server.DB.csproj" />
     <ProjectReference Include="..\Server.Shared\Server.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Microsoft.IdentityModel.Tokens">
-      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.identitymodel.tokens\5.2.0\lib\netstandard1.4\Microsoft.IdentityModel.Tokens.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
