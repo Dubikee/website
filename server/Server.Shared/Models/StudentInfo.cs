@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using WHUTSdk.Models;
+using Server.Whut.Models;
 
 namespace Server.Shared.Models
 {

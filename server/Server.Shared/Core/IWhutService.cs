@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Server.Shared.Models;
-using WHUTSdk.Core;
-using WHUTSdk.Models;
+using Server.Whut.Models;
 
 namespace Server.Shared.Core
 {
