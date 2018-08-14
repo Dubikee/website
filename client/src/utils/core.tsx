@@ -20,6 +20,8 @@ export interface IBootstrap {
 	start(): void;
 };
 
+export let getToken = () => window.localStorage.getItem("jwt");
+export let setToken = (jwt: string) => window.localStorage.setItem("jwt", jwt)
 export /**
  * 简化路由配置
  *
@@ -112,6 +114,8 @@ export class HttpClient {
 	 */
 	public header(key: string, value: string) {
 		this.headers = { [key]: value, ...this.headers }
+		return this;
+
 	}
 	/**
 	 * 添加表单数据
@@ -122,6 +126,7 @@ export class HttpClient {
 	 */
 	public form(key: string, value: string) {
 		this.data = { [key]: value, ...this.data }
+		return this;
 	}
 	/**
 	 * 设置表单数据
@@ -131,6 +136,7 @@ export class HttpClient {
 	 */
 	public forms(data: any) {
 		this.data = data
+		return this;
 	}
 	/**
 	 *	设置Jwt验证
@@ -140,6 +146,8 @@ export class HttpClient {
 	 */
 	public auth(jwt: string) {
 		this.headers = { 'Authorization': 'Bearer ' + jwt, ...this.headers }
+		return this;
+
 	}
 	/**
 	 * 发起Get请求

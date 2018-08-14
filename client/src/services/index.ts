@@ -1,11 +1,8 @@
-import { HttpClient } from "./HttpClient/HttpClient";
-
-export { HttpClient };
-
+import { User } from '../common/User';
 export let ServicesStore = {
-	httpClient: new HttpClient()
+	user: new User()
 };
 
 export let ServiceTypes = {
-	HttpClient: "httpClient"
+	user: 'user'
 };

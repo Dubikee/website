@@ -174,8 +174,8 @@ module.exports = {
             use: ['style-loader','css-loader']
           },
           {
-            test: /\.(stylus|styl)$/,
-            use: ['style-loader','css-loader','stylus-loader']
+            test: /\.less$/,
+            use: ['style-loader','css-loader','less-loader']
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.

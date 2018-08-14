@@ -55,19 +55,19 @@ namespace Server.Service.Auth
         public (AuthStatus status, string jwt) Login(string uid, string pwd)
         {
             // 空值检查
-            if (String.IsNullOrWhiteSpace(uid) || String.IsNullOrWhiteSpace(pwd))
+            if (string.IsNullOrWhiteSpace(uid) || string.IsNullOrWhiteSpace(pwd))
                 return (AuthStatus.ParamsIsEmpty, null);
 
             // 判断Uid是否存在
-            var u = _db.FindUser(uid);
-            if (u == null)
+            var user = _db.FindUser(uid);
+            if (user == null)
                 return (AuthStatus.UIdNotFind, null);
 
             // 检查密码是否正确
-            if (!User.MakePwdHash(pwd).SequenceEqual(u.PwHash))
+            if (!User.MakePwdHash(pwd).SequenceEqual(user.PwHash))
                 return (AuthStatus.PasswordWrong, null);
-            _user = u;
-            return (AuthStatus.Ok, MakeJwt(uid, u.Role));
+            _user = user;
+            return (AuthStatus.Ok, MakeJwt(uid, user.Role));
         }
 
         /// <summary>

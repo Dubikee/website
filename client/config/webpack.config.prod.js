@@ -187,7 +187,7 @@ module.exports = {
 						// Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
 					},
 					{
-						test: /\.(stylus|styl)$/,
+						test: /\.less$/,
 						loader: ExtractTextPlugin.extract(
 							Object.assign({
 									fallback: {
@@ -196,7 +196,7 @@ module.exports = {
 											hmr: false,
 										},
 									},
-									use: ['css-loader', 'stylus-loader']
+									use: ['css-loader', 'less-loader']
 								},
 								extractTextPluginOptions
 							)
