@@ -72,8 +72,8 @@ module.exports = {
 		// Point sourcemap entries to original disk location (format as URL on Windows)
 		devtoolModuleFilenameTemplate: info =>
 			path
-			.relative(paths.appSrc, info.absoluteResourcePath)
-			.replace(/\\/g, '/'),
+				.relative(paths.appSrc, info.absoluteResourcePath)
+				.replace(/\\/g, '/'),
 	},
 	resolve: {
 		// This allows you to set a fallback for where Webpack should look for modules.
@@ -167,20 +167,20 @@ module.exports = {
 								transpileOnly: true,
 								configFile: paths.appTsProdConfig
 							},
-						}, ],
+						},],
 					},
 					{
 						test: /\.css$/,
 						loader: ExtractTextPlugin.extract(
 							Object.assign({
-									fallback: {
-										loader: require.resolve('style-loader'),
-										options: {
-											hmr: false,
-										},
+								fallback: {
+									loader: require.resolve('style-loader'),
+									options: {
+										hmr: false,
 									},
-									use: ['css-loader']
 								},
+								use: ['css-loader']
+							},
 								extractTextPluginOptions
 							)
 						),
@@ -190,14 +190,14 @@ module.exports = {
 						test: /\.less$/,
 						loader: ExtractTextPlugin.extract(
 							Object.assign({
-									fallback: {
-										loader: require.resolve('style-loader'),
-										options: {
-											hmr: false,
-										},
+								fallback: {
+									loader: require.resolve('style-loader'),
+									options: {
+										hmr: false,
 									},
-									use: ['css-loader', 'less-loader']
 								},
+								use: ['css-loader', 'less-loader']
+							},
 								extractTextPluginOptions
 							)
 						),
