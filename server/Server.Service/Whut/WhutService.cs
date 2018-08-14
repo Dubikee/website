@@ -64,7 +64,7 @@ namespace Server.Service.Whut
                 return WhutStatus.UserNotFind;
 
             if (IsNullOrWhiteSpace(studentId) || IsNullOrWhiteSpace(pwd))
-                return WhutStatus.ParamsIsEmpty;
+                return WhutStatus.InputIllegal;
 
             if (Student == null)
             {
@@ -120,7 +120,7 @@ namespace Server.Service.Whut
         public async Task<WhutStatus> TryLogin(string studentId, string pwd)
         {
             if (IsNullOrWhiteSpace(studentId) || IsNullOrWhiteSpace(pwd))
-                return WhutStatus.ParamsIsEmpty;
+                return WhutStatus.InputIllegal;
             try
             {
                 var res = await WhutClient.Request(LoginUrl)

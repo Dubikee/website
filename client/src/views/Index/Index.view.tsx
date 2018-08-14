@@ -23,7 +23,7 @@ export class IndexView extends PComponent {
 					</div>
 				</div>
 				<div className='info'>
-					<p>用户***</p>
+					<p>用户:罗坤</p>
 				</div>
 			</Header>
 			<Layout>
@@ -75,8 +75,7 @@ export class IndexView extends PComponent {
 					</Menu>
 				</Sider>
 				<Layout className="right">
-
-					<Content style={{ backgroundColor: '#fff', minHeight: 620 }}>
+					<Content style={{ backgroundColor: '#fff', minHeight: 630 }}>
 						Content
 					</Content>
 				</Layout>

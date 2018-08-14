@@ -5,7 +5,7 @@
         Ok,
         PwdWrong,
         StudentNotFind,
-        ParamsIsEmpty,
+        InputIllegal,
         UserNotFind,
         WhutServerCrashed,
         UnknownError,

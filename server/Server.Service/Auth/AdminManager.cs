@@ -3,6 +3,7 @@ using Server.Shared.Core.Database;
 using Server.Shared.Core.Services;
 using Server.Shared.Models.Auth;
 using Server.Shared.Results;
+using Server.Shared.Utils;
 using System;
 using System.Collections.Generic;
 
@@ -33,8 +34,8 @@ namespace Server.Service.Auth
         /// <returns></returns>
         public (AuthStatus status, User user) FindUser(string uid)
         {
-            if (string.IsNullOrWhiteSpace(uid))
-                return (AuthStatus.ParamsIsEmpty, null);
+            if (uid.IsNullOrWhiteSpace())
+                return (AuthStatus.InputIllegal, null);
             var u = _db.FindUser(uid);
             return u == null ? (AuthStatus.UIdNotFind, null) : (AuthStatus.Ok, u);
         }
@@ -47,12 +48,15 @@ namespace Server.Service.Auth
         /// <returns></returns>
         public AuthStatus DeleteUser(string uid)
         {
-            var (res, user) = FindUser(uid);
-            if (res != AuthStatus.Ok)
-                return res;
-            if (user.Role.ToLower() == "master")
+            if (uid.IsNullOrWhiteSpace())
+                return AuthStatus.InputIllegal;
+            var user = _db.FindUser(uid);
+            if (user == null)
+                return AuthStatus.UIdNotFind;
+            if (user.IsMaster())
                 return AuthStatus.NotAllowed;
-            return _db.DeleteUser(user) ? AuthStatus.Ok : AuthStatus.UnknownError;
+            _db.DeleteUser(user);
+            return AuthStatus.Ok;
         }
 
         /// <inheritdoc />
@@ -68,9 +72,11 @@ namespace Server.Service.Auth
         /// <returns></returns>
         public AuthStatus AddUser(string uid, string name, string pwd, string role, string phone, string email)
         {
-            if (String.IsNullOrWhiteSpace(uid) || String.IsNullOrWhiteSpace(name) || String.IsNullOrWhiteSpace(pwd) ||
-                String.IsNullOrWhiteSpace(role))
-                return AuthStatus.ParamsIsEmpty;
+            if (uid.IsNullOrWhiteSpace() ||
+                name.IsNullOrWhiteSpace() ||
+                pwd.IsNullOrWhiteSpace() ||
+                role.IsNullOrWhiteSpace())
+                return AuthStatus.InputIllegal;
             if (_db.FindUser(uid) != null)
                 return AuthStatus.UidHasExist;
             _db.AddUser(new User
@@ -102,15 +108,15 @@ namespace Server.Service.Auth
             var (res, user) = FindUser(targetUid);
             if (res != AuthStatus.Ok)
                 return res;
-            if (String.IsNullOrWhiteSpace(name))
+            if (name.IsNullOrWhiteSpace())
                 user.Name = name;
-            if (String.IsNullOrWhiteSpace(phone))
+            if (phone.IsNullOrWhiteSpace())
                 user.Phone = phone;
-            if (String.IsNullOrWhiteSpace(email))
+            if (email.IsNullOrWhiteSpace())
                 user.Email = email;
-            if (String.IsNullOrWhiteSpace(role))
+            if (role.IsNullOrWhiteSpace())
                 user.Role = role;
-            if (!String.IsNullOrWhiteSpace(pwd))
+            if (!pwd.IsNullOrWhiteSpace())
                 user.PwHash = User.MakePwdHash(pwd);
             return AuthStatus.Ok;
         }

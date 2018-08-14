@@ -77,7 +77,7 @@ namespace Server.Test
             var m = new AccountManager(_db, _masterctx, _opt);
 
             Assert.Equal(_users[0], m.User);
-            Assert.True(m.Login(null, null).status == AuthStatus.ParamsIsEmpty);
+            Assert.True(m.Login(null, null).status == AuthStatus.InputIllegal);
             Assert.True(m.Login(_users[1].Uid, "____").status == AuthStatus.PasswordWrong);
             Assert.True(m.Login("____", "____").status == AuthStatus.UIdNotFind);
             Assert.True(m.Login(_users[1].Uid, "abcd1234").status == AuthStatus.Ok);
@@ -92,9 +92,9 @@ namespace Server.Test
         {
             var m = new AccountManager(_db, _anoctx, _opt);
             Assert.Null(m.User);
-            Assert.True(m.Register(" ", " ", " ").status == AuthStatus.ParamsIsEmpty);
+            Assert.True(m.Register(" ", " ", " ").status == AuthStatus.InputIllegal);
             Assert.True(m.Register("0000", "d", "abcd1234").status == AuthStatus.UidTooShort);
-            Assert.True(m.Register("0000000a", "d", "abcd1234").status == AuthStatus.UidIsNotNumbers);
+            Assert.True(m.Register("0000000a", "d", "abcd1234").status == AuthStatus.UidIllegal);
             Assert.True(m.Register("00000004", "d", "1234").status == AuthStatus.PasswordTooShort);
             Assert.True(m.Register("00000004", "d", "12345678").status == AuthStatus.PasswordNoLetters);
             Assert.True(m.Register("00000004", "d", "abcdefgh").status == AuthStatus.PasswordNoNumbers);

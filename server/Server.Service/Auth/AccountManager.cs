@@ -5,11 +5,13 @@ using Server.Shared.Core.Services;
 using Server.Shared.Models.Auth;
 using Server.Shared.Options;
 using Server.Shared.Results;
+using Server.Shared.Utils;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Server.Service.Auth
 {
@@ -56,7 +58,7 @@ namespace Server.Service.Auth
         {
             // 空值检查
             if (string.IsNullOrWhiteSpace(uid) || string.IsNullOrWhiteSpace(pwd))
-                return (AuthStatus.ParamsIsEmpty, null);
+                return (AuthStatus.InputIllegal, null);
 
             // 判断Uid是否存在
             var user = _db.FindUser(uid);
@@ -96,31 +98,14 @@ namespace Server.Service.Auth
             string phone = null,
             string email = null)
         {
-            // 空值检查
-            if (String.IsNullOrWhiteSpace(uid) || String.IsNullOrWhiteSpace(name) || String.IsNullOrWhiteSpace(pwd))
-                return (AuthStatus.ParamsIsEmpty, null);
-
-            // Uid长度检查
-            if (uid.Length < 6)
-                return (AuthStatus.UidTooShort, null);
-            // Uid数字检查，只能包含数字
-            if (!uid.All(c => (c >= '0' && c <= '9')))
-                return (AuthStatus.UidIsNotNumbers, null);
-
-            // 密码规范检查
-            if (pwd.Length < 8)
-                return (AuthStatus.PasswordTooShort, null);
-            var (hasLetter, hasNumber) = CheckPwd(pwd);
-            if (!hasNumber)
-                return (AuthStatus.PasswordNoNumbers, null);
-            if (!hasLetter)
-                return (AuthStatus.PasswordNoLetters, null);
-
-            // 判断是否已存在Uid
+            if (uid.IsNullOrWhiteSpace() || name.IsNullOrWhiteSpace() || pwd.IsNullOrWhiteSpace())
+                return (AuthStatus.InputIllegal, null);
+            if (!Regex.IsMatch(uid, "^[0-9]{8,}$"))
+                return (AuthStatus.UidIllegal, null);
+            if (!CheckPwd(pwd))
+                return (AuthStatus.PasswordIllegal, null);
             if (null != _db.FindUser(uid))
                 return (AuthStatus.UidHasExist, null);
-
-            // 符合条件，创建用户，分发Jwt 
             _db.AddUser(new User
             (
                 uid: uid,
@@ -142,7 +127,8 @@ namespace Server.Service.Auth
         {
             if (User == null)
                 return AuthStatus.TokenExpired;
-            return _db.DeleteUser(User) ? AuthStatus.Ok : AuthStatus.UnknownError;
+            _db.DeleteUser(User);
+            return AuthStatus.Ok;
         }
 
         /// <inheritdoc />
@@ -157,18 +143,19 @@ namespace Server.Service.Auth
         {
             if (User == null)
                 return AuthStatus.TokenExpired;
-            var n = String.IsNullOrWhiteSpace(name);
-            var p = String.IsNullOrWhiteSpace(phone);
-            var e = String.IsNullOrWhiteSpace(email);
+            var n = name.IsNullOrWhiteSpace();
+            var p = phone.IsNullOrWhiteSpace();
+            var e = email.IsNullOrWhiteSpace();
             if (n && p && e)
-                return AuthStatus.ParamsIsEmpty;
+                return AuthStatus.InputIllegal;
             if (!n)
                 User.Name = name;
             if (!p)
                 User.Phone = phone;
             if (!e)
                 User.Email = email;
-            return _db.UpdateUser(User) ? AuthStatus.Ok : AuthStatus.UnknownError;
+            _db.UpdateUser(User);
+            return AuthStatus.Ok;
         }
 
         /// <inheritdoc />
@@ -182,17 +169,10 @@ namespace Server.Service.Auth
         {
             // 空值检查
             if (string.IsNullOrWhiteSpace(oldPwd) || string.IsNullOrWhiteSpace(newPwd))
-                return AuthStatus.ParamsIsEmpty;
-            // 长度检查
-            if (newPwd.Length < 8)
-                return AuthStatus.NewPasswordTooShort;
-            var (hasLetter, hasNumber) = CheckPwd(newPwd);
-            // 数字检查
-            if (!hasNumber)
-                return AuthStatus.NewPasswordNoNumbers;
-            // 字母检查
-            if (!hasLetter)
-                return AuthStatus.NewPasswordNoLetters;
+                return AuthStatus.InputIllegal;
+
+            if (!CheckPwd(newPwd))
+                return AuthStatus.PasswordIllegal;
             // 验证旧密码是否正确
             if (!User.MakePwdHash(oldPwd).SequenceEqual(User.PwHash))
                 return AuthStatus.PasswordWrong;
@@ -227,17 +207,22 @@ namespace Server.Service.Auth
         }
 
         /// <summary>
-        ///  检查密码是否含有数字与字母
+        ///  检查密码
         /// </summary>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        private static (bool hasLetter, bool hasNumber) CheckPwd(string pwd)
+        private static bool CheckPwd(string pwd)
         {
-            var hasNumber = pwd.Any(c => (c >= '0' && c <= '9'));
-            var hasLetter = pwd.Any(c => (c <= 'Z' && c >= 'A') || (c <= 'z' && c >= 'a'));
-            return (hasLetter, hasNumber);
+            if (!Regex.IsMatch(pwd, "^[a-zA-Z0-9]{6,}$"))
+                return false;
+            if (!Regex.IsMatch(pwd, "[0-9]+"))
+                return false;
+            if (!Regex.IsMatch(pwd, "[a-zA-Z]+"))
+                return false;
+            return true;
         }
     }
-
 }
+
+
 
