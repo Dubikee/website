@@ -1,27 +1,29 @@
-import "./Home.view.less";
+import "./Login.view.less";
+import * as React from 'react';
 import MainLayout from "../../containers/Main/Main.layout";
 import { Row, Col, message, Form, Checkbox, Button, Input, Icon } from "antd";
-import { PComponent, React, request, setToken } from "../../utils/core";
-import { inject } from "../../../node_modules/mobx-react";
+import { request, setToken, nullable } from "../../utils/core";
+import { inject } from "mobx-react";
 import { ServiceTypes } from "src/services";
-import { User, AuthStatus } from "../../common";
 import { RouteComponentProps, withRouter } from "react-router";
+import { runInAction } from "mobx";
+import { ILoginModel } from "../../common/ILoginModel";
+import { User } from "../../common/User";
+import { AuthStatus } from "../../common/Status";
 
 interface IHomeViewProps extends RouteComponentProps<any> {
-	user?: User
+	user: User | nullable
 }
 
 @inject(ServiceTypes.user)
-class HomeView extends PComponent<IHomeViewProps> {
+class LoginView extends React.PureComponent<IHomeViewProps> {
 	state = {
 		uid: "",
 		pwd: "",
 	};
 	async login() {
-		let { user } = this.props;
-		console.log(user);
+		let user = this.props.user!;
 		let { uid, pwd } = this.state;
-
 		let reg = /^[0-9]{8,}$/
 		if (!reg.test(uid)) {
 			message.error("账号是8位以上的数字！")
@@ -32,17 +34,28 @@ class HomeView extends PComponent<IHomeViewProps> {
 			return
 		}
 		const hide = message.loading('正在登陆...', 0);
-
 		try {
 			let res = await request("/api/account/login")
 				.forms(this.state)
-				.post<{ status: AuthStatus, jwt?: string }>()
-			hide()
-			let { status, jwt } = res.data;
+				.post<ILoginModel>();
+			hide();
+			if (res.status != 200) {
+				message.error("服务器故障");
+				return;
+			}
+			let { status, uid, name, phone, email, role, jwt } = res.data
 			switch (status) {
 				case AuthStatus.Ok:
 					setToken(jwt!)
-					message.info("登陆成功", 0.8, () => {
+					runInAction(() => {
+						user.login = true;
+						user.uid = uid!;
+						user.name = name!;
+						user.role = role!;
+						user.phone = phone;
+						user.email = email;
+					})
+					message.info("登陆成功", 1, () => {
 						this.props.history.push("/index")
 					})
 					break;
@@ -50,7 +63,7 @@ class HomeView extends PComponent<IHomeViewProps> {
 					message.error("账号或密码错误")
 					break
 				case AuthStatus.UIdNotFind:
-					message.error("账号不存在,请重新输入密码")
+					message.error("账号不存在,请重新输入")
 					break
 				default:
 					message.error("未知错误，登陆失败")
@@ -62,7 +75,7 @@ class HomeView extends PComponent<IHomeViewProps> {
 		}
 	}
 	render() {
-		return <div className="home">
+		return <div className="login-view">
 			<Row className="form-row" type="flex" justify="center">
 				<Col xs={18} sm={12} md={10} lg={8} xl={6} xxl={4} className='form-col'>
 					<h1>LOGIN</h1>
@@ -85,4 +98,4 @@ class HomeView extends PComponent<IHomeViewProps> {
 	}
 }
 
-export default MainLayout(withRouter(HomeView));
+export default MainLayout(withRouter(LoginView));

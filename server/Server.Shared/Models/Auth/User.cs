@@ -30,7 +30,13 @@ namespace Server.Shared.Models.Auth
         /// <param name="pwd"></param>
         /// <param name="phone"></param>
         /// <param name="email"></param>
-        public User(string uid, string name, string role, string pwd, string phone = null, string email = null)
+        public User(
+            string uid,
+            string name,
+            string role,
+            string pwd,
+            string phone = null,
+            string email = null)
         {
             Uid = uid;
             Name = name;
@@ -46,5 +52,23 @@ namespace Server.Shared.Models.Auth
         /// <param name="pwd"></param>
         /// <returns></returns>
         public static byte[] MakePwdHash(string pwd) => MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(pwd));
+    }
+
+    public static class UserExtension
+    {
+        public static void Deconstruct(
+            this User user,
+            out string uid,
+            out string name,
+            out string role,
+            out string phone,
+            out string email)
+        {
+            uid = user.Uid;
+            name = user.Name;
+            role = user.Role;
+            phone = user.Phone;
+            email = user.Email;
+        }
     }
 }

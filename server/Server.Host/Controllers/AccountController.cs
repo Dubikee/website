@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using Server.Host.Models;
 using Server.Shared.Core.Services;
-using Server.Shared.Models;
 using Server.Shared.Models.Auth;
 using Server.Shared.Results;
 
@@ -32,7 +32,9 @@ namespace Server.Host.Controllers
         {
             var (status, jwt) = _manager.Login(uid, pwd);
             Log.Info($"{Request.Path} uid=[{uid}] pwd=[***] =>code=[{status}]");
-            return Ok(new {status, jwt});
+            if (status != AuthStatus.Ok) return Ok(new {status, jwt});
+            var (_, name, role, phone, email) = _manager.User;
+            return Ok(new {status, jwt, uid, name, phone, email, role});
         }
 
         /// <summary>
@@ -53,7 +55,7 @@ namespace Server.Host.Controllers
             Log.Info($"{Request.Path} uid=[{m.Uid}] name=[{m.Name}]... =>code=[{status}]");
 
             return Ok(new {status, jwt});
-        }
+        }    
 
         /// <summary>
         /// 修改信息
@@ -84,22 +86,22 @@ namespace Server.Host.Controllers
             return Ok(new {code = status});
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult Validate()
         {
             if (_manager.User == null)
-                return Unauthorized();
+                return Ok(new {status = AuthStatus.TokenExpired});
             Log.Info($"{Request.Path} => uid=[{_manager.User.Id}] ...");
+            var (uid, name, role, phone, email) = _manager.User;
             return Ok(new
             {
                 status = AuthStatus.Ok,
-                uid = _manager.User.Uid,
-                name = _manager.User.Name,
-                phone = _manager.User.Phone,
-                email = _manager.User.Email,
-                role = _manager.User.Role
+                uid,
+                name,
+                phone,
+                email,
+                role
             });
         }
-
     }
 }

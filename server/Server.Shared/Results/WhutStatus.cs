@@ -2,13 +2,13 @@
 {
     public enum WhutStatus
     {
+        UnknownError,
         Ok,
         PwdWrong,
         StudentNotFind,
         InputIllegal,
         UserNotFind,
         WhutServerCrashed,
-        UnknownError,
         CreateStudent
     }
 }

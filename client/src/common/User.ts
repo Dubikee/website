@@ -1,22 +1,22 @@
 import { observable } from "mobx";
+import { nullable } from "../utils/core";
 
 export class User {
+	@observable
+	public login = false;
 
 	@observable
-	public Uid: string
+	public uid: string
 
 	@observable
-	public Name: string
+	public name: string
 
 	@observable
-	public Pwd: string
+	public role: string
 
 	@observable
-	public Role: string
+	public phone: string | nullable
 
 	@observable
-	public Phone: string
-
-	@observable
-	public Email: string
+	public email: string | nullable
 }

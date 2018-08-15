@@ -2,6 +2,7 @@
 {
     public enum AuthStatus
     {
+        UnknownError,
         Ok,
         InputIllegal,
         NotAllowed,

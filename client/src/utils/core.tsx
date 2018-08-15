@@ -6,22 +6,18 @@ import { BrowserRouter } from "react-router-dom";
 import Axios, { AxiosRequestConfig } from 'axios';
 import * as qs from 'querystring';
 
-export let PComponent = React.PureComponent;
-
-export { React }
-
 export let request = (url: string) => new HttpClient(url)
 export let bootstrap = () => new Bootstrap();
-
+export type nullable = null | undefined
 export interface IBootstrap {
 	with(App: React.ComponentClass): IBootstrap;
 	does(work: () => Promise<void> | void): IBootstrap;
 	mount(selector: string): IBootstrap;
 	start(): void;
 };
-
 export let getToken = () => window.localStorage.getItem("jwt");
 export let setToken = (jwt: string) => window.localStorage.setItem("jwt", jwt)
+export let removeToken = () => window.localStorage.removeItem('jwt')
 export /**
  * 简化路由配置
  *
@@ -147,7 +143,6 @@ export class HttpClient {
 	public auth(jwt: string) {
 		this.headers = { 'Authorization': 'Bearer ' + jwt, ...this.headers }
 		return this;
-
 	}
 	/**
 	 * 发起Get请求
