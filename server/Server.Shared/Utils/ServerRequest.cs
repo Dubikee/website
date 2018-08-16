@@ -3,25 +3,27 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Server.Service.Whut
+namespace Server.Shared.Utils
 {
-    public class WhutClient
+    public class ServerRequest
     {
+        private bool _autoRedirect;
         private readonly Uri _url;
         private readonly Dictionary<string, string> _form;
         private readonly LinkedList<(string key, string val)> _headers;
 
 
-        private WhutClient(Uri url)
+        private ServerRequest(Uri url)
         {
             _url = url;
+            _autoRedirect = false;
             _form = new Dictionary<string, string>();
             _headers = new LinkedList<(string key, string val)>();
-            _headers.AddLast(("User-Agent",
+            _headers.AddFirst(("User-Agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"));
         }
 
-        private WhutClient(string url) : this(new Uri(url))
+        private ServerRequest(string url) : this(new Uri(url))
         {
         }
 
@@ -30,9 +32,9 @@ namespace Server.Service.Whut
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public static WhutClient Request(string url)
+        public static ServerRequest Request(string url)
         {
-            return new WhutClient(url);
+            return new ServerRequest(url);
         }
 
         /// <summary>
@@ -40,9 +42,9 @@ namespace Server.Service.Whut
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public static WhutClient Request(Uri url)
+        public static ServerRequest Request(Uri url)
         {
-            return new WhutClient(url);
+            return new ServerRequest(url);
         }
 
         /// <summary>
@@ -51,9 +53,9 @@ namespace Server.Service.Whut
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public WhutClient Form(string key, string value)
+        public ServerRequest Form(string key, string value)
         {
-            if (String.IsNullOrWhiteSpace(key))
+            if (string.IsNullOrWhiteSpace(key))
                 throw new Exception("键不可为null或空格");
             if (_form.ContainsKey(key))
                 _form[key] = value;
@@ -63,12 +65,22 @@ namespace Server.Service.Whut
         }
 
         /// <summary>
+        /// 允许默认跳转
+        /// </summary>
+        /// <returns></returns>
+        public ServerRequest AllowAutoRedirect()
+        {
+            _autoRedirect = true;
+            return this;
+        }
+
+        /// <summary>
         /// 添加头
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public WhutClient Header(string key, string value)
+        public ServerRequest Header(string key, string value)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new Exception("键不可为null或空格");
@@ -81,7 +93,7 @@ namespace Server.Service.Whut
         /// </summary>
         /// <param name="cookie"></param>
         /// <returns></returns>
-        public WhutClient Cookie(string cookie)
+        public ServerRequest Cookie(string cookie)
         {
             if (string.IsNullOrWhiteSpace(cookie))
                 throw new Exception("cookie不可为null或空格");
@@ -113,7 +125,7 @@ namespace Server.Service.Whut
         /// <returns></returns>
         public async Task<string> GetStringAsync()
         {
-            var res= await CreateHttpClient().GetAsync(_url);
+            var res = await CreateHttpClient().GetAsync(_url);
             return await res.Content.ReadAsStringAsync();
         }
 
@@ -127,20 +139,17 @@ namespace Server.Service.Whut
             return await res.Content.ReadAsStringAsync();
         }
 
-        /// <summary>
-        /// HttpClient Factory
-        /// </summary>
-        /// <returns></returns>
         private HttpClient CreateHttpClient()
         {
             var client = new HttpClient(new HttpClientHandler
             {
-                AllowAutoRedirect = false
+                AllowAutoRedirect = _autoRedirect
             });
             foreach (var (key, val) in _headers)
             {
                 client.DefaultRequestHeaders.Add(key, val);
             }
+
             return client;
         }
     }

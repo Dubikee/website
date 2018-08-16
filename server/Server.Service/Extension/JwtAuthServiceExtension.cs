@@ -5,11 +5,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Server.Service.Auth;
 using Server.Shared.Core.Services;
-using Server.Shared.Models;
+using Server.Shared.Models.Auth;
 using Server.Shared.Options;
 using System;
 using System.Text;
-using Server.Shared.Models.Auth;
 
 namespace Server.Service.Extension
 {
@@ -21,9 +20,9 @@ namespace Server.Service.Extension
         /// <param name="services"></param>
         /// <param name="optionAction"></param>
         /// <returns></returns>
-        public static IServiceCollection AddJwtAuth(this IServiceCollection services, Action<JwtOptions> optionAction = null)
+        public static IServiceCollection AddJwtAuth(this IServiceCollection services, Action<AuthOptions> optionAction = null)
         {
-            var op = new JwtOptions();
+            var op = new AuthOptions();
             optionAction?.Invoke(op);
             services.TryAddSingleton(op);
             services.TryAddScoped<IAccountManager<User>, AccountManager>();

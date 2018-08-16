@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Server.Shared.Core.Services;
+﻿using Server.Shared.Core.Services;
 using Server.Shared.Models.Whut;
 using Server.Shared.Results;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Server.Service.Whut
 {

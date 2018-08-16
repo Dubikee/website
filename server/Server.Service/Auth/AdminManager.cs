@@ -1,17 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
-using Server.Shared.Core.Database;
+﻿using Server.Shared.Core.Database;
 using Server.Shared.Core.Services;
 using Server.Shared.Models.Auth;
+using Server.Shared.Options;
 using Server.Shared.Results;
 using Server.Shared.Utils;
-using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using static System.String;
 
 namespace Server.Service.Auth
 {
     public class AdminManager : IAdminManager<User>
     {
-        private readonly HttpContext _ctx;
+        private readonly AuthOptions _opt;
         private readonly IUserDbContext<User> _db;
 
         /// <inheritdoc />
@@ -20,10 +21,10 @@ namespace Server.Service.Auth
         /// </summary>
         public IEnumerable<User> Users => _db.Users;
 
-        public AdminManager(IUserDbContext<User> db, IHttpContextAccessor accessor)
+        public AdminManager(IUserDbContext<User> db, AuthOptions opt)
         {
             _db = db;
-            _ctx = accessor.HttpContext;
+            _opt = opt;
         }
 
         /// <inheritdoc />
@@ -34,7 +35,7 @@ namespace Server.Service.Auth
         /// <returns></returns>
         public (AuthStatus status, User user) FindUser(string uid)
         {
-            if (uid.IsNullOrWhiteSpace())
+            if (IsNullOrWhiteSpace(uid))
                 return (AuthStatus.InputIllegal, null);
             var u = _db.FindUser(uid);
             return u == null ? (AuthStatus.UIdNotFind, null) : (AuthStatus.Ok, u);
@@ -48,7 +49,7 @@ namespace Server.Service.Auth
         /// <returns></returns>
         public AuthStatus DeleteUser(string uid)
         {
-            if (uid.IsNullOrWhiteSpace())
+            if (IsNullOrWhiteSpace(uid))
                 return AuthStatus.InputIllegal;
             var user = _db.FindUser(uid);
             if (user == null)
@@ -70,13 +71,17 @@ namespace Server.Service.Auth
         /// <param name="phone"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        public AuthStatus AddUser(string uid, string name, string pwd, string role, string phone, string email)
+        public AuthStatus AddUser(string uid, string name, string role, string pwd, string phone, string email)
         {
-            if (uid.IsNullOrWhiteSpace() ||
-                name.IsNullOrWhiteSpace() ||
-                pwd.IsNullOrWhiteSpace() ||
-                role.IsNullOrWhiteSpace())
+            if (IsNullOrWhiteSpace(uid) ||
+                IsNullOrWhiteSpace(name) ||
+                IsNullOrWhiteSpace(pwd) ||
+                IsNullOrWhiteSpace(role))
                 return AuthStatus.InputIllegal;
+            if (!Regex.IsMatch(uid, _opt.UidRegex))
+                return AuthStatus.UidIllegal;
+            if (!Regex.IsMatch(pwd, _opt.PwdRegex))
+                return AuthStatus.PasswordIllegal;
             if (_db.FindUser(uid) != null)
                 return AuthStatus.UidHasExist;
             _db.AddUser(new User
@@ -95,28 +100,27 @@ namespace Server.Service.Auth
         /// <summary>
         /// 更改用户
         /// </summary>
-        /// <param name="targetUid"></param>
+        /// <param name="uid"></param>
         /// <param name="name"></param>
         /// <param name="phone"></param>
         /// <param name="email"></param>
         /// <param name="role"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        public AuthStatus EditUser(string targetUid, string name, string phone, string email, string role,
-            string pwd)
+        public AuthStatus EditUser(string uid, string name, string role, string pwd, string phone, string email)
         {
-            var (res, user) = FindUser(targetUid);
+            var (res, user) = FindUser(uid);
             if (res != AuthStatus.Ok)
                 return res;
-            if (name.IsNullOrWhiteSpace())
+            if (!IsNullOrWhiteSpace(name))
                 user.Name = name;
-            if (phone.IsNullOrWhiteSpace())
+            if (!IsNullOrWhiteSpace(phone))
                 user.Phone = phone;
-            if (email.IsNullOrWhiteSpace())
+            if (!IsNullOrWhiteSpace(email))
                 user.Email = email;
-            if (role.IsNullOrWhiteSpace())
+            if (!IsNullOrWhiteSpace(role))
                 user.Role = role;
-            if (!pwd.IsNullOrWhiteSpace())
+            if (!IsNullOrWhiteSpace(pwd))
                 user.PwHash = User.MakePwdHash(pwd);
             return AuthStatus.Ok;
         }

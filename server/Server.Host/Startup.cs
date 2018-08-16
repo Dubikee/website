@@ -23,14 +23,16 @@ namespace Server.Host
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services
-                .AddAdminService()
+            services.AddAdminService()
                 .AddWhutService()
                 .AddJwtAuth(opt =>
                 {
-                    opt.Key = Configuration["JwtOptions:Key"];
-                    opt.Audience = Configuration["JwtOptions:Audience"];
-                    opt.Issuer = Configuration["JwtOptions:Audience"];
+                    opt.Key = Configuration["AuthOptions:Key"];
+                    opt.Audience = Configuration["AuthOptions:Audience"];
+                    opt.Issuer = Configuration["AuthOptions:Audience"];
+                    opt.UidRegex = Configuration["AuthOptions:UidRegex"];
+                    opt.PwdRegex = Configuration["AuthOptions:PwdRegex"];
+                    opt.UidClaimType = Configuration["AuthOptions:UidClaimType"];
                     opt.Expires = TimeSpan.FromDays(30);
                 })
                 .AddAppDbContext(opt =>

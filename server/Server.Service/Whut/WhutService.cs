@@ -1,11 +1,11 @@
 ﻿using Server.Shared.Core.Database;
 using Server.Shared.Core.Services;
+using Server.Shared.Models.Auth;
 using Server.Shared.Models.Whut;
 using Server.Shared.Results;
 using System;
 using System.Threading.Tasks;
-using AngleSharp.Dom.Events;
-using Server.Shared.Models.Auth;
+using Server.Shared.Utils;
 using static System.String;
 
 namespace Server.Service.Whut
@@ -100,7 +100,7 @@ namespace Server.Service.Whut
                 return WhutStatus.StudentNotFind;
             try
             {
-                var res = await WhutClient.Request(LoginUrl)
+                var res = await ServerRequest.Request(LoginUrl)
                     .Form("userName", Student.StudentId)
                     .Form("password", Student.Pwd)
                     .Form("type", "xs")
@@ -123,7 +123,7 @@ namespace Server.Service.Whut
                 return WhutStatus.InputIllegal;
             try
             {
-                var res = await WhutClient.Request(LoginUrl)
+                var res = await ServerRequest.Request(LoginUrl)
                     .Form("userName", studentId)
                     .Form("password", pwd)
                     .Form("type", "xs")
@@ -143,7 +143,7 @@ namespace Server.Service.Whut
                 return WhutStatus.StudentNotFind;
             try
             {
-                var html = await WhutClient.Request(LoginUrl)
+                var html = await ServerRequest.Request(LoginUrl)
                     .Form("userName", Student.StudentId)
                     .Form("password", Student.Pwd)
                     .Form("type", "xs")
@@ -181,7 +181,7 @@ namespace Server.Service.Whut
                     return WhutStatus.UnknownError;
 
                 //分数查询主页面
-                var html = await WhutClient.Request(location)
+                var html = await ServerRequest.Request(location)
                     .Cookie(CerLogin)
                     .Cookie(sessionid)
                     .GetStringAsync();
@@ -189,7 +189,7 @@ namespace Server.Service.Whut
                 var snkey = await html.ParseSnkeyAsync();
                 if (IsNullOrWhiteSpace(snkey))
                     return WhutStatus.PwdWrong;
-                html = await WhutClient.Request(ScoreQueryUrl)
+                html = await ServerRequest.Request(ScoreQueryUrl)
                     .Cookie(sessionid)
                     .Form("numPerPage", "100")
                     .Form("pageNum", "1")
@@ -201,7 +201,7 @@ namespace Server.Service.Whut
                     return WhutStatus.WhutServerCrashed;
 
                 //绩点及排名查询查询请求
-                html = await WhutClient.Request(RinkQueryUrl)
+                html = await ServerRequest.Request(RinkQueryUrl)
                     .Cookie(sessionid)
                     .GetStringAsync();
                 var rinks = await html.ParseRinksAsync();
@@ -215,7 +215,6 @@ namespace Server.Service.Whut
             {
                 return WhutStatus.WhutServerCrashed;
             }
-
         }
 
         public Task<int> Evaluate()
@@ -232,26 +231,26 @@ namespace Server.Service.Whut
         private static async Task<(string sessionid, Uri location)> GetSessionAndLocation(string cerlogin, string url)
         {
             //第一次请求
-            var res = await WhutClient.Request(url)
+            var res = await ServerRequest.Request(url)
                 .Cookie(cerlogin)
                 .GetAsync();
             if (res.Headers.Location == null) return default;
 
             //第二次请求
-            res = await WhutClient.Request(res.Headers.Location)
+            res = await ServerRequest.Request(res.Headers.Location)
                 .Cookie(cerlogin)
                 .GetAsync();
             var sessionid = res.Headers.GetCookie("JSESSIONID");
             if (res.Headers.Location == null || sessionid == null) return default;
 
             //第三次请求
-            res = await WhutClient.Request(res.Headers.Location)
+            res = await ServerRequest.Request(res.Headers.Location)
                 .Cookie(cerlogin)
                 .GetAsync();
             if (res.Headers.Location == null) return default;
 
             //第四次请求
-            res = await WhutClient.Request(res.Headers.Location)
+            res = await ServerRequest.Request(res.Headers.Location)
                 .Cookie(cerlogin)
                 .GetAsync();
             return (sessionid, res.Headers.Location);

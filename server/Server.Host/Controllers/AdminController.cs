@@ -69,7 +69,14 @@ namespace Server.Host.Controllers
         [HttpPost]
         public IActionResult AddUser(UserModel m)
         {
-            var code = _manager.AddUser(m.Uid, m.Name, m.Pwd, m.Role, m.Phone, m.Email);
+            var code = _manager.AddUser(
+                uid: m.Uid,
+                name: m.Name,
+                role: m.Role,
+                pwd: m.Pwd,
+                phone: m.Phone,
+                email: m.Email
+            );
             Log.Info($"{Request.Path} uid=[{m.Uid}] name=[{m.Name}] role=[{m.Role}] => code=[{code}]");
             return Ok(new {code});
         }
@@ -82,7 +89,14 @@ namespace Server.Host.Controllers
         [HttpPost]
         public IActionResult EditUser(UserModel m)
         {
-            var code = _manager.EditUser(m.Uid, m.Name, m.Phone, m.Email, m.Role, m.Pwd);
+            var code = _manager.EditUser(
+                uid: m.Uid,
+                name: m.Name,
+                role: m.Role,
+                pwd: m.Pwd,
+                phone: m.Phone,
+                email: m.Email
+            );
             Log.Info($"{Request.Path} uid=[{m.Uid}] name=[{m.Name}] role=[{m.Role}] => code=[{code}]");
             return Ok(new {code});
         }

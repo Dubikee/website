@@ -1,6 +1,5 @@
 import "./Login.view.less";
 import * as React from 'react';
-import MainLayout from "../../containers/Main/Main.layout";
 import { Row, Col, message, Form, Checkbox, Button, Input, Icon } from "antd";
 import { request, setToken, nullable } from "../../utils/core";
 import { inject } from "mobx-react";
@@ -33,7 +32,7 @@ class LoginView extends React.PureComponent<IHomeViewProps> {
 			message.error("密码不合法！")
 			return
 		}
-		const hide = message.loading('正在登陆...', 0);
+		const hide = message.loading('正在登陆...');
 		try {
 			let res = await request("/api/account/login")
 				.forms(this.state)
@@ -71,6 +70,7 @@ class LoginView extends React.PureComponent<IHomeViewProps> {
 			}
 
 		} catch (error) {
+			hide()
 			message.error("网络错误")
 		}
 	}
@@ -98,4 +98,4 @@ class LoginView extends React.PureComponent<IHomeViewProps> {
 	}
 }
 
-export default MainLayout(withRouter(LoginView));
+export default withRouter(LoginView);

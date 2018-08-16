@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.WindowsRuntime;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using Server.Host.Models;
@@ -32,7 +31,8 @@ namespace Server.Host.Controllers
         {
             var (status, jwt) = _manager.Login(uid, pwd);
             Log.Info($"{Request.Path} uid=[{uid}] pwd=[***] =>code=[{status}]");
-            if (status != AuthStatus.Ok) return Ok(new {status, jwt});
+            if (status != AuthStatus.Ok)
+                return Ok(new {status});
             var (_, name, role, phone, email) = _manager.User;
             return Ok(new {status, jwt, uid, name, phone, email, role});
         }
@@ -53,9 +53,8 @@ namespace Server.Host.Controllers
                 phone: m.Phone,
                 email: m.Email);
             Log.Info($"{Request.Path} uid=[{m.Uid}] name=[{m.Name}]... =>code=[{status}]");
-
-            return Ok(new {status, jwt});
-        }    
+            return status == AuthStatus.Ok ? Ok(new {status, jwt}) : Ok(new {status});
+        }
 
         /// <summary>
         /// 修改信息
@@ -83,7 +82,7 @@ namespace Server.Host.Controllers
         {
             var status = _manager.UpdateUserPwd(oldPwd, newPwd);
             Log.Info($"{Request.Path} oldPwd=[{oldPwd}] newPwd=[{newPwd}] =>code=[{status}]");
-            return Ok(new {code = status});
+            return Ok(new {status});
         }
 
         [HttpGet]
@@ -93,15 +92,7 @@ namespace Server.Host.Controllers
                 return Ok(new {status = AuthStatus.TokenExpired});
             Log.Info($"{Request.Path} => uid=[{_manager.User.Id}] ...");
             var (uid, name, role, phone, email) = _manager.User;
-            return Ok(new
-            {
-                status = AuthStatus.Ok,
-                uid,
-                name,
-                phone,
-                email,
-                role
-            });
+            return Ok(new {status = AuthStatus.Ok, uid, name, phone, email, role});
         }
     }
 }

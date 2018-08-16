@@ -5,23 +5,22 @@ using Server.Shared.Core.Services;
 using Server.Shared.Models.Auth;
 using Server.Shared.Options;
 using Server.Shared.Results;
-using Server.Shared.Utils;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
+using static System.String;
 
 namespace Server.Service.Auth
 {
     public class AccountManager : IAccountManager<User>
     {
         private User _user;
-        private readonly JwtOptions _opt;
+        private readonly AuthOptions _opt;
         private readonly HttpContext _ctx;
         private readonly IUserDbContext<User> _db;
-        public static readonly string UidClaimType = "www.luokun.xyz/uid";
 
         /// <inheritdoc />
         /// <summary>
@@ -33,14 +32,14 @@ namespace Server.Service.Auth
             {
                 if (_user != null) return _user;
                 var uid = _ctx.User.Claims
-                    .FirstOrDefault(x => x.Type == UidClaimType)?.Value;
+                    .FirstOrDefault(x => x.Type == _opt.UidClaimType)?.Value;
                 if (uid != null)
                     _user = _db.FindUser(uid);
                 return _user;
             }
         }
 
-        public AccountManager(IUserDbContext<User> db, IHttpContextAccessor accessor, JwtOptions opt)
+        public AccountManager(IUserDbContext<User> db, IHttpContextAccessor accessor, AuthOptions opt)
         {
             _db = db;
             _opt = opt;
@@ -57,14 +56,12 @@ namespace Server.Service.Auth
         public (AuthStatus status, string jwt) Login(string uid, string pwd)
         {
             // 空值检查
-            if (string.IsNullOrWhiteSpace(uid) || string.IsNullOrWhiteSpace(pwd))
+            if (IsNullOrWhiteSpace(uid) || IsNullOrWhiteSpace(pwd))
                 return (AuthStatus.InputIllegal, null);
-
             // 判断Uid是否存在
             var user = _db.FindUser(uid);
             if (user == null)
                 return (AuthStatus.UIdNotFind, null);
-
             // 检查密码是否正确
             if (!User.MakePwdHash(pwd).SequenceEqual(user.PwHash))
                 return (AuthStatus.PasswordWrong, null);
@@ -92,17 +89,17 @@ namespace Server.Service.Auth
         /// <param name="email"></param>
         /// <returns></returns>
         public (AuthStatus status, string jwt) Register(
-            string uid,
-            string name,
-            string pwd,
-            string phone = null,
-            string email = null)
+            string uid, 
+            string name, 
+            string pwd, 
+            string phone, 
+            string email)
         {
-            if (uid.IsNullOrWhiteSpace() || name.IsNullOrWhiteSpace() || pwd.IsNullOrWhiteSpace())
+            if (IsNullOrWhiteSpace(uid) || IsNullOrWhiteSpace(name) || IsNullOrWhiteSpace(pwd))
                 return (AuthStatus.InputIllegal, null);
-            if (!Regex.IsMatch(uid, "^[0-9]{8,}$"))
+            if (!Regex.IsMatch(uid, _opt.UidRegex))
                 return (AuthStatus.UidIllegal, null);
-            if (!CheckPwd(pwd))
+            if (!Regex.IsMatch(pwd, _opt.PwdRegex))
                 return (AuthStatus.PasswordIllegal, null);
             if (null != _db.FindUser(uid))
                 return (AuthStatus.UidHasExist, null);
@@ -143,9 +140,9 @@ namespace Server.Service.Auth
         {
             if (User == null)
                 return AuthStatus.TokenExpired;
-            var n = name.IsNullOrWhiteSpace();
-            var p = phone.IsNullOrWhiteSpace();
-            var e = email.IsNullOrWhiteSpace();
+            var n = IsNullOrWhiteSpace(name);
+            var p = IsNullOrWhiteSpace(phone);
+            var e = IsNullOrWhiteSpace(email);
             if (n && p && e)
                 return AuthStatus.InputIllegal;
             if (!n)
@@ -167,13 +164,10 @@ namespace Server.Service.Auth
         /// <returns></returns>
         public AuthStatus UpdateUserPwd(string oldPwd, string newPwd)
         {
-            // 空值检查
-            if (string.IsNullOrWhiteSpace(oldPwd) || string.IsNullOrWhiteSpace(newPwd))
+            if (IsNullOrWhiteSpace(oldPwd) || IsNullOrWhiteSpace(newPwd))
                 return AuthStatus.InputIllegal;
-
-            if (!CheckPwd(newPwd))
+            if (!Regex.IsMatch(newPwd, _opt.PwdRegex))
                 return AuthStatus.PasswordIllegal;
-            // 验证旧密码是否正确
             if (!User.MakePwdHash(oldPwd).SequenceEqual(User.PwHash))
                 return AuthStatus.PasswordWrong;
             User.PwHash = User.MakePwdHash(newPwd);
@@ -191,7 +185,7 @@ namespace Server.Service.Auth
         {
             var claims = new[]
             {
-                new Claim(UidClaimType, uid),
+                new Claim(_opt.UidClaimType, uid),
                 new Claim(ClaimTypes.Role, role)
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_opt.Key));
@@ -204,22 +198,6 @@ namespace Server.Service.Auth
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             );
             return new JwtSecurityTokenHandler().WriteToken(jwt);
-        }
-
-        /// <summary>
-        ///  检查密码
-        /// </summary>
-        /// <param name="pwd"></param>
-        /// <returns></returns>
-        private static bool CheckPwd(string pwd)
-        {
-            if (!Regex.IsMatch(pwd, "^[a-zA-Z0-9]{6,}$"))
-                return false;
-            if (!Regex.IsMatch(pwd, "[0-9]+"))
-                return false;
-            if (!Regex.IsMatch(pwd, "[a-zA-Z]+"))
-                return false;
-            return true;
         }
     }
 }

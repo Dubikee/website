@@ -7,11 +7,6 @@ namespace Server.Shared.Utils
 {
     public static class Utils
     {
-        public static bool IsNullOrWhiteSpace(this string str)
-        {
-            return string.IsNullOrWhiteSpace(str);
-        }
-
         public static bool IsAdmin(this User user)
         {
             return user.Role.ToLower() == RoleTypes.Admin;
