@@ -3,7 +3,7 @@ import { nullable } from "../utils/core";
 
 export class User {
 	@observable
-	public login = false;
+	public login: boolean = false;
 
 	@observable
 	public uid: string

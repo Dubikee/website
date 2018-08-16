@@ -3,6 +3,6 @@ export let ServicesStore = {
 	user: new User()
 };
 
-export let ServiceTypes = {
+export let ServiceNames = {
 	user: 'user'
 };

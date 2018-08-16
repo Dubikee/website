@@ -1,7 +1,6 @@
 import { nullable } from "../utils/core";
-import { AuthStatus } from "./Status";
-
-export interface IValidateModel {
+import { AuthStatus } from "./AuthStatus";
+export class ValidateModel {
 	status: AuthStatus;
 	uid: string | nullable;
 	name: string | nullable;

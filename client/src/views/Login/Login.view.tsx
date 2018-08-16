@@ -3,18 +3,18 @@ import * as React from 'react';
 import { Row, Col, message, Form, Checkbox, Button, Input, Icon } from "antd";
 import { request, setToken, nullable } from "../../utils/core";
 import { inject } from "mobx-react";
-import { ServiceTypes } from "src/services";
+import { ServiceNames } from "src/services";
 import { RouteComponentProps, withRouter } from "react-router";
 import { runInAction } from "mobx";
-import { ILoginModel } from "../../common/ILoginModel";
+import { LoginModel } from "../../common/LoginModel";
 import { User } from "../../common/User";
-import { AuthStatus } from "../../common/Status";
+import { AuthStatus } from "../../common/AuthStatus";
 
 interface IHomeViewProps extends RouteComponentProps<any> {
 	user: User | nullable
 }
 
-@inject(ServiceTypes.user)
+@inject(ServiceNames.user)
 class LoginView extends React.PureComponent<IHomeViewProps> {
 	state = {
 		uid: "",
@@ -23,22 +23,22 @@ class LoginView extends React.PureComponent<IHomeViewProps> {
 	async login() {
 		let user = this.props.user!;
 		let { uid, pwd } = this.state;
-		let reg = /^[0-9]{8,}$/
-		if (!reg.test(uid)) {
+		if (!(/^[0-9]{8,}$/).test(uid)) {
 			message.error("账号是8位以上的数字！")
 			return
 		}
-		if (pwd.length < 6) {
-			message.error("密码不合法！")
+		if (pwd.length < 8) {
+			message.error("密码长度大于8位！")
 			return
 		}
 		const hide = message.loading('正在登陆...');
 		try {
 			let res = await request("/api/account/login")
 				.forms(this.state)
-				.post<ILoginModel>();
+				.post<LoginModel>();
 			hide();
 			if (res.status != 200) {
+				hide()
 				message.error("服务器故障");
 				return;
 			}

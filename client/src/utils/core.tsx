@@ -5,6 +5,7 @@ import { RouteProps, RedirectProps, Switch, Route, Redirect } from "react-router
 import { BrowserRouter } from "react-router-dom";
 import Axios, { AxiosRequestConfig } from 'axios';
 import * as qs from 'querystring';
+import { User } from "../common/User";
 
 export let request = (url: string) => new HttpClient(url)
 export let bootstrap = () => new Bootstrap();
@@ -18,6 +19,9 @@ export interface IBootstrap {
 export let getToken = () => window.localStorage.getItem("jwt");
 export let setToken = (jwt: string) => window.localStorage.setItem("jwt", jwt)
 export let removeToken = () => window.localStorage.removeItem('jwt')
+export let isMaster = (user: User) =>
+	user && user.role == 'master';
+
 export /**
  * 简化路由配置
  *

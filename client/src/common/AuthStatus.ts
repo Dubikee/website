@@ -14,22 +14,5 @@ export enum AuthStatus {
 	UIdNotFind,
 	UidHasExist,
 	PasswordWrong,
-	PasswordIllegal,
-}
-
-/**
- *
- *
- * @export
- * @enum {number}
- */
-export enum WhutStatus {
-	UnknownError,
-	Ok,
-	PwdWrong,
-	StudentNotFind,
-	InputIllegal,
-	UserNotFind,
-	WhutServerCrashed,
-	CreateStudent
+	PasswordIllegal
 }

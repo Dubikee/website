@@ -2,11 +2,12 @@ import * as React from 'react'
 import { inject } from 'mobx-react';
 import { getToken, request, removeToken, nullable } from '../../utils/core';
 import { runInAction } from 'mobx';
-import { IValidateModel } from '../../common/IValidateModel';
-import { AuthStatus } from '../../common/Status';
+import { ValidateModel } from "../../common/ValidateModel";
+import { AuthStatus } from "../../common/AuthStatus";
 import { User } from '../../common/User';
 import { message, Spin } from 'antd';
 import { RouteComponentProps, withRouter } from 'react-router';
+import { isMaster } from '../../utils/core';
 
 interface IAdimOnlyPorps extends RouteComponentProps<any> {
 	user: User | nullable
@@ -19,15 +20,20 @@ export default (View: any) => {
 			finished: false
 		}
 		componentWillMount() {
-			let { login, role } = this.props.user!;
-			if (login) {
-				if (role != 'master') {
-					this.tologin('权限不足');
-					return;
+			let user = this.props.user!;
+			//已经登陆
+			if (user.login) {
+				if (isMaster(user)) {
+					this.setState({ finished: true })
 				}
-				this.setState({ finished: true })
+				else {
+					message.error("权限不足！", 1, () =>
+						this.props.history.goBack()
+					);
+				}
 				return;
 			}
+			//未登陆
 			let token = getToken();
 			if (!token) {
 				this.tologin("请先登陆");
@@ -35,7 +41,7 @@ export default (View: any) => {
 			}
 			request('/api/account/validate')
 				.auth(token)
-				.get<IValidateModel>()
+				.get<ValidateModel>()
 				.then(res => {
 					if (res.status != 200) {
 						this.tologin("服务器故障");
