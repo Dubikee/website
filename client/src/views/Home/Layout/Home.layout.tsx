@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { Layout, Menu, Icon, Dropdown } from 'antd';
 import "./Home.layout.less"
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { inject } from 'mobx-react';
 import { User } from '../../../common/User';
 import { nullable, renderRouter } from '../../../utils/core';
-import { whutRoutes, whutRedirect } from '../../../routes/whut';
+import { homeRoutes, homeRedirect } from '../../../routes/home';
 import AdminOnly from '../../../containers/AdminOnly/AdminOnly';
 
 const menu = (
@@ -22,7 +22,10 @@ const menu = (
 	</Menu>
 );
 
-@inject('user') class HomeLayout extends React.PureComponent<{ user: User | nullable }> {
+interface IHomeLayoutProps extends RouteComponentProps<never> {
+	user: User | nullable
+}
+@inject('user') class HomeLayout extends React.PureComponent<IHomeLayoutProps> {
 	state = {
 		collapsed: false
 	}
@@ -56,18 +59,19 @@ const menu = (
 					style={{ background: '#fff' }}>
 					<Menu
 						mode="inline"
-						defaultSelectedKeys={['1']}
-						defaultOpenKeys={['sub1']}
+						defaultSelectedKeys={['/home/index']}
+						defaultOpenKeys={['whut']}
+						onSelect={({ key }) => this.handleClick(key)}
 						style={{ height: '100%', borderRight: 0 }}
 					>
 						<Menu.SubMenu
-							key="sub1"
+							key="whut"
 							title={<span><Icon type="home" /><span>教务处</span></span>}>
-							<Menu.Item key="1">课表</Menu.Item>
-							<Menu.Item key="2">选课</Menu.Item>
-							<Menu.Item key="3">评教</Menu.Item>
-							<Menu.Item key="4">成绩</Menu.Item>
-						</ Menu.SubMenu>
+							<Menu.Item key="/home/index">课表</Menu.Item>
+							<Menu.Item key="/home/xk">选课</Menu.Item>
+							<Menu.Item key="/home/pj">评教</Menu.Item>
+							<Menu.Item key="/home/scores">成绩</Menu.Item>
+						</Menu.SubMenu>
 						< Menu.SubMenu key="sub2" title={<span><Icon type="laptop" /><span>服务器</span></span>}>
 							<Menu.Item key="5">option5</Menu.Item>
 							<Menu.Item key="6">option6</Menu.Item>
@@ -97,7 +101,7 @@ const menu = (
 				</Layout.Sider>
 				<Layout className="right">
 					<Layout.Content style={{ backgroundColor: '#fff', minHeight: 630 }}>
-						{renderRouter(whutRoutes, whutRedirect)}
+						{renderRouter(homeRoutes, homeRedirect)}
 					</Layout.Content>
 				</Layout>
 			</Layout>
@@ -106,6 +110,9 @@ const menu = (
     		</Layout.Footer>
 		</Layout>
 	}
+	handleClick(key: string) {
+		this.props.history.push(key)
+	}
 }
 
-export default AdminOnly(HomeLayout)
+export default AdminOnly(withRouter(HomeLayout))

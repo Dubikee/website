@@ -1,9 +1,10 @@
 import * as React from 'react';
 import './TimeTable.less';
-import { Table, Tag, Select } from 'antd';
+import { Table, Tag, Popover, Tabs } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
-import { TimeTableItem, Course } from '../../common/Course';
+import { Course } from '../../common/Course';
 import { range } from '../../utils/core';
+import { TimeTableItem } from '../../common/TimeTableItem';
 
 interface ITimeTableProps {
 	loading: boolean;
@@ -16,24 +17,27 @@ interface ITimeTableProps {
 
 const days = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期天"];
 
-class TimeTable extends React.PureComponent<ITimeTableProps, any> {
+
+class TimeTable extends React.PureComponent<ITimeTableProps> {
 	state = {
 		week: 1
 	}
 	makeTable(week: number) {
-		return this.props.data.map((item, x) => {
-			let tableRow = {}
-			tableRow['key'] = x;
-			for (let i = 0; i < item.length; i++) {
-				let day = `day${i}`;
-				let { odd, even } = item[i];
-				if (week % 2 == 1 && odd)
-					tableRow[day] = odd.start <= week && odd.end >= week ? odd : null
-				else if (week % 2 == 0 && even)
-					tableRow[day] = even.start <= week && even.end >= week ? even : null
+		let table: {}[] = []
+		for (let x = 0; x < 5; x++) {
+			let row = {}
+			for (let y = 0; y < 7; y++) {
+				let day = `day${y}`;
+				row['key'] = y;
+				let { oddWeek, evenWeek } = this.props.data[x][y];
+				if (oddWeek && week % 2 == 1)
+					row[day] = oddWeek.start <= week && oddWeek.end >= week ? oddWeek : null
+				else if (evenWeek && week % 2 == 0)
+					row[day] = evenWeek.start <= week && evenWeek.end >= week ? evenWeek : null
 			}
-			return tableRow;
-		})
+			table.push(row);
+		}
+		return table;
 	}
 	render() {
 		let columns = days.map((day, i) => {
@@ -43,36 +47,38 @@ class TimeTable extends React.PureComponent<ITimeTableProps, any> {
 				width: 60,
 				align: 'center',
 				render: course => {
-					return course ?
-						<div>
+					if (course) {
+						let content = <div className='content'>
+							<p style={{ margin: 0, lineHeight: '24px' }}>教室：{course['location']}</p>
+							<p style={{ margin: 0, lineHeight: '24px' }}>老师：{course['teacher']}</p>
+						</div>
+						return <Popover content={content} title={course['name']}>
 							<Tag color="lime" visible={this.props.showName}>{course['name']}</Tag>
 							<Tag color="cyan" visible={this.props.showLocation}>{course['location']}</Tag>
 							<Tag color="volcano" visible={this.props.showTeacher}>{course['teacher']}</Tag>
-						</div> 
-						:
-						<div>
+						</Popover>
+					}
+					else
+						return <div>
 							<br />
 							<br />
 						</div>
 				}
 			} as ColumnProps<Course>
 		})
-		let header = () => <div>
-			<span style={{ lineHeight: '24px', fontSize: '16px' }}>课表</span>
-			<Select size='small' onSelect={p => this.setState({ week: p })} defaultValue={this.state.week} style={{ float: 'right', width: 100 }}>
-				{range(1, 19).map(x => <Select.Option key={x} value={x}>{`第${x}周`}</Select.Option>)}
-			</Select>
-		</div>
-		return <Table
-			columns={columns}
-			dataSource={this.makeTable(this.state.week)}
-			pagination={false}
-			className="timetable"
-			loading={this.props.loading}
-			title={header}
-			bordered
-		/>
-
+		return <Tabs defaultActiveKey={this.state.week.toString()}>
+			{range(1, 19).map(x => {
+				return <Tabs.TabPane key={x.toString()} tab={`第${x}周`}>
+					<Table
+						columns={columns}
+						dataSource={this.makeTable(x)}
+						pagination={false}
+						className="timetable"
+						loading={this.props.loading}
+					/>
+				</Tabs.TabPane>
+			})}
+		</Tabs>
 	}
 }
 

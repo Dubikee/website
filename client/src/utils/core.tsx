@@ -20,6 +20,11 @@ export let setToken = (jwt: string) => window.localStorage.setItem("jwt", jwt)
 export let removeToken = () => window.localStorage.removeItem('jwt')
 export let isMaster = (user: User) => user && user.role == 'master';
 export let valueOrdefault = (v: string | nullable) => v ? v : '';
+export let isNullOrWhitespaces = (str: string | nullable) => {
+	if (str)
+		return str.trim() === '';
+	return true;
+}
 export let range = (start: number, end: number) => Array(end - start).fill(0).map((_, i) => i + start);
 export /**
  * 简化路由配置

@@ -1,14 +1,14 @@
 import * as React from 'react'
 import "./Courses.view.less"
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { User } from '../../../common/User';
 import { nullable, request, getToken } from '../../../utils/core';
 import TimeTable from '../../../components/TimeTable/TimeTable';
 import { TimeTableModel } from '../../../common/TimeTableModel';
 import { withRouter, RouteComponentProps } from 'react-router';
-import { message, Form, Switch } from 'antd';
+import { message, Form, Switch, Icon } from 'antd';
 import { WhutStatus } from '../../../common/WhutStatus';
-import { WhutStudent } from '../../../common/WhutStudent';
+import { WhutStudent, makeTables } from '../../../common/WhutStudent';
 
 
 interface ICoursesViewProps extends RouteComponentProps<never> {
@@ -18,16 +18,19 @@ interface ICoursesViewProps extends RouteComponentProps<never> {
 
 
 @inject('user', 'student')
-class CoursesView extends React.PureComponent<ICoursesViewProps> {
+@observer
+class CoursesView extends React.Component<ICoursesViewProps> {
 	state = {
 		loading: true,
 		showName: true,
-		showTeacher: false,
-		showLocation: false
+		showTeacher: true,
+		showLocation: true
 	}
-	componentDidMount() {
-		let { loadedTimeTable } = this.props.student!
-		if (!loadedTimeTable)
+	componentWillMount() {
+		let { tableLoaded } = this.props.student!
+		if (tableLoaded)
+			this.setState({ loading: false })
+		else
 			this.loadTimeTable();
 	}
 	loadTimeTable() {
@@ -49,12 +52,11 @@ class CoursesView extends React.PureComponent<ICoursesViewProps> {
 			})
 			.then(model => {
 				if (!model) return;
+				const student = this.props.student!;
 				switch (model.status) {
 					case WhutStatus.Ok:
-						this.props.student!.updateTimeTable(model.timeTable!)
-						setInterval(() => {
-							this.setState({ loading: false })
-						}, 1000)
+						student.tables = makeTables(model.timeTable!)
+						student.tableLoaded = true;
 						break;
 					case WhutStatus.StudentNotFind:
 						break;
@@ -65,27 +67,29 @@ class CoursesView extends React.PureComponent<ICoursesViewProps> {
 					default:
 						throw Error(`Status = ${model.status}`)
 				}
+				this.setState({ loading: false })
 			})
 			.catch(err => {
 				console.log(err)
-				message.error("课表查询失败")
+				message.error("课表查询失败", 2)
+				this.setState({ loading: false })
 			})
 	}
 
 	render() {
 		return <div className="courses-view">
+			<TimeTable {...this.state} data={this.props.student!.tables} className="timetable" />
 			<Form layout='inline' className="timetable-form">
 				<Form.Item label="显示名称">
-					<Switch checked={this.state.showName} onChange={e => this.setState({ showName: e })} />
+					<Switch checkedChildren={<Icon type="check" />} checked={this.state.showName} onChange={e => this.setState({ showName: e })} />
 				</Form.Item>
 				<Form.Item label="显示老师">
-					<Switch checked={this.state.showTeacher} onChange={e => this.setState({ showTeacher: e })} />
+					<Switch checkedChildren={<Icon type="check" />} checked={this.state.showTeacher} onChange={e => this.setState({ showTeacher: e })} />
 				</Form.Item>
 				<Form.Item label="显示教室">
-					<Switch checked={this.state.showLocation} onChange={e => this.setState({ showLocation: e })} />
+					<Switch checkedChildren={<Icon type="check" />} checked={this.state.showLocation} onChange={e => this.setState({ showLocation: e })} />
 				</Form.Item>
 			</Form>
-			<TimeTable {...this.state} data={this.props.student!.timeTable} className="timetable" />
 		</div >
 	}
 }

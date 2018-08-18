@@ -1,10 +1,3 @@
-import { nullable } from "../utils/core";
-
-export class TimeTableItem {
-	odd: Course | nullable;
-	even: Course | nullable;
-}
-
 export class Course {
 	name: string;
 	start: number;
@@ -12,3 +5,6 @@ export class Course {
 	teacher: string
 	location: string;
 }
+
+
+///
