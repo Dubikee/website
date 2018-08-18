@@ -1,4 +1,4 @@
-import { observable } from "mobx";
+import { observable, action } from "mobx";
 import { nullable } from "../utils/core";
 import { Course } from "./Course";
 import { ScoreInfo } from "./ScoreInfo";
@@ -7,9 +7,57 @@ import { TimeTableItem } from "./TimeTableItem";
 
 const reg = /(.+)[(]第([0-9]+)[-]([0-9]+)([单|双]?)周,(.+?),(.+?)[)]/;
 
+export class WhutStudent {
+	@observable
+	studentId: string | nullable;
+	@observable
+	tableLoaded: boolean = false;
+	@observable
+	scores: ScoreInfo[] | nullable;
+	@observable
+	rinks: GpaRinks | nullable
+	@observable
+	tables: {}[][] = makeTables(Array(5).fill(Array(7).fill('')))
+
+	@action.bound
+	setTables(arr: string[][]) {
+		this.tables = makeTables(arr);
+		this.tableLoaded = true;
+	}
+}
+function makeTables(arr: string[][]) {
+	let source: TimeTableItem[][] = []
+	for (let x = 0; x < 5; x++) {
+		let row: TimeTableItem[] = []
+		for (let y = 0; y < 7; y++) {
+			row.push(parseCourse(arr[x][y]))
+		}
+		source.push(row);
+	}
+	return Array(18).fill(0).map((_, i) => {
+		let week = i + 1;
+		let table: {}[] = []
+		for (let x = 0; x < 5; x++) {
+			let row = {}
+			for (let y = 0; y < 7; y++) {
+				let day = `day${y}`;
+				row['key'] = y;
+				let { oddWeek, evenWeek } = source[x][y];
+				if (oddWeek && week % 2 == 1)
+					row[day] = oddWeek.start <= week && oddWeek.end >= week ? oddWeek : null
+				else if (evenWeek && week % 2 == 0)
+					row[day] = evenWeek.start <= week && evenWeek.end >= week ? evenWeek : null
+			}
+			table.push(row);
+		}
+		return table;
+	})
+}
+
 function parseCourse(str: string) {
 	let course: TimeTableItem = { oddWeek: null, evenWeek: null }
-	if (!str || str.trim() === '') return course;
+	if (!str || str.trim() === '')
+		return course;
 	let strs = str.split(' ');
 	if (strs.length == 1) {
 		if (reg.test(strs[0])) {
@@ -53,29 +101,4 @@ function parseCourse(str: string) {
 		}
 	}
 	return course;
-}
-
-export function makeTables(arr: string[][]) {
-	let source: TimeTableItem[][] = []
-	for (let x = 0; x < 5; x++) {
-		let row: TimeTableItem[] = []
-		for (let y = 0; y < 7; y++) {
-			row.push(parseCourse(arr[x][y]))
-		}
-		source.push(row);
-	}
-	return source;
-}
-
-export class WhutStudent {
-	@observable
-	studentId: string | nullable;
-	@observable
-	tableLoaded: boolean = false;
-	@observable
-	scores: ScoreInfo[] | nullable;
-	@observable
-	rinks: GpaRinks | nullable
-	@observable
-	tables: TimeTableItem[][] = Array(5).fill(Array(7).fill({ oddWeek: null, evenWeek: null }));
 }

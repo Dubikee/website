@@ -8,7 +8,7 @@ import { TimeTableModel } from '../../../common/TimeTableModel';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { message, Form, Switch, Icon } from 'antd';
 import { WhutStatus } from '../../../common/WhutStatus';
-import { WhutStudent, makeTables } from '../../../common/WhutStudent';
+import { WhutStudent } from '../../../common/WhutStudent';
 
 
 interface ICoursesViewProps extends RouteComponentProps<never> {
@@ -55,8 +55,7 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 				const student = this.props.student!;
 				switch (model.status) {
 					case WhutStatus.Ok:
-						student.tables = makeTables(model.timeTable!)
-						student.tableLoaded = true;
+						student.setTables(model.timeTable!)
 						break;
 					case WhutStatus.StudentNotFind:
 						break;
