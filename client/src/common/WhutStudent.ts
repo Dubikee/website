@@ -69,7 +69,17 @@ function parseCourse(str: string) {
 				teacher: groups[5],
 				location: groups[6]
 			} as Course;
-			course.evenWeek = course.oddWeek = c;
+			switch (groups[4]) {
+				case '':
+					course.evenWeek = course.oddWeek = c;
+					break;
+				case '单':
+					course.oddWeek = c;
+					break;
+				case '双':
+					course.evenWeek = c;
+					break;
+			}
 		}
 	}
 	else if (strs.length == 2) {
