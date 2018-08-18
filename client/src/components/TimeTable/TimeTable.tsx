@@ -1,78 +1,78 @@
 import * as React from 'react';
 import './TimeTable.less';
-import { Table, Form, Switch } from 'antd';
+import { Table, Tag, Select } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
+import { TimeTableItem, Course } from '../../common/Course';
+import { range } from '../../utils/core';
 
 interface ITimeTableProps {
-	className?: string
-	data: string[][]
+	loading: boolean;
+	showName: boolean,
+	showTeacher: boolean,
+	showLocation: boolean,
+	className?: string;
+	data: TimeTableItem[][];
 }
 
-class TimeTableRow {
-	key: number;
-	"星期一": string;
-	"星期二": string;
-	"星期三": string;
-	"星期四": string;
-	"星期五": string;
-	"星期六": string;
-	"星期天": string
-}
-
-let keys = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期天"];
+const days = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期天"];
 
 class TimeTable extends React.PureComponent<ITimeTableProps, any> {
 	state = {
-		displayName: true,
-		displayTeacher: false,
-		displayRoom: false,
+		week: 1
+	}
+	makeTable(week: number) {
+		return this.props.data.map((item, x) => {
+			let tableRow = {}
+			tableRow['key'] = x;
+			for (let i = 0; i < item.length; i++) {
+				let day = `day${i}`;
+				let { odd, even } = item[i];
+				if (week % 2 == 1 && odd)
+					tableRow[day] = odd.start <= week && odd.end >= week ? odd : null
+				else if (week % 2 == 0 && even)
+					tableRow[day] = even.start <= week && even.end >= week ? even : null
+			}
+			return tableRow;
+		})
 	}
 	render() {
-		let data = this.props.data.map((row, x) => {
+		let columns = days.map((day, i) => {
 			return {
-				key: x,
-				"星期一": row[0],
-				"星期二": row[1],
-				"星期三": row[2],
-				"星期四": row[3],
-				"星期五": row[4],
-				"星期六": row[5],
-				"星期天": row[6]
-			} as TimeTableRow;
-		})
-		let columns = keys.map(key => {
-			return {
-				title: key,
-				dataIndex: key,
-				width: 80,
+				title: day,
+				dataIndex: `day${i}`,
+				width: 60,
 				align: 'center',
-				render: txt => {
-					return <div>
-						<p>{txt}</p>
-					</div>
+				render: course => {
+					return course ?
+						<div>
+							<Tag color="lime" visible={this.props.showName}>{course['name']}</Tag>
+							<Tag color="cyan" visible={this.props.showLocation}>{course['location']}</Tag>
+							<Tag color="volcano" visible={this.props.showTeacher}>{course['teacher']}</Tag>
+						</div> 
+						:
+						<div>
+							<br />
+							<br />
+						</div>
 				}
-			} as ColumnProps<TimeTableRow>
+			} as ColumnProps<Course>
 		})
-		return <div className={this.props.className}>
-			<Form layout='inline' className="timetable-form">
-				<Form.Item label="显示名称">
-					<Switch checked={this.state.displayName} onChange={e => this.setState({ a: e })} />
-				</Form.Item>
-				<Form.Item label="显示老师">
-					<Switch checked={this.state.displayTeacher} onChange={e => this.setState({ a: e })} />
-				</Form.Item>
-				<Form.Item label="显示教室">
-					<Switch checked={this.state.displayRoom} onChange={e => this.setState({ a: e })} />
-				</Form.Item>
-			</Form>
-			<Table
-				columns={columns}
-				dataSource={data}
-				pagination={false}
-				className="timetable"
-				bordered
-			/>
+		let header = () => <div>
+			<span style={{ lineHeight: '24px', fontSize: '16px' }}>课表</span>
+			<Select size='small' onSelect={p => this.setState({ week: p })} defaultValue={this.state.week} style={{ float: 'right', width: 100 }}>
+				{range(1, 19).map(x => <Select.Option key={x} value={x}>{`第${x}周`}</Select.Option>)}
+			</Select>
 		</div>
+		return <Table
+			columns={columns}
+			dataSource={this.makeTable(this.state.week)}
+			pagination={false}
+			className="timetable"
+			loading={this.props.loading}
+			title={header}
+			bordered
+		/>
+
 	}
 }
 

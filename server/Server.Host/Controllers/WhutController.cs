@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Server.Host.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "AdminOnly")]
     public class WhutController : ControllerBase
     {
         private readonly IWhutService<WhutStudent> _whut;
@@ -19,6 +19,12 @@ namespace Server.Host.Controllers
             _whut = whut;
         }
 
+        /// <summary>
+        /// 验证登陆
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Validate(string studentId, string pwd)
         {
@@ -27,6 +33,12 @@ namespace Server.Host.Controllers
             return Ok(new {status});
         }
 
+        /// <summary>
+        /// 更新信息
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult UpdateInfo(string studentId, string pwd)
         {
@@ -35,7 +47,10 @@ namespace Server.Host.Controllers
             return Ok(new {status});
         }
 
-
+        /// <summary>
+        /// 获取课表
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> TimeTable()
         {
             if (_whut.Student == null)
@@ -73,6 +88,10 @@ namespace Server.Host.Controllers
 
         }
 
+        /// <summary>
+        /// 更新课表
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> UpdateTimeTable()
         {
             if (_whut.Student == null)
@@ -99,6 +118,10 @@ namespace Server.Host.Controllers
             return Ok(new {status});
         }
 
+        /// <summary>
+        /// 更新绩点排名
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> UpdateScoreRink()
         {
             if (_whut.Student == null)
@@ -126,6 +149,10 @@ namespace Server.Host.Controllers
             });
         }
 
+        /// <summary>
+        /// 获取绩点排名
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> ScoreRink()
         {
             if (_whut.Student == null)

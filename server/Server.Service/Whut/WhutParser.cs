@@ -6,10 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Server.Shared.Utils;
 
 namespace Server.Service.Whut
 {
-    public static class WhutUtils
+    /// <summary>
+    /// 用于解析教务处信息的扩展方法
+    /// </summary>
+    public static class WhutParser
     {
         /// <summary>
         /// 从Html中获取分数查询的链接，从而得到query的snkey
@@ -59,7 +63,7 @@ namespace Server.Service.Whut
         /// <returns>如果html不包含分数table则返回null</returns>
         public static async Task<IEnumerable<ScoreInfo>> ParseScoresAsync(this string html)
         {
-            if (String.IsNullOrWhiteSpace(html)) return null;
+            if (string.IsNullOrWhiteSpace(html)) return null;
             var doc = await new HtmlParser().ParseAsync(html);
             var list = doc.QuerySelectorAll(".pageContent .table > tbody > tr");
             if (!list.Any()) return null;
@@ -92,7 +96,8 @@ namespace Server.Service.Whut
         {
             if (string.IsNullOrWhiteSpace(key)) return null;
             return headers.FirstOrDefault(x => x.Key == "Set-Cookie").Value?
-                .FirstOrDefault(x => x.StartsWith(key))?.Split(";")
+                .FirstOrDefault(x => x.StartsWith(key))?
+                .Split(";")
                 .FirstOrDefault();
         }
 
@@ -142,7 +147,7 @@ namespace Server.Service.Whut
                         return null;
                     //获得链接文本
                     var link = tr.QuerySelector("td > a")?.GetAttribute("href");
-                    if (String.IsNullOrWhiteSpace(link))
+                    if (string.IsNullOrWhiteSpace(link))
                         return null;
                     //解析开始评教日期
                     if (!DateTime.TryParse(arr[3], out var startTime))
@@ -159,16 +164,6 @@ namespace Server.Service.Whut
                     };
                 })
                 .Where(x => x != null);
-        }
-
-        public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
-        {
-            var index = 0;
-            foreach (var s in source)
-            {
-                action(s, index);
-                index++;
-            }
         }
     }
 }

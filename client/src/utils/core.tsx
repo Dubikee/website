@@ -2,7 +2,6 @@ import registerServiceWorker from "./registerServiceWorker";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { RouteProps, RedirectProps, Switch, Route, Redirect } from "react-router";
-import { BrowserRouter } from "react-router-dom";
 import Axios, { AxiosRequestConfig } from 'axios';
 import * as qs from 'querystring';
 import { User } from "../common/User";
@@ -19,9 +18,9 @@ export interface IBootstrap {
 export let getToken = () => window.localStorage.getItem("jwt");
 export let setToken = (jwt: string) => window.localStorage.setItem("jwt", jwt)
 export let removeToken = () => window.localStorage.removeItem('jwt')
-export let isMaster = (user: User) =>
-	user && user.role == 'master';
-
+export let isMaster = (user: User) => user && user.role == 'master';
+export let valueOrdefault = (v: string | nullable) => v ? v : '';
+export let range = (start: number, end: number) => Array(end - start).fill(0).map((_, i) => i + start);
 export /**
  * 简化路由配置
  *
@@ -31,12 +30,10 @@ export /**
  */
 	let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => {
 		return (
-			<BrowserRouter basename="/">
-				<Switch>
-					{routes.map((x, i) => <Route key={i} {...x} />)}
-					{redirect ? redirect.map((x, i) => <Redirect key={i} {...x} />) : null}
-				</Switch>
-			</BrowserRouter>
+			<Switch>
+				{routes.map((x, i) => <Route key={i} {...x} />)}
+				{redirect ? redirect.map((x, i) => <Redirect key={i} {...x} />) : null}
+			</Switch>
 		);
 	};
 

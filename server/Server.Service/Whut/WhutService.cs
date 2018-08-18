@@ -48,7 +48,6 @@ namespace Server.Service.Whut
         private string CerLogin { get; set; }
 
         private WhutStudent _whutStudent;
-
         private readonly IWhutDbContext<WhutStudent> _db;
         private readonly IAccountManager<User> _manager;
 
@@ -58,6 +57,12 @@ namespace Server.Service.Whut
             _manager = manager;
         }
 
+        /// <summary>
+        /// 更新学生信息
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
         public WhutStatus UpdateInfo(string studentId, string pwd)
         {
             if (_manager.User == null)
@@ -83,6 +88,9 @@ namespace Server.Service.Whut
             return WhutStatus.Ok;
         }
 
+        /// <summary>
+        /// 获取学生
+        /// </summary>
         public WhutStudent Student
         {
             get
@@ -94,6 +102,10 @@ namespace Server.Service.Whut
             }
         }
 
+        /// <summary>
+        /// 此学生登陆尝试
+        /// </summary>
+        /// <returns></returns>
         public async Task<WhutStatus> TryLogin()
         {
             if (Student == null)
@@ -117,6 +129,12 @@ namespace Server.Service.Whut
             }
         }
 
+        /// <summary>
+        /// 账号密码登陆尝试
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
         public async Task<WhutStatus> TryLogin(string studentId, string pwd)
         {
             if (IsNullOrWhiteSpace(studentId) || IsNullOrWhiteSpace(pwd))
@@ -137,6 +155,10 @@ namespace Server.Service.Whut
             }
         }
 
+        /// <summary>
+        /// 刷新课表
+        /// </summary>
+        /// <returns></returns>
         public async Task<WhutStatus> RefreshTimeTable()
         {
             if (Student == null)
@@ -160,6 +182,10 @@ namespace Server.Service.Whut
             }
         }
 
+        /// <summary>
+        /// 刷新分数
+        /// </summary>
+        /// <returns></returns>
         public async Task<WhutStatus> RefreshScores()
         {
             if (Student == null)
@@ -217,6 +243,10 @@ namespace Server.Service.Whut
             }
         }
 
+        /// <summary>
+        /// 评教
+        /// </summary>
+        /// <returns></returns>
         public Task<int> Evaluate()
         {
             throw new NotImplementedException();

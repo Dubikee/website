@@ -1,8 +1,11 @@
 import { User } from '../common/User';
+import { WhutStudent } from '../common/WhutStudent';
 export let ServicesStore = {
-	user: new User()
+	user: new User(),
+	student: new WhutStudent()
 };
 
 export let ServiceNames = {
-	user: 'user'
+	user: 'user',
+	student: 'student'
 };

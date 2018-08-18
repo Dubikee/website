@@ -27,16 +27,19 @@ export default (View: any) => {
 					this.setState({ finished: true })
 				}
 				else {
-					message.error("权限不足！", 1, () =>
-						this.props.history.goBack()
-					);
+					message.error("权限不足！", 1, () => {
+						if (this.props.history.length > 0)
+							this.props.history.goBack()
+						else
+							this.props.history.push('/login')
+					});
 				}
 				return;
 			}
 			//未登陆
 			let token = getToken();
 			if (!token) {
-				this.tologin("请先登陆");
+				this.props.history.push('/login')
 				return;
 			}
 			request('/api/account/validate')
@@ -59,7 +62,7 @@ export default (View: any) => {
 								user.phone = phone;
 								user.email = email;
 							})
-							setInterval(() => {
+							setTimeout(() => {
 								this.setState({ finished: true })
 							}, 300);
 							break;

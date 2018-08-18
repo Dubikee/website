@@ -1,34 +1,21 @@
 import { RouteProps, RedirectProps } from "react-router";
 import LoginView from "../views/Login/Login.view";
-import TestView from "../views/Test/Test.view";
-import IndexView from "../views/Index/Index.view";
+import HomeLayout from "../views/Home/Layout/Home.layout";
 
-export let routes: RouteProps[] = [
-	{
-		path: '/',
-		exact: true,
-		component: IndexView
-	},
+export let indexRoutes: RouteProps[] = [
 	{
 		path: '/login',
 		component: LoginView
 	},
 	{
-		path: '/index',
-		component: IndexView
-	},
-	{
-		path: '/test/:id',
-		component: TestView
+		path: '/home',
+		component: HomeLayout
 	}
 ]
 
-export let redirect: RedirectProps[] = [
+export let indexRedirect: RedirectProps[] = [
 	{
-		from: '/test',
-		to: '/home'
-	},
-	{
-		to: '/login'
+		from: '/',
+		to: '/home/index'
 	}
 ]

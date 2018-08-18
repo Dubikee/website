@@ -55,7 +55,10 @@ class LoginView extends React.PureComponent<IHomeViewProps> {
 						user.email = email;
 					})
 					message.info("登陆成功", 1, () => {
-						this.props.history.push("/index")
+						if (this.props.history.length > 0)
+							this.props.history.goBack();
+						else
+							this.props.history.push('/login');
 					})
 					break;
 				case AuthStatus.PasswordWrong:
