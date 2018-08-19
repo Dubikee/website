@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Layout, Menu, Icon, Dropdown } from 'antd';
 import "./Home.layout.less"
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { User } from '../../../common/User';
 import { nullable, renderRouter } from '../../../utils/core';
 import { homeRoutes, homeRedirect } from '../../../routes/home';
@@ -22,10 +22,12 @@ const menu = (
 	</Menu>
 );
 
-interface IHomeLayoutProps extends RouteComponentProps<never> {
+interface IHomeLayoutProps extends RouteComponentProps<{}> {
 	user: User | nullable
 }
-@inject('user') class HomeLayout extends React.PureComponent<IHomeLayoutProps> {
+@inject('user')
+@observer
+class HomeLayout extends React.Component<IHomeLayoutProps> {
 	state = {
 		collapsed: false
 	}

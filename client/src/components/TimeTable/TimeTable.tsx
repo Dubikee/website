@@ -20,7 +20,6 @@ class TimeTable extends React.PureComponent<ITimeTableProps> {
 	state = {
 		week: 0
 	}
-
 	render() {
 		let columns = days.map((day, i) => {
 			return {

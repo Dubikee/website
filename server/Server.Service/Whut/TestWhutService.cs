@@ -33,7 +33,7 @@ namespace Server.Service.Whut
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
                     CourseName = "大学物理",
-                    CourseType = "必修课",
+                    CourseType = "选修课",
                     CourseCredit = "5",
                     TotalMark = "80",
                     BestScore = "",
@@ -45,7 +45,7 @@ namespace Server.Service.Whut
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
-                    CourseName = "大学物理",
+                    CourseName = "小学物理",
                     CourseType = "必修课",
                     CourseCredit = "5",
                     TotalMark = "70",
@@ -58,8 +58,8 @@ namespace Server.Service.Whut
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
-                    CourseName = "大学物理",
-                    CourseType = "必修课",
+                    CourseName = "中学物理",
+                    CourseType = "个性课",
                     CourseCredit = "5",
                     TotalMark = "60",
                     BestScore = "",
@@ -71,8 +71,8 @@ namespace Server.Service.Whut
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
-                    CourseName = "大学物理",
-                    CourseType = "必修课",
+                    CourseName = "硕士物理",
+                    CourseType = "个性课",
                     CourseCredit = "5",
                     TotalMark = "50",
                     BestScore = "",
@@ -84,7 +84,7 @@ namespace Server.Service.Whut
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
-                    CourseName = "大学物理",
+                    CourseName = "博士物理",
                     CourseType = "必修课",
                     CourseCredit = "5",
                     TotalMark = "95",
@@ -97,8 +97,8 @@ namespace Server.Service.Whut
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
-                    CourseName = "大学物理",
-                    CourseType = "必修课",
+                    CourseName = "高等数学",
+                    CourseType = "选修课",
                     CourseCredit = "5",
                     TotalMark = "80",
                     BestScore = "",
@@ -110,7 +110,7 @@ namespace Server.Service.Whut
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
-                    CourseName = "大学物理",
+                    CourseName = "低等数学",
                     CourseType = "必修课",
                     CourseCredit = "5",
                     TotalMark = "70",
@@ -123,7 +123,7 @@ namespace Server.Service.Whut
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
-                    CourseName = "大学物理",
+                    CourseName = "中等数学",
                     CourseType = "必修课",
                     CourseCredit = "5",
                     TotalMark = "60",
@@ -136,7 +136,7 @@ namespace Server.Service.Whut
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
-                    CourseName = "大学物理",
+                    CourseName = "不等数学",
                     CourseType = "必修课",
                     CourseCredit = "5",
                     TotalMark = "50",
@@ -149,7 +149,7 @@ namespace Server.Service.Whut
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
-                    CourseName = "大学物理",
+                    CourseName = "相等数学",
                     CourseType = "必修课",
                     CourseCredit = "5",
                     TotalMark = "40",
@@ -162,7 +162,7 @@ namespace Server.Service.Whut
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
-                    CourseName = "大学物理",
+                    CourseName = "普通化学",
                     CourseType = "必修课",
                     CourseCredit = "5",
                     TotalMark = "90",
@@ -175,7 +175,7 @@ namespace Server.Service.Whut
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
-                    CourseName = "大学物理",
+                    CourseName = "非普通化学",
                     CourseType = "必修课",
                     CourseCredit = "5",
                     TotalMark = "95",

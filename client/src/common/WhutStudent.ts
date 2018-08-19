@@ -13,7 +13,7 @@ export class WhutStudent {
 	@observable
 	tableLoaded: boolean = false;
 	@observable
-	scores: ScoreInfo[] | nullable;
+	scores: ScoreInfo[] = [];
 	@observable
 	rinks: GpaRinks | nullable
 	@observable

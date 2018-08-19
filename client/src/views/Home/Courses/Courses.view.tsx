@@ -12,7 +12,7 @@ import { WhutStudent } from '../../../common/WhutStudent';
 import { Errors } from '../../../common/config/Errors';
 
 
-interface ICoursesViewProps extends RouteComponentProps<never> {
+interface ICoursesViewProps extends RouteComponentProps<any> {
 	user: User | nullable,
 	student: WhutStudent | nullable
 }

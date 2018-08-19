@@ -1,92 +1,79 @@
 import * as React from 'react';
 import './ScoresList.less';
 import { ScoreInfo } from '../../common/ScoreInfo';
-import { List, Button, Spin, Tag, Alert } from 'antd';
-import { nullable } from '../../utils/core';
-
+import { List, Button, Spin, Tag, Alert, Popover } from 'antd';
 
 interface IScoresListPorps {
 	onLoadMore: () => void;
-	data: ScoreInfo[] | nullable
+	loading: boolean,
+	loadingMore: boolean,
+	data: ScoreInfo[]
 }
 
-class ScoresList extends React.PureComponent<IScoresListPorps, any> {
-	state = {
-		loading: false,
-		loadingMore: false,
-	}
+class ScoresList extends React.PureComponent<IScoresListPorps> {
 	loadMore() {
+		let { loadingMore, onLoadMore } = this.props;
 		return <div style={{ textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px' }}>
-			{this.state.loadingMore ? <Spin /> : <Button onClick={this.props.onLoadMore}>loading more</Button>}
+			{loadingMore ? <Spin /> : <Button onClick={onLoadMore}>loading more</Button>}
 		</div>
 	}
-	renderIsRetrain(info: ScoreInfo) {
-		return info.isRetrain ? <div style={{ padding: '0 5px', textAlign: 'center' }}>
-			<Tag color='red'>重修课</Tag>
-		</div> : null
-
-	}
-	renderCourseType(info: ScoreInfo) {
-		return <div style={{ padding: '0 5px', textAlign: 'center' }}>
-			<Tag color={info.courseType == '必修课' ? 'orange' : 'green'}>{info.courseType}</Tag>
-		</div>
-	}
-	renderMark(info: ScoreInfo) {
-		let color: string;
-		const mark = parseFloat(info.totalMark);
-		if (mark < 60)
-			color = 'red';
-		else if (mark < 70)
-			color = 'gold';
-		else
-			color = 'green'
-		return < div style={{ padding: '0 5px', textAlign: 'center' }}>
-			<Tag color={color}>{mark.toFixed(2)}</Tag>
-		</div >
-	}
-	renderGpa(info: ScoreInfo) {
-		let color: string;
-		const mark = parseFloat(info.totalMark);
-		if (mark < 60)
-			color = 'red';
-		else if (mark < 70)
-			color = 'gold';
-		else
-			color = 'green'
-		return <div style={{ padding: '0 5px', textAlign: 'center' }}>
-			<Tag color={color}>{parseFloat(info.gpa).toFixed(2)}</Tag>
-		</div>
-	}
-	renderMeta(info: ScoreInfo) {
+	renderItem(item: ScoreInfo) {
+		let { totalMark, isRetrain, gpa, firstScore, bestScore, courseName, courseType } = item;
 		let type: 'success' | 'info' | 'warning' | 'error';
-		const mark = parseFloat(info.totalMark);
-		if (mark < 60)
+		let color: string;
+		const mark = parseFloat(totalMark);
+		if (mark < 60) {
 			type = 'error';
-		else if (mark < 70)
+			color = 'red';
+		}
+		else if (mark < 70) {
 			type = 'warning';
-		else
+			color = 'gold';
+		}
+		else {
 			type = 'success'
-		return <List.Item.Meta
-			avatar={<Alert message={info.courseName} type={type} showIcon />}
-		/>
+			color = 'green'
+		}
+		let content = <div>
+			<p>成绩:{totalMark}</p>
+			<p>绩点:{gpa}</p>
+			{isRetrain ? <p>是否重修:是</p> : null}
+			{firstScore ? <p>初次成绩:{firstScore}</p> : null}
+			{bestScore ? <p>最高成绩:{bestScore}</p> : null}
+		</div>
+		let avatar = <Popover content={content} title={courseName}>
+			<Alert message={courseName} type={type} showIcon />
+		</Popover>
+
+		return <List.Item>
+			<List.Item.Meta avatar={avatar} />
+			{
+				isRetrain ? <div style={{ padding: '0 5px', textAlign: 'center' }}>
+					<Tag color='red'>重修课</Tag>
+				</div> : null
+			}
+			< div style={{ padding: '0 5px', textAlign: 'center' }}>
+				<Tag color={color}>{mark.toFixed(2)}</Tag>
+			</div >
+			<div style={{ padding: '0 5px', textAlign: 'center' }}>
+				<Tag color={color}>{parseFloat(gpa).toFixed(2)}</Tag>
+			</div>
+			<div style={{ padding: '0 5px', textAlign: 'center' }}>
+				<Tag color={courseType == '必修课' ? 'orange' : 'green'}>{courseType}</Tag>
+			</div>
+		</List.Item>
 	}
 	render() {
+		let { data, loading } = this.props;
 		return <List
-			loading={this.state.loading}
+			loading={loading}
+			dataSource={data}
 			itemLayout="horizontal"
 			loadMore={this.loadMore}
-			dataSource={this.props.data}
-			renderItem={(item: ScoreInfo) => (
-				<List.Item >
-					{this.renderMeta(item)}
-					{this.renderIsRetrain(item)}
-					{this.renderCourseType(item)}
-					{this.renderMark(item)}
-					{this.renderGpa(item)}
-				</List.Item>
-			)}
+			renderItem={this.renderItem}
 		/>
 	}
+
 }
 
 

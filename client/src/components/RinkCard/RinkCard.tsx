@@ -4,7 +4,6 @@ import { GpaRinks } from '../../common/GpaRinks';
 import { nullable } from '../../utils/core';
 import { Card, Row } from 'antd';
 
-
 interface IRinkCardPorps {
 	data: GpaRinks | nullable,
 	loading: boolean

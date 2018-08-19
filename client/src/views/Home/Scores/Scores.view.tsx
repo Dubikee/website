@@ -11,7 +11,7 @@ import RinkCard from '../../../components/RinkCard/RinkCard';
 import { Errors } from '../../../common/config/Errors';
 import ScoresList from '../../../components/ScoresList/ScoresList';
 
-interface IScoresViewPorps extends RouteComponentProps<never> {
+interface IScoresViewPorps extends RouteComponentProps<any> {
 	student: WhutStudent | nullable
 }
 
@@ -19,7 +19,7 @@ interface IScoresViewPorps extends RouteComponentProps<never> {
 @observer
 class ScoresView extends React.Component<IScoresViewPorps>{
 	state = {
-		loadingRink: true
+		loading: true
 	}
 	componentWillMount() {
 		let { rinks, scores } = this.props.student!
@@ -45,8 +45,10 @@ class ScoresView extends React.Component<IScoresViewPorps>{
 			let { status, rinks, scores } = res.data;
 			switch (status) {
 				case WhutStatus.Ok:
-					student.rinks = rinks;
-					student.scores = scores;
+					if (rinks)
+						student.rinks = rinks;
+					if (scores)
+						student.scores = scores;
 					this.setState({ loadingRink: false });
 					break;
 			}
@@ -56,14 +58,16 @@ class ScoresView extends React.Component<IScoresViewPorps>{
 		}
 	}
 	render() {
+		let { rinks, scores } = this.props.student!;
+		let { loading } = this.state;
 		return <div className="scores-view">
 			<Tabs defaultActiveKey="2" >
 				<Tabs.TabPane tab="绩点排名" key="1">
-					<RinkCard loading={this.state.loadingRink} data={this.props.student!.rinks} />
+					<RinkCard loading={loading} data={rinks} />
 				</Tabs.TabPane>
 				<Tabs.TabPane tab="考试成绩" key="2">
 					<div style={{ padding: '0 25px 0 25px' }}>
-						<ScoresList onLoadMore={() => { }} data={this.props.student!.scores} />
+						<ScoresList loading={loading} loadingMore={false} onLoadMore={() => { }} data={scores} />
 					</div>
 				</Tabs.TabPane>
 			</Tabs>
