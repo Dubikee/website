@@ -35,10 +35,62 @@ namespace Server.Service.Whut
                     CourseName = "大学物理",
                     CourseType = "必修课",
                     CourseCredit = "5",
-                    TotalMark = "95",
+                    TotalMark = "80",
+                    BestScore = "",
+                    FirstScore = "",
+                    IsRetrain = "是",
+                    Gpa = "3.0"
+                },
+                new ScoreInfo
+                {
+                    SchoolYear = "2018-1",
+                    CourseCode = "ss2vyb7nv99",
+                    CourseName = "大学物理",
+                    CourseType = "必修课",
+                    CourseCredit = "5",
+                    TotalMark = "70",
+                    BestScore = "",
+                    FirstScore = "",
+                    IsRetrain = "是",
+                    Gpa = "2.0"
+                },
+                new ScoreInfo
+                {
+                    SchoolYear = "2018-1",
+                    CourseCode = "ss2vyb7nv99",
+                    CourseName = "大学物理",
+                    CourseType = "必修课",
+                    CourseCredit = "5",
+                    TotalMark = "60",
                     BestScore = "",
                     FirstScore = "",
                     IsRetrain = "",
+                    Gpa = "1.0"
+                },
+                new ScoreInfo
+                {
+                    SchoolYear = "2018-1",
+                    CourseCode = "ss2vyb7nv99",
+                    CourseName = "大学物理",
+                    CourseType = "必修课",
+                    CourseCredit = "5",
+                    TotalMark = "50",
+                    BestScore = "",
+                    FirstScore = "",
+                    IsRetrain = "",
+                    Gpa = "0"
+                },
+                new ScoreInfo
+                {
+                    SchoolYear = "2018-1",
+                    CourseCode = "ss2vyb7nv99",
+                    CourseName = "大学物理",
+                    CourseType = "必修课",
+                    CourseCredit = "5",
+                    TotalMark = "95",
+                    BestScore = "",
+                    FirstScore = "",
+                    IsRetrain = "是",
                     Gpa = "4.5"
                 },
                 new ScoreInfo

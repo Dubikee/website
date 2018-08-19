@@ -58,11 +58,11 @@ class ScoresView extends React.Component<IScoresViewPorps>{
 	render() {
 		return <div className="scores-view">
 			<Tabs defaultActiveKey="2" >
-				<Tabs.TabPane tab="排名" key="1">
+				<Tabs.TabPane tab="绩点排名" key="1">
 					<RinkCard loading={this.state.loadingRink} data={this.props.student!.rinks} />
 				</Tabs.TabPane>
-				<Tabs.TabPane tab="绩点" key="2">
-					<div style={{padding:'0 10px 0 10px'}}>
+				<Tabs.TabPane tab="考试成绩" key="2">
+					<div style={{ padding: '0 25px 0 25px' }}>
 						<ScoresList onLoadMore={() => { }} data={this.props.student!.scores} />
 					</div>
 				</Tabs.TabPane>
