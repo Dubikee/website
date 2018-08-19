@@ -37,8 +37,8 @@ interface IHomeLayoutProps extends RouteComponentProps<never> {
 				<div className="menu">
 					<div className="list">
 						<p className="list-selected"><Link to="/home">首页</Link></p>
-						<p><Link to="/index">首页2</Link></p>
-						<p><Link to="/index">首页3</Link></p>
+						<p><Link to="/index">XXXX</Link></p>
+						<p><Link to="/index">XXXX</Link></p>
 					</div>
 				</div>
 				<div className='info'>

@@ -2,13 +2,14 @@ import * as React from 'react'
 import "./Courses.view.less"
 import { inject, observer } from 'mobx-react';
 import { User } from '../../../common/User';
-import { nullable, request, getToken } from '../../../utils/core';
+import { nullable, request, getToken, removeToken } from '../../../utils/core';
 import TimeTable from '../../../components/TimeTable/TimeTable';
 import { TimeTableModel } from '../../../common/TimeTableModel';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { message, Form, Switch, Icon } from 'antd';
 import { WhutStatus } from '../../../common/WhutStatus';
 import { WhutStudent } from '../../../common/WhutStudent';
+import { Errors } from '../../../common/config/Errors';
 
 
 interface ICoursesViewProps extends RouteComponentProps<never> {
@@ -31,48 +32,53 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 		if (tableLoaded)
 			this.setState({ loading: false })
 		else
-			this.loadTimeTable();
+			this.loadTable();
 	}
-	loadTimeTable() {
-		request('/api/whut/timetable')
-			.auth(getToken()!)
-			.get<TimeTableModel>()
-			.then(res => {
-				switch (res.status) {
-					case 200:
-						return res.data;
-					case 401:
-						message.error("登陆过期，请重新登陆", 2, () => {
-							this.props.history.push('/login')
-						})
-						return null
-					default:
-						throw Error("请求失败")
-				}
-			})
-			.then(model => {
-				if (!model) return;
-				const student = this.props.student!;
-				switch (model.status) {
-					case WhutStatus.Ok:
-						student.setTables(model.timeTable!)
-						break;
-					case WhutStatus.StudentNotFind:
-						break;
-					case WhutStatus.PwdWrong:
-						break;
-					case WhutStatus.WhutServerCrashed:
-						break;
-					default:
-						throw Error(`Status = ${model.status}`)
-				}
-				this.setState({ loading: false })
-			})
-			.catch(err => {
-				console.log(err)
-				message.error("课表查询失败", 2)
-				this.setState({ loading: false })
-			})
+	async loadTable() {
+		try {
+			const res = await request('/api/whut/timetable')
+				.auth(getToken()!)
+				.get<TimeTableModel>();
+			switch (res.status) {
+				case 200:
+					break;
+				case 401:
+					message.error(Errors.TokenExpires, () => {
+						removeToken();
+						this.props.history.push('/login')
+					})
+					return;
+				default:
+					throw Error(`HttpStatus=${res.status}`)
+			}
+			const { status, timeTable } = res.data;
+			const student = this.props.student!;
+			switch (status) {
+				case WhutStatus.Ok:
+					if (timeTable && timeTable.length == 5 && timeTable[0].length == 7)
+						student.setTables(timeTable)
+					else
+						message.error(Errors.ServerFailure);
+					break;
+				case WhutStatus.StudentNotFind:
+					message.error(Errors.NoStudent);
+					break;
+				case WhutStatus.PwdWrong:
+					message.error(Errors.WhutPwdWrong);
+					break;
+				case WhutStatus.WhutServerCrashed:
+					message.error(Errors.WhutServerCrashed);
+					break;
+				default:
+					throw Error(`Status = ${status}`)
+			}
+			this.setState({ loading: false })
+
+		} catch (error) {
+			console.log(error)
+			message.error(Errors.ServerFailure)
+			this.setState({ loading: false })
+		}
 	}
 
 	render() {

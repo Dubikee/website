@@ -40,6 +40,97 @@ namespace Server.Service.Whut
                     FirstScore = "",
                     IsRetrain = "",
                     Gpa = "4.5"
+                },
+                new ScoreInfo
+                {
+                    SchoolYear = "2018-1",
+                    CourseCode = "ss2vyb7nv99",
+                    CourseName = "大学物理",
+                    CourseType = "必修课",
+                    CourseCredit = "5",
+                    TotalMark = "80",
+                    BestScore = "",
+                    FirstScore = "",
+                    IsRetrain = "",
+                    Gpa = "3.0"
+                },
+                new ScoreInfo
+                {
+                    SchoolYear = "2018-1",
+                    CourseCode = "ss2vyb7nv99",
+                    CourseName = "大学物理",
+                    CourseType = "必修课",
+                    CourseCredit = "5",
+                    TotalMark = "70",
+                    BestScore = "",
+                    FirstScore = "",
+                    IsRetrain = "",
+                    Gpa = "2.0"
+                },
+                new ScoreInfo
+                {
+                    SchoolYear = "2018-1",
+                    CourseCode = "ss2vyb7nv99",
+                    CourseName = "大学物理",
+                    CourseType = "必修课",
+                    CourseCredit = "5",
+                    TotalMark = "60",
+                    BestScore = "",
+                    FirstScore = "",
+                    IsRetrain = "",
+                    Gpa = "1.0"
+                },
+                new ScoreInfo
+                {
+                    SchoolYear = "2018-1",
+                    CourseCode = "ss2vyb7nv99",
+                    CourseName = "大学物理",
+                    CourseType = "必修课",
+                    CourseCredit = "5",
+                    TotalMark = "50",
+                    BestScore = "",
+                    FirstScore = "",
+                    IsRetrain = "",
+                    Gpa = "0"
+                },
+                new ScoreInfo
+                {
+                    SchoolYear = "2018-1",
+                    CourseCode = "ss2vyb7nv99",
+                    CourseName = "大学物理",
+                    CourseType = "必修课",
+                    CourseCredit = "5",
+                    TotalMark = "40",
+                    BestScore = "",
+                    FirstScore = "",
+                    IsRetrain = "",
+                    Gpa = "0"
+                },
+                new ScoreInfo
+                {
+                    SchoolYear = "2018-1",
+                    CourseCode = "ss2vyb7nv99",
+                    CourseName = "大学物理",
+                    CourseType = "必修课",
+                    CourseCredit = "5",
+                    TotalMark = "90",
+                    BestScore = "",
+                    FirstScore = "",
+                    IsRetrain = "",
+                    Gpa = "4.0"
+                },
+                new ScoreInfo
+                {
+                    SchoolYear = "2018-1",
+                    CourseCode = "ss2vyb7nv99",
+                    CourseName = "大学物理",
+                    CourseType = "必修课",
+                    CourseCredit = "5",
+                    TotalMark = "95",
+                    BestScore = "",
+                    FirstScore = "",
+                    IsRetrain = "",
+                    Gpa = "4.5"
                 }
             },
             Rinks = new GpaRinks
@@ -52,47 +143,47 @@ namespace Server.Service.Whut
             TimeTable = new string[5, 7]
             {
                 {
-                    "现代测试技术C(第01-14双周,吴青,1-301)",
-                    "数据库技术(第01-10周,杨益,1-319)",
-                    "液压及气压传动(第01-10周,杨益,1-319)",
-                    "",
-                    "",
-                    "",
-                    ""
-                },
-                {
-                    "液压及气压传动(第01-10单周,杨益,1-319)",
-                    "",
-                    "液压及气压传动(第01-10周,杨益,1-319)",
-                    "",
-                    "液压及气压传动(第01-10周,杨益,1-319)",
+                    "高等数学A(第01-16周,M老师,5-301)",
+                    "大学物理A(第01-16周,W老师,1-319)",
+                    "Java程序设计(第01-10周,J老师,1-319)",
+                    "编译原理(第01-14单周,B老师,1-319)",
+                    "电工A(第01-17周,刘明,5-301)",
                     "",
                     ""
                 },
                 {
+                    "Java程序设计(第01-10单周,J老师,1-319) 编译原理(第01-14双周,B老师,1-319)",
+                    "数据库原理(第01-10单周,D老师,5-309) 大学物理A(第01-16双周,W老师,1-119)",
+                    "C++程序设计(第01-10单周,P老师,1-319)",
                     "",
-                    "",
-                    "液压及气压传动(第01-10周,杨益,1-319)",
-                    "液压及气压传动(第01-10单周,杨益,1-319) 现代测试技术C(第01-14双周,吴青,1-301)",
-                    "现代测试技术C(第01-14周,吴青,1-301)",
-                    "",
-                    ""
-                },
-                {
-                    "液压及气压传动(第01-10周,杨益,1-319)",
-                    "",
-                    "",
-                    "现代测试技术C(第01-14周,吴青,1-301)",
-                    "",
+                    "高等数学A(第01-16双周,M老师,5-101)",
                     "",
                     ""
                 },
                 {
-                    "液压及气压传动(第01-10单周,杨益,1-319) 现代测试技术C(第01-14双周,吴青,1-301)",
-                    "数据库技术(第01-10周,杨益,1-319)",
+                    "操作系统(第01-14单周,C老师,1-301) C++程序设计(第01-10双周,P老师,5-201)",
+                    "数据库原理(第01-16单周,D老师,5-309)",
+                    "操作系统(第01-14双周,C老师,1-301)",
+                    "",
+                    "编译原理(第01-14周,B老师,1-301)",
+                    "",
+                    ""
+                },
+                {
                     "",
                     "",
-                    "液压及气压传动(第01-10周,杨益,1-319)",
+                    "C++程序设计(第01-10周,P老师,1-319)",
+                    "",
+                    "大学体育(第01-16周,A老师,余区体育)",
+                    "",
+                    ""
+                },
+                {
+                    "人文物理(第01-8周,R老师,5-101)",
+                    "Web技术(第01-6周,G老师,5-417)",
+                    "",
+                    "",
+                    "",
                     "",
                     ""
                 }

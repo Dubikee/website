@@ -2,20 +2,23 @@ import "./Login.view.less";
 import * as React from 'react';
 import { Row, Col, message, Form, Checkbox, Button, Input, Icon } from "antd";
 import { request, setToken, nullable } from "../../utils/core";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { ServiceNames } from "src/services";
 import { RouteComponentProps, withRouter } from "react-router";
 import { runInAction } from "mobx";
 import { LoginModel } from "../../common/LoginModel";
 import { User } from "../../common/User";
 import { AuthStatus } from "../../common/AuthStatus";
+import { Errors } from "../../common/config/Errors";
+import { Infos } from "../../common/config/Infos";
 
 interface IHomeViewProps extends RouteComponentProps<any> {
 	user: User | nullable
 }
 
 @inject(ServiceNames.user)
-class LoginView extends React.PureComponent<IHomeViewProps> {
+@observer
+class LoginView extends React.Component<IHomeViewProps> {
 	state = {
 		uid: "",
 		pwd: "",
@@ -24,22 +27,21 @@ class LoginView extends React.PureComponent<IHomeViewProps> {
 		let user = this.props.user!;
 		let { uid, pwd } = this.state;
 		if (!(/^[0-9]{8,}$/).test(uid)) {
-			message.error("账号是8位以上的数字！")
+			message.error(Errors.UidIllegal)
 			return
 		}
 		if (pwd.length < 8) {
-			message.error("密码长度大于8位！")
+			message.error(Errors.PwdTooShort)
 			return
 		}
-		const hide = message.loading('正在登陆...');
+		const hide = message.loading(Infos.Landing);
 		try {
 			let res = await request("/api/account/login")
 				.forms(this.state)
 				.post<LoginModel>();
 			hide();
 			if (res.status != 200) {
-				hide()
-				message.error("服务器故障");
+				message.error(Errors.ServerFailure);
 				return;
 			}
 			let { status, uid, name, phone, email, role, jwt } = res.data
@@ -54,27 +56,27 @@ class LoginView extends React.PureComponent<IHomeViewProps> {
 						user.phone = phone;
 						user.email = email;
 					})
-					message.info("登陆成功", 1, () => {
-						// if (this.props.history.length > 0)
-						// 	this.props.history.goBack();
-						// else
+					message.info(Infos.LoginSuccess, 1, () => {
+						if (this.props.history.length > 0)
+							this.props.history.goBack();
+						else
 							this.props.history.push('/home/index');
 					})
 					break;
 				case AuthStatus.PasswordWrong:
-					message.error("账号或密码错误")
+					message.error(Errors.PwdWrong)
 					break
 				case AuthStatus.UIdNotFind:
-					message.error("账号不存在,请重新输入")
+					message.error(Errors.UidNotExist)
 					break
 				default:
-					message.error("未知错误，登陆失败")
+					message.error(Errors.UnknownError)
 					break
 			}
 
 		} catch (error) {
 			hide()
-			message.error("网络错误")
+			message.error(Errors.NetworkError)
 		}
 	}
 	render() {

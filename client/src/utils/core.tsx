@@ -99,7 +99,6 @@ export class HttpClient {
 	public header(key: string, value: string) {
 		this.headers = { [key]: value, ...this.headers }
 		return this;
-
 	}
 	/**
 	 * 添加表单数据
