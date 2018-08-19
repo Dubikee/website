@@ -35,9 +35,9 @@ class TimeTable extends React.PureComponent<ITimeTableProps> {
 							<p style={{ margin: 0, lineHeight: '24px' }}>老师：{course['teacher']}</p>
 						</div>
 						return <Popover content={content} title={course['name']}>
-							<Tag color="lime" visible={this.props.showName}>{course['name']}</Tag>
+							<Tag color="geekblue" visible={this.props.showName}>{course['name']}</Tag>
 							<Tag color="cyan" visible={this.props.showLocation}>{course['location']}</Tag>
-							<Tag color="volcano" visible={this.props.showTeacher}>{course['teacher']}</Tag>
+							<Tag color="lime" visible={this.props.showTeacher}>{course['teacher']}</Tag>
 						</Popover>
 					}
 					else
@@ -57,6 +57,7 @@ class TimeTable extends React.PureComponent<ITimeTableProps> {
 						pagination={false}
 						className="timetable"
 						loading={this.props.loading}
+						bordered
 					/>
 				</Tabs.TabPane>
 			})}
