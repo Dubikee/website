@@ -94,7 +94,7 @@ export default (View: any) => {
 			}}>
 				<Spin size="large" />
 			</div>;
-		}
+		} 
 	}
 	return withRouter(AdminOnly);
 }
