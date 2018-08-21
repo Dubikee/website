@@ -187,23 +187,5 @@ namespace Server.Test
                 return _users.Remove(user);
             }
         }
-
-        /// <summary>
-        /// 测试HttpContextAccessor类
-        /// </summary>
-        private class TestContextAccessor : IHttpContextAccessor
-        {
-            public HttpContext HttpContext { get; set; }
-
-            public TestContextAccessor(string uid)
-            {
-                var claims = new[] {new Claim(AccountManager.UidClaimType, uid)};
-                var identity = new ClaimsIdentity(claims);
-                HttpContext = new TestHttpContext
-                {
-                    User = new ClaimsPrincipal(identity)
-                };
-            }
-        }
     }
 }
