@@ -51,7 +51,7 @@ namespace Server.Host.Controllers
         /// 获取课表
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> TimeTable()
+        public async Task<IActionResult> Table()
         {
             if (_whut.Student == null)
             {
@@ -62,24 +62,24 @@ namespace Server.Host.Controllers
                 });
             }
 
-            if (_whut.Student.TimeTable != null)
+            if (_whut.Student.Table != null)
             {
                 Log.Info($"{Request.Path} status=[Ok]");
                 return Ok(new
                 {
                     status = WhutStatus.Ok,
-                    timeTable = _whut.Student.TimeTable
+                    table = _whut.Student.Table
                 });
             }
 
-            var status = await _whut.RefreshTimeTable();
+            var status = await _whut.UpdateTable();
             if (status == WhutStatus.Ok)
             {
                 Log.Info($"{Request.Path} studentId=[{_whut.Student.StudentId}] status=[Ok]");
                 return Ok(new
                 {
                     status,
-                    timeTable = _whut.Student.TimeTable
+                    table = _whut.Student.Table
                 });
             }
 
@@ -92,7 +92,7 @@ namespace Server.Host.Controllers
         /// 更新课表
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> UpdateTimeTable()
+        public async Task<IActionResult> UpdateTable()
         {
             if (_whut.Student == null)
             {
@@ -103,14 +103,14 @@ namespace Server.Host.Controllers
                 });
             }
 
-            var status = await _whut.RefreshTimeTable();
+            var status = await _whut.UpdateTable();
             if (status == WhutStatus.Ok)
             {
                 Log.Info($"{Request.Path} studentId=[{_whut.Student.StudentId}] status=[Ok]");
                 return Ok(new
                 {
                     status,
-                    timeTable = _whut.Student.TimeTable
+                    table = _whut.Student.Table
                 });
             }
 
@@ -122,7 +122,7 @@ namespace Server.Host.Controllers
         /// 更新绩点排名
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> UpdateScoreRink()
+        public async Task<IActionResult> UpdateScoresRink()
         {
             if (_whut.Student == null)
             {
@@ -133,7 +133,7 @@ namespace Server.Host.Controllers
                 });
             }
 
-            var status = await _whut.RefreshScores();
+            var status = await _whut.UpdateScoresRink();
             if (status != WhutStatus.Ok)
             {
                 Log.Info($"{Request.Path} status=[{status}]");
@@ -145,7 +145,7 @@ namespace Server.Host.Controllers
             {
                 status = WhutStatus.Ok,
                 scores = _whut.Student.Scores,
-                rinks = _whut.Student.Rinks
+                rinks = _whut.Student.Rink
             });
         }
 
@@ -153,7 +153,7 @@ namespace Server.Host.Controllers
         /// 获取绩点排名
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> ScoreRink()
+        public async Task<IActionResult> ScoresRink()
         {
             if (_whut.Student == null)
             {
@@ -164,10 +164,10 @@ namespace Server.Host.Controllers
                 });
             }
 
-            if (_whut.Student.Scores == null || _whut.Student.Rinks == null)
+            if (_whut.Student.Scores == null || _whut.Student.Rink == null)
             {
 
-                var status = await _whut.RefreshScores();
+                var status = await _whut.UpdateScoresRink();
                 if (status != WhutStatus.Ok)
                 {
                     Log.Info($"{Request.Path} status=[{status}]");
@@ -180,7 +180,7 @@ namespace Server.Host.Controllers
             {
                 status = WhutStatus.Ok,
                 scores = _whut.Student.Scores,
-                rinks = _whut.Student.Rinks
+                rink = _whut.Student.Rink
             });
         }
     }

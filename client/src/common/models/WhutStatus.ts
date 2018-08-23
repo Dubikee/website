@@ -1,9 +1,3 @@
-/**
- *
- *
- * @export
- * @enum {number}
- */
 export enum WhutStatus {
 	UnknownError,
 	Ok,

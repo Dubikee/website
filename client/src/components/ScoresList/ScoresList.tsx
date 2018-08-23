@@ -1,13 +1,13 @@
 import * as React from 'react';
 import './ScoresList.less';
-import { ScoreInfo } from '../../common/models/ScoreInfo';
 import { List, Button, Spin, Tag, Alert, Popover } from 'antd';
+import { Score } from "../../common/models/Score";
 
 interface IScoresListPorps {
 	onLoadMore: () => void;
 	loading: boolean,
 	loadingMore: boolean,
-	data: ScoreInfo[]
+	data: Score[]
 }
 
 class ScoresList extends React.PureComponent<IScoresListPorps> {
@@ -17,8 +17,8 @@ class ScoresList extends React.PureComponent<IScoresListPorps> {
 			{loadingMore ? <Spin /> : <Button onClick={onLoadMore}>loading more</Button>}
 		</div>
 	}
-	renderItem(item: ScoreInfo) {
-		let { totalMark, isRetrain, gpa, firstScore, bestScore, courseName, courseType } = item;
+	renderItem(item: Score) {
+		const { totalMark, isRetrain, gpa, firstScore, bestScore, courseName, courseType } = item;
 		let type: 'success' | 'info' | 'warning' | 'error';
 		let color: string;
 		const mark = parseFloat(totalMark);

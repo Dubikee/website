@@ -13,9 +13,9 @@ namespace Server.Service.Whut
             StudentId = "0121618990514",
             Pwd = "**********",
             Uid = "17607105321",
-            Scores = new List<ScoreInfo>()
+            Scores = new List<Score>()
             {
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-2",
                     CourseCode = "7i6tbfc8o7",
@@ -28,7 +28,7 @@ namespace Server.Service.Whut
                     IsRetrain = "",
                     Gpa = "4.0"
                 },
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
@@ -41,7 +41,7 @@ namespace Server.Service.Whut
                     IsRetrain = "是",
                     Gpa = "3.0"
                 },
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
@@ -54,7 +54,7 @@ namespace Server.Service.Whut
                     IsRetrain = "是",
                     Gpa = "2.0"
                 },
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
@@ -67,7 +67,7 @@ namespace Server.Service.Whut
                     IsRetrain = "",
                     Gpa = "1.0"
                 },
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
@@ -80,7 +80,7 @@ namespace Server.Service.Whut
                     IsRetrain = "",
                     Gpa = "0"
                 },
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
@@ -93,7 +93,7 @@ namespace Server.Service.Whut
                     IsRetrain = "是",
                     Gpa = "4.5"
                 },
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
@@ -106,7 +106,7 @@ namespace Server.Service.Whut
                     IsRetrain = "",
                     Gpa = "3.0"
                 },
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
@@ -119,7 +119,7 @@ namespace Server.Service.Whut
                     IsRetrain = "",
                     Gpa = "2.0"
                 },
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
@@ -132,7 +132,7 @@ namespace Server.Service.Whut
                     IsRetrain = "",
                     Gpa = "1.0"
                 },
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
@@ -145,7 +145,7 @@ namespace Server.Service.Whut
                     IsRetrain = "",
                     Gpa = "0"
                 },
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
@@ -158,7 +158,7 @@ namespace Server.Service.Whut
                     IsRetrain = "",
                     Gpa = "0"
                 },
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
@@ -171,7 +171,7 @@ namespace Server.Service.Whut
                     IsRetrain = "",
                     Gpa = "4.0"
                 },
-                new ScoreInfo
+                new Score
                 {
                     SchoolYear = "2018-1",
                     CourseCode = "ss2vyb7nv99",
@@ -185,14 +185,14 @@ namespace Server.Service.Whut
                     Gpa = "4.5"
                 }
             },
-            Rinks = new GpaRinks
+            Rink = new Rink
             {
                 ClassRink = "10",
                 GradeRink = "10",
                 PureGpa = "3.123",
                 TotalGpa = "3.456"
             },
-            TimeTable = new string[5, 7]
+            Table = new string[5, 7]
             {
                 {
                     "高等数学A(第01-16周,M老师,5-301)",
@@ -257,12 +257,12 @@ namespace Server.Service.Whut
             return WhutStatus.Ok;
         }
 
-        public async Task<WhutStatus> RefreshTimeTable()
+        public async Task<WhutStatus> UpdateTable()
         {
             return WhutStatus.Ok;
         }
 
-        public async Task<WhutStatus> RefreshScores()
+        public async Task<WhutStatus> UpdateScoresRink()
         {
             return WhutStatus.Ok;
         }

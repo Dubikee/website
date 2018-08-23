@@ -10,8 +10,8 @@ namespace Server.Shared.Core
         string Uid { get; set; }
         string StudentId { get; set; }
         string Pwd { get; set; }
-        string[,] TimeTable { get; set; }
-        IEnumerable<ScoreInfo> Scores { get; set; }
-        GpaRinks Rinks { get; set; }
+        string[,] Table { get; set; }
+        IEnumerable<Score> Scores { get; set; }
+        Rink Rink { get; set; }
     }
 }

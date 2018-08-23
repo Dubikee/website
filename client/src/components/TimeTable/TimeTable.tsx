@@ -27,16 +27,18 @@ class TimeTable extends React.PureComponent<ITimeTableProps> {
 				dataIndex: `day${i}`,
 				width: 60,
 				align: 'center',
-				render: course => {
+				render: (course: Course) => {
 					if (course) {
+						const { location, teacher, name, start, end } = course;
 						let content = <div className='content'>
-							<p style={{ margin: 0, lineHeight: '30px' }}>教室：{course['location']}</p>
-							<p style={{ margin: 0, lineHeight: '30px' }}>老师：{course['teacher']}</p>
+							<p style={{ margin: 0, lineHeight: '30px' }}>教室：{location}</p>
+							<p style={{ margin: 0, lineHeight: '30px' }}>老师：{teacher}</p>
+							<p style={{ margin: 0, lineHeight: '30px' }}>时间：第{start}-{end}周</p>
 						</div>
 						return <Popover content={content} title={course['name']}>
-							<Tag color="geekblue" visible={this.props.showName}>{course['name']}</Tag>
-							<Tag color="cyan" visible={this.props.showLocation}>{course['location']}</Tag>
-							<Tag color="lime" visible={this.props.showTeacher}>{course['teacher']}</Tag>
+							<Tag color="geekblue" visible={this.props.showName}>{name}</Tag>
+							<Tag color="cyan" visible={this.props.showLocation}>{location}</Tag>
+							<Tag color="lime" visible={this.props.showTeacher}>{teacher}</Tag>
 						</Popover>
 					}
 					else

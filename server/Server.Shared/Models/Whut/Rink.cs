@@ -1,6 +1,6 @@
 ﻿namespace Server.Shared.Models.Whut
 {
-    public class GpaRinks
+    public class Rink
     {
         /// <summary>
         /// 必修课绩点

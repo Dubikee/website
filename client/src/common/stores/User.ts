@@ -1,5 +1,5 @@
-import { observable } from "mobx";
-import { nullable } from "../../utils/core";
+import { observable, action } from "mobx";
+import { nullable } from "../../utils";
 
 export class User {
 	@observable
@@ -19,4 +19,10 @@ export class User {
 
 	@observable
 	public email: string | nullable
+
+	@action.bound
+	public updateUser(u: any) {
+		for (const k in u)
+			if (u[k]) this[k] = u[k]
+	}
 }

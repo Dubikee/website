@@ -5,6 +5,3 @@ export class Course {
 	teacher: string
 	location: string;
 }
-
-
-///

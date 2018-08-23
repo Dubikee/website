@@ -3,28 +3,28 @@ import { Layout, Menu, Icon, Dropdown } from 'antd';
 import "./Home.layout.less"
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { nullable, renderRouter } from '../../../utils/core';
+import { nullable, renderRouter } from '../../../utils';
 import { homeRoutes, homeRedirect } from '../../../routes/home';
 import AdminOnly from '../../../containers/AdminOnly/AdminOnly';
 import { User } from '../../../common/stores/User';
 
-const menu = (
-	<Menu>
-		<Menu.Item>
-			<Link to="#">账号管理</Link>
-		</Menu.Item>
-		<Menu.Item>
-			<Link to="#">注销账号</Link>
-		</Menu.Item>
-		<Menu.Item>
-			<Link to="#">重新登陆</Link>
-		</Menu.Item>
-	</Menu>
-);
+const menu = <Menu>
+	<Menu.Item>
+		<Link to="#">账号管理</Link>
+	</Menu.Item>
+	<Menu.Item>
+		<Link to="#">注销账号</Link>
+	</Menu.Item>
+	<Menu.Item>
+		<Link to="#">重新登陆</Link>
+	</Menu.Item>
+</Menu>
+
 
 interface IHomeLayoutProps extends RouteComponentProps<{}> {
 	user: User | nullable
 }
+
 @inject('user')
 @observer
 class HomeLayout extends React.Component<IHomeLayoutProps> {

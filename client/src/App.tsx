@@ -1,7 +1,7 @@
 import { Provider } from "mobx-react";
 import { ServicesStore } from "./services";
 import * as React from "react";
-import { renderRouter } from "./utils/core";
+import { renderRouter } from "./utils";
 import 'antd/dist/antd.css';
 import './assets/iconfont/iconfont.css'
 import { indexRoutes, indexRedirect } from "./routes";

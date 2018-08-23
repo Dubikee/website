@@ -61,7 +61,7 @@ namespace Server.Service.Whut
         /// </summary>
         /// <param name="html"></param>
         /// <returns>如果html不包含分数table则返回null</returns>
-        public static async Task<IEnumerable<ScoreInfo>> ParseScoresAsync(this string html)
+        public static async Task<IEnumerable<Score>> ParseScoresAsync(this string html)
         {
             if (string.IsNullOrWhiteSpace(html)) return null;
             var doc = await new HtmlParser().ParseAsync(html);
@@ -70,7 +70,7 @@ namespace Server.Service.Whut
             return list.Where(tr => tr.ChildElementCount == 14).Select(tr =>
             {
                 var arr = tr.Children.Select(td => td.InnerHtml).ToArray();
-                return new ScoreInfo
+                return new Score
                 {
                     SchoolYear = arr[0],
                     CourseCode = arr[1],
@@ -106,7 +106,7 @@ namespace Server.Service.Whut
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        public static async Task<GpaRinks> ParseRinksAsync(this string html)
+        public static async Task<Rink> ParseRinksAsync(this string html)
         {
             if (string.IsNullOrWhiteSpace(html)) return default;
             var doc = await new HtmlParser().ParseAsync(html);
@@ -115,7 +115,7 @@ namespace Server.Service.Whut
                 .Where(x => x != null)
                 .ToArray();
             return arr.Length == 5
-                ? new GpaRinks
+                ? new Rink
                 {
                     PureGpa = arr[0],
                     TotalGpa = arr[1],

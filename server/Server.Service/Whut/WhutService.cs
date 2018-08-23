@@ -159,7 +159,7 @@ namespace Server.Service.Whut
         /// 刷新课表
         /// </summary>
         /// <returns></returns>
-        public async Task<WhutStatus> RefreshTimeTable()
+        public async Task<WhutStatus> UpdateTable()
         {
             if (Student == null)
                 return WhutStatus.StudentNotFind;
@@ -173,7 +173,7 @@ namespace Server.Service.Whut
                 var timetable = await html.ParseTimeTable();
                 if (timetable == null)
                     return WhutStatus.PwdWrong;
-                Student.TimeTable = timetable;
+                Student.Table = timetable;
                 return WhutStatus.Ok;
             }
             catch
@@ -186,7 +186,7 @@ namespace Server.Service.Whut
         /// 刷新分数
         /// </summary>
         /// <returns></returns>
-        public async Task<WhutStatus> RefreshScores()
+        public async Task<WhutStatus> UpdateScoresRink()
         {
             if (Student == null)
                 return WhutStatus.StudentNotFind;
@@ -234,7 +234,7 @@ namespace Server.Service.Whut
                 if (rinks == null)
                     return WhutStatus.WhutServerCrashed;
                 Student.Scores = scores;
-                Student.Rinks = rinks;
+                Student.Rink = rinks;
                 return WhutStatus.Ok;
             }
             catch

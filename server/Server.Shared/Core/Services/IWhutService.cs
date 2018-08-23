@@ -9,8 +9,8 @@ namespace Server.Shared.Core.Services
         Task<WhutStatus> TryLogin();
         WhutStatus UpdateInfo(string studentId, string pwd);
         Task<WhutStatus> TryLogin(string studentId, string pwd);
-        Task<WhutStatus> RefreshTimeTable();
-        Task<WhutStatus> RefreshScores();
+        Task<WhutStatus> UpdateTable();
+        Task<WhutStatus> UpdateScoresRink();
         Task<int> Evaluate();
     }
 }

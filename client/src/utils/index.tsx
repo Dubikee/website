@@ -2,11 +2,8 @@ import registerServiceWorker from "./registerServiceWorker";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { RouteProps, RedirectProps, Switch, Route, Redirect } from "react-router";
-import Axios, { AxiosRequestConfig } from 'axios';
-import * as qs from 'querystring';
 import { User } from "../common/stores/User";
 
-export let request = (url: string) => new HttpClient(url)
 export let bootstrap = () => new Bootstrap();
 export type nullable = null | undefined
 export interface IBootstrap {
@@ -25,7 +22,7 @@ export let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => 
 	{redirect ? redirect.map((x, i) => <Redirect key={i} {...x} />) : null}
 </Switch>;
 
-export let match = (v: string | number) => (switcher: any) => {
+export let match = (switcher: any) => (v: string | number) => {
 	if (switcher[v])
 		switcher[v]()
 	else if (switcher['_'])
@@ -87,86 +84,3 @@ class Bootstrap implements IBootstrap {
 }
 
 
-/**
- * 发送Http请求的类
- *
- * @export
- * @class HttpClient
- */
-export class HttpClient {
-	private headers: any;
-	private data: any;
-	constructor(private url: string) {
-		this.url = url;
-	}
-	/**
-	 * 添加头
-	 *
-	 * @param {string} key
-	 * @param {string} value
-	 * @memberof HttpClient
-	 */
-	public header(key: string, value: string) {
-		this.headers = { [key]: value, ...this.headers }
-		return this;
-	}
-	/**
-	 * 添加表单数据
-	 *
-	 * @param {string} key
-	 * @param {string} value
-	 * @memberof HttpClient
-	 */
-	public form(key: string, value: string) {
-		this.data = { [key]: value, ...this.data }
-		return this;
-	}
-	/**
-	 * 设置表单数据
-	 *
-	 * @param {*} data
-	 * @memberof HttpClient
-	 */
-	public forms(data: any) {
-		this.data = data
-		return this;
-	}
-	/**
-	 *	设置Jwt验证
-	 *
-	 * @param {string} jwt
-	 * @memberof HttpClient
-	 */
-	public auth(jwt: string) {
-		this.headers = { 'Authorization': 'Bearer ' + jwt, ...this.headers }
-		return this;
-	}
-	/**
-	 * 发起Get请求
-	 *
-	 * @template T
-	 * @returns
-	 * @memberof HttpClient
-	 */
-	public async get<T>() {
-		let config: AxiosRequestConfig = {}
-		if (this.headers)
-			config.headers = this.headers;
-		if (this.data)
-			config.params = this.data;
-		return Axios.get<T>(this.url, config)
-	}
-	/**
-	 * 发起post请求
-	 *
-	 * @template T
-	 * @returns
-	 * @memberof HttpClient
-	 */
-	public async post<T>() {
-		let config: AxiosRequestConfig = {}
-		if (this.headers)
-			config.headers = this.headers;
-		return Axios.post<T>(this.url, qs.stringify(this.data), config)
-	}
-}

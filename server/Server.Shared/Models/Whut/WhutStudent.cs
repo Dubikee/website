@@ -24,14 +24,14 @@ namespace Server.Shared.Models.Whut
         /// <summary>
         /// 课表
         /// </summary>
-        public string[,] TimeTable { get; set; }
+        public string[,] Table { get; set; }
         /// <summary>
         /// 分数
         /// </summary>
-        public IEnumerable<ScoreInfo> Scores { get; set; }
+        public IEnumerable<Score> Scores { get; set; }
         /// <summary>
         /// 绩点,排名
         /// </summary>
-        public GpaRinks Rinks { get; set; }
+        public Rink Rink { get; set; }
     }
 }

@@ -1,16 +1,15 @@
 import * as React from 'react'
 import "./Courses.view.less"
 import { inject, observer } from 'mobx-react';
-import { nullable, request, getToken, removeToken } from '../../../utils/core';
 import TimeTable from '../../../components/TimeTable/TimeTable';
-import { TimeTableModel } from '../../../common/TimeTableModel';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { message, Form, Switch, Icon } from 'antd';
-import { WhutStatus } from '../../../common/models/WhutStatus';
+import { nullable, getToken, removeToken, match } from '../../../utils';
 import { WhutStudent } from '../../../common/stores/WhutStudent';
-import { Errors } from '../../../common/config/Errors';
 import { User } from '../../../common/stores/User';
-
+import { request } from '../../../utils/request';
+import { Tips } from '../../../common/config/Tips';
+import { WhutStatus } from '../../../common/models/WhutStatus';
 
 interface ICoursesViewProps extends RouteComponentProps<any> {
 	user: User | nullable,
@@ -36,47 +35,41 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 	}
 	async loadTable() {
 		try {
-			const res = await request('/api/whut/timetable')
+			const { status, data } = await request('/api/whut/table')
 				.auth(getToken()!)
-				.get<TimeTableModel>();
-			switch (res.status) {
-				case 200:
-					break;
-				case 401:
-					message.error(Errors.TokenExpires, () => {
-						removeToken();
-						this.props.history.push('/login')
-					})
-					return;
-				default:
-					throw Error(`HttpStatus=${res.status}`)
-			}
-			const { status, timeTable } = res.data;
-			const student = this.props.student!;
-			switch (status) {
-				case WhutStatus.Ok:
-					if (timeTable && timeTable.length == 5 && timeTable[0].length == 7)
-						student.setTables(timeTable)
-					else
-						message.error(Errors.ServerFailure);
-					break;
-				case WhutStatus.StudentNotFind:
-					message.error(Errors.NoStudent);
-					break;
-				case WhutStatus.PwdWrong:
-					message.error(Errors.WhutPwdWrong);
-					break;
-				case WhutStatus.WhutServerCrashed:
-					message.error(Errors.WhutServerCrashed);
-					break;
-				default:
-					throw Error(`Status = ${status}`)
-			}
-			this.setState({ loading: false })
-
+				.get();
+			let ok = match({
+				[WhutStatus.Ok]:
+					() => {
+						const student = this.props.student!;
+						const { table } = data;
+						if (table && table.length == 5 && table[0].length == 7)
+							student.setTables(table)
+						else
+							message.error(Tips.ServerFailure);
+					},
+				[WhutStatus.StudentNotFind]:
+					() => message.warn(Tips.NoStudent),
+				[WhutStatus.PwdWrong]:
+					() => message.warn(Tips.WhutPwdWrong),
+				[WhutStatus.WhutServerCrashed]:
+					() => message.error(Tips.WhutServerCrashed),
+				['_']:
+					() => { throw Error(`Status = ${status}`) },
+				['*']:
+					() => this.setState({ loading: false })
+			})
+			match({
+				200: () => ok(data.status),
+				401: () => message.error(Tips.TokenExpires, () => {
+					removeToken();
+					this.props.history.push('/login')
+				}),
+				'_': () => { throw Error(`HttpStatus=${status}`) }
+			})(status)
 		} catch (error) {
 			console.log(error)
-			message.error(Errors.ServerFailure)
+			message.error(Tips.ServerFailure)
 			this.setState({ loading: false })
 		}
 	}

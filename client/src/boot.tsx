@@ -1,5 +1,5 @@
 import App from "./App";
-import { bootstrap } from "./utils/core";
+import { bootstrap } from "./utils";
 
 bootstrap()
 	.with(App)

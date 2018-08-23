@@ -1,4 +1,4 @@
-import { nullable } from "../../utils/core";
+import { nullable } from "../../utils";
 import { Course } from "./Course";
 export class TimeTableItem {
 	oddWeek: Course | nullable;

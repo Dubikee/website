@@ -1,5 +1,6 @@
-import { nullable } from "../utils/core";
-import { AuthStatus } from "./models/AuthStatus";
+import { AuthStatus } from "../models/AuthStatus";
+import { nullable } from "../../utils";
+
 export class ValidateModel {
 	status: AuthStatus;
 	uid: string | nullable;

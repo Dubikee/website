@@ -1,9 +1,9 @@
 import { observable, action } from "mobx";
-import { nullable } from "../../utils/core";
-import { Course } from "../models/Course";
-import { ScoreInfo } from "../models/ScoreInfo";
-import { GpaRinks } from "../models/GpaRinks";
+import { nullable } from "../../utils";
+import { Score } from "../models/Score";
+import { Rink } from "../models/Rink";
 import { TimeTableItem } from "../models/TimeTableItem";
+import { Course } from "../models/Course";
 
 const reg = /(.+)[(]第([0-9]+)[-]([0-9]+)([单|双]?)周,(.+?),(.+?)[)]/;
 
@@ -13,16 +13,69 @@ export class WhutStudent {
 	@observable
 	tableLoaded: boolean = false;
 	@observable
-	scores: ScoreInfo[] = [];
+	scores: Score[] = [];
 	@observable
-	rinks: GpaRinks | nullable
+	rink: Rink | nullable
 	@observable
-	tables: {}[][] = makeTables(Array(5).fill(Array(7).fill('')))
+	tables: {}[][] = makeTables(Array(5).fill(Array(7).fill('')));
+
+	constructor() {
+		this.initRink();
+		this.initScores();
+		this.initTables();
+	}
 
 	@action.bound
 	setTables(arr: string[][]) {
 		this.tables = makeTables(arr);
 		this.tableLoaded = true;
+		localStorage.setItem('table', JSON.stringify(arr));
+	}
+
+	@action.bound
+	setRink(rink: Rink) {
+		this.rink = rink;
+		localStorage.setItem('rink', JSON.stringify(rink));
+	}
+
+	@action.bound
+	setScores(scores: Score[]) {
+		this.scores = scores;
+		localStorage.setItem('scores', JSON.stringify(scores));
+	}
+
+	@action.bound
+	initTables() {
+		const txt = localStorage.getItem('table');
+		if (txt) {
+			const tb = <string[][]>JSON.parse(txt);
+			if (tb) {
+				this.tables = makeTables(tb);
+				this.tableLoaded = true;
+			}
+		}
+	}
+
+	@action.bound
+	initScores() {
+		const txt = localStorage.getItem('scores');
+		if (txt) {
+			const scores = <Score[]>JSON.parse(txt);
+			if (scores) {
+				this.scores = scores;
+			}
+		}
+	}
+
+	@action.bound
+	initRink() {
+		const txt = localStorage.getItem('rink');
+		if (txt) {
+			const rink = <Rink>JSON.parse(txt);
+			if (rink) {
+				this.rink = rink;
+			}
+		}
 	}
 }
 function makeTables(arr: string[][]) {
@@ -41,12 +94,12 @@ function makeTables(arr: string[][]) {
 			let row = {}
 			for (let y = 0; y < 7; y++) {
 				let day = `day${y}`;
-				row['key'] = y;
+				row['key'] = `${i}${x}${y}`;
 				let { oddWeek, evenWeek } = source[x][y];
-				if (oddWeek && week % 2 == 1)
-					row[day] = oddWeek.start <= week && oddWeek.end >= week ? oddWeek : null
-				else if (evenWeek && week % 2 == 0)
-					row[day] = evenWeek.start <= week && evenWeek.end >= week ? evenWeek : null
+				if (oddWeek && week % 2 == 1 && oddWeek.start <= week && oddWeek.end >= week)
+					row[day] = oddWeek;
+				else if (evenWeek && week % 2 == 0 && evenWeek.start <= week && evenWeek.end >= week)
+					row[day] = evenWeek;
 			}
 			table.push(row);
 		}

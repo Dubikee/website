@@ -1,11 +1,11 @@
 import * as React from 'react';
 import './RinkCard.less';
-import { GpaRinks } from '../../common/models/GpaRinks';
-import { nullable } from '../../utils/core';
+import { nullable } from '../../utils';
 import { Card, Row } from 'antd';
+import { Rink } from "../../common/models/Rink";
 
 interface IRinkCardPorps {
-	data: GpaRinks | nullable,
+	data: Rink | nullable,
 	loading: boolean
 }
 
