@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using Server.Shared.Core.Services;
@@ -62,30 +63,15 @@ namespace Server.Host.Controllers
                 });
             }
 
-            if (_whut.Student.Table != null)
-            {
-                Log.Info($"{Request.Path} status=[Ok]");
-                return Ok(new
-                {
-                    status = WhutStatus.Ok,
-                    table = _whut.Student.Table
-                });
-            }
-
-            var status = await _whut.UpdateTable();
-            if (status == WhutStatus.Ok)
-            {
-                Log.Info($"{Request.Path} studentId=[{_whut.Student.StudentId}] status=[Ok]");
-                return Ok(new
-                {
-                    status,
-                    table = _whut.Student.Table
-                });
-            }
-
+            var status = WhutStatus.Ok;
+            if (_whut.Student.Table == null)
+                status = await _whut.UpdateTable();
             Log.Info($"{Request.Path} status=[{status}]");
-            return Ok(new {status});
-
+            return Ok(new
+            {
+                status,
+                table = _whut.Student.Table
+            });
         }
 
         /// <summary>
@@ -104,18 +90,18 @@ namespace Server.Host.Controllers
             }
 
             var status = await _whut.UpdateTable();
-            if (status == WhutStatus.Ok)
+            if (status != WhutStatus.Ok)
             {
-                Log.Info($"{Request.Path} studentId=[{_whut.Student.StudentId}] status=[Ok]");
-                return Ok(new
-                {
-                    status,
-                    table = _whut.Student.Table
-                });
+                Log.Info($"{Request.Path} status=[{status}]");
+                return Ok(new {status});
             }
 
-            Log.Info($"{Request.Path} status=[{status}]");
-            return Ok(new {status});
+            Log.Info($"{Request.Path} studentId=[{_whut.Student.StudentId}] status=[Ok]");
+            return Ok(new
+            {
+                status,
+                table = _whut.Student.Table
+            });
         }
 
         /// <summary>
@@ -164,21 +150,13 @@ namespace Server.Host.Controllers
                 });
             }
 
+            var status = WhutStatus.Ok;
             if (_whut.Student.Scores == null || _whut.Student.Rink == null)
-            {
-
-                var status = await _whut.UpdateScoresRink();
-                if (status != WhutStatus.Ok)
-                {
-                    Log.Info($"{Request.Path} status=[{status}]");
-                    return Ok(new {status});
-                }
-            }
-
-            Log.Info($"{Request.Path} studentId=[{_whut.Student.StudentId}] status=[Ok]");
+                status = await _whut.UpdateScoresRink();
+            Log.Info($"{Request.Path} studentId=[{_whut.Student.StudentId}] status=[{status}]");
             return Ok(new
             {
-                status = WhutStatus.Ok,
+                status,
                 scores = _whut.Student.Scores,
                 rink = _whut.Student.Rink
             });

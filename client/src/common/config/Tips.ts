@@ -14,5 +14,6 @@ export let Tips = {
 	LoginSuccess: "登陆成功",
 	Landing: '正在登陆...',
 	PwdIsEmpty: '密码不可为空',
-	UidIsEmpty: '账号不可为空'
+	UidIsEmpty: '账号不可为空',
+	RefreshOk: '刷新完成'
 }
