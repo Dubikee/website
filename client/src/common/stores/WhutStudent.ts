@@ -1,9 +1,9 @@
 import { observable, action } from "mobx";
-import { nullable } from "../utils/core";
-import { Course } from "./Course";
-import { ScoreInfo } from "./ScoreInfo";
-import { GpaRinks } from "./GpaRinks";
-import { TimeTableItem } from "./TimeTableItem";
+import { nullable } from "../../utils/core";
+import { Course } from "../models/Course";
+import { ScoreInfo } from "../models/ScoreInfo";
+import { GpaRinks } from "../models/GpaRinks";
+import { TimeTableItem } from "../models/TimeTableItem";
 
 const reg = /(.+)[(]第([0-9]+)[-]([0-9]+)([单|双]?)周,(.+?),(.+?)[)]/;
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './RinkCard.less';
-import { GpaRinks } from '../../common/GpaRinks';
+import { GpaRinks } from '../../common/models/GpaRinks';
 import { nullable } from '../../utils/core';
 import { Card, Row } from 'antd';
 

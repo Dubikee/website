@@ -7,10 +7,10 @@ import { ServiceNames } from "src/services";
 import { RouteComponentProps, withRouter } from "react-router";
 import { runInAction } from "mobx";
 import { LoginModel } from "../../common/LoginModel";
-import { User } from "../../common/User";
-import { AuthStatus } from "../../common/AuthStatus";
+import { AuthStatus } from "../../common/models/AuthStatus";
 import { Errors } from "../../common/config/Errors";
 import { Infos } from "../../common/config/Infos";
+import { User } from "../../common/stores/User";
 
 interface IHomeViewProps extends RouteComponentProps<any> {
 	user: User | nullable

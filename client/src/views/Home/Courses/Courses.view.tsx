@@ -1,15 +1,15 @@
 import * as React from 'react'
 import "./Courses.view.less"
 import { inject, observer } from 'mobx-react';
-import { User } from '../../../common/User';
 import { nullable, request, getToken, removeToken } from '../../../utils/core';
 import TimeTable from '../../../components/TimeTable/TimeTable';
 import { TimeTableModel } from '../../../common/TimeTableModel';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { message, Form, Switch, Icon } from 'antd';
-import { WhutStatus } from '../../../common/WhutStatus';
-import { WhutStudent } from '../../../common/WhutStudent';
+import { WhutStatus } from '../../../common/models/WhutStatus';
+import { WhutStudent } from '../../../common/stores/WhutStudent';
 import { Errors } from '../../../common/config/Errors';
+import { User } from '../../../common/stores/User';
 
 
 interface ICoursesViewProps extends RouteComponentProps<any> {

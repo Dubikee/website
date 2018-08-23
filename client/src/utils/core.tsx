@@ -4,7 +4,7 @@ import * as ReactDOM from "react-dom";
 import { RouteProps, RedirectProps, Switch, Route, Redirect } from "react-router";
 import Axios, { AxiosRequestConfig } from 'axios';
 import * as qs from 'querystring';
-import { User } from "../common/User";
+import { User } from "../common/stores/User";
 
 export let request = (url: string) => new HttpClient(url)
 export let bootstrap = () => new Bootstrap();
@@ -19,10 +19,20 @@ export let getToken = () => window.localStorage.getItem("jwt");
 export let setToken = (jwt: string) => window.localStorage.setItem("jwt", jwt)
 export let removeToken = () => window.localStorage.removeItem('jwt')
 export let isMaster = (user: User) => user && user.role == 'master';
+export let isAdmin = (user: User) => user && (user.role == 'master' || user.role == 'admin');
 export let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => <Switch>
 	{routes.map((x, i) => <Route key={i} {...x} />)}
 	{redirect ? redirect.map((x, i) => <Redirect key={i} {...x} />) : null}
 </Switch>;
+
+export let match = (v: string | number) => (switcher: any) => {
+	if (switcher[v])
+		switcher[v]()
+	else if (switcher['_'])
+		switcher['_']()
+	if (switcher['*'])
+		switcher['*']()
+}
 
 class Bootstrap implements IBootstrap {
 

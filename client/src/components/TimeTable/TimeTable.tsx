@@ -2,7 +2,7 @@ import * as React from 'react';
 import './TimeTable.less';
 import { Table, Tag, Popover, Tabs } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
-import { Course } from '../../common/Course';
+import { Course } from '../../common/models/Course';
 
 interface ITimeTableProps {
 	loading: boolean;

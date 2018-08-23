@@ -1,5 +1,5 @@
 import { observable } from "mobx";
-import { nullable } from "../utils/core";
+import { nullable } from "../../utils/core";
 
 export class User {
 	@observable

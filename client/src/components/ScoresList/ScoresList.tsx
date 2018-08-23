@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './ScoresList.less';
-import { ScoreInfo } from '../../common/ScoreInfo';
+import { ScoreInfo } from '../../common/models/ScoreInfo';
 import { List, Button, Spin, Tag, Alert, Popover } from 'antd';
 
 interface IScoresListPorps {

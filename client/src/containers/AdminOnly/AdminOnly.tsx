@@ -3,12 +3,12 @@ import { inject } from 'mobx-react';
 import { getToken, request, removeToken, nullable } from '../../utils/core';
 import { runInAction } from 'mobx';
 import { ValidateModel } from "../../common/ValidateModel";
-import { AuthStatus } from "../../common/AuthStatus";
-import { User } from '../../common/User';
+import { AuthStatus } from "../../common/models/AuthStatus";
 import { message, Spin } from 'antd';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { isMaster } from '../../utils/core';
 import { Errors } from '../../common/config/Errors';
+import { User } from '../../common/stores/User';
 
 interface IAdimOnlyPorps extends RouteComponentProps<any> {
 	user: User | nullable

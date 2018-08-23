@@ -3,10 +3,10 @@ import { Layout, Menu, Icon, Dropdown } from 'antd';
 import "./Home.layout.less"
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { User } from '../../../common/User';
 import { nullable, renderRouter } from '../../../utils/core';
 import { homeRoutes, homeRedirect } from '../../../routes/home';
 import AdminOnly from '../../../containers/AdminOnly/AdminOnly';
+import { User } from '../../../common/stores/User';
 
 const menu = (
 	<Menu>

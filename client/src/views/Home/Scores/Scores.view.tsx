@@ -2,11 +2,11 @@ import * as React from 'react'
 import './Scores.view.less'
 import { inject, observer } from 'mobx-react';
 import { RouteComponentProps } from 'react-router';
-import { WhutStudent } from '../../../common/WhutStudent';
+import { WhutStudent } from '../../../common/stores/WhutStudent';
 import { nullable, request, getToken } from '../../../utils/core';
 import { ScoresModel } from '../../../common/ScoresModel';
 import { message, Tabs } from 'antd';
-import { WhutStatus } from '../../../common/WhutStatus';
+import { WhutStatus } from '../../../common/models/WhutStatus';
 import RinkCard from '../../../components/RinkCard/RinkCard';
 import { Errors } from '../../../common/config/Errors';
 import ScoresList from '../../../components/ScoresList/ScoresList';

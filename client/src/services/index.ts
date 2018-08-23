@@ -1,5 +1,5 @@
-import { User } from '../common/User';
-import { WhutStudent } from '../common/WhutStudent';
+import { WhutStudent } from '../common/stores/WhutStudent';
+import { User } from '../common/stores/User';
 export let ServicesStore = {
 	user: new User(),
 	student: new WhutStudent()
