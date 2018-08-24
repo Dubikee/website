@@ -16,7 +16,7 @@ export let getToken = () => window.localStorage.getItem("jwt");
 export let setToken = (jwt: string) => window.localStorage.setItem("jwt", jwt)
 export let removeToken = () => window.localStorage.removeItem('jwt')
 export let isMaster = (user: User) => user && user.role == 'master';
-export let isAdmin = (user: User) => user && (user.role == 'master' || user.role == 'admin');
+export let isAdmin = (user: User | nullable) => user && (user.role == 'master' || user.role == 'admin');
 export let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => <Switch>
 	{routes.map((x, i) => <Route key={i} {...x} />)}
 	{redirect ? redirect.map((x, i) => <Redirect key={i} {...x} />) : null}

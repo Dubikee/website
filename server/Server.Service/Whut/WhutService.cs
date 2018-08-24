@@ -51,6 +51,20 @@ namespace Server.Service.Whut
         private readonly IWhutDbContext<WhutStudent> _db;
         private readonly IAccountManager<User> _manager;
 
+        /// <summary>
+        /// 获取学生
+        /// </summary>
+        public WhutStudent Student
+        {
+            get
+            {
+                if (_whutStudent != null) return _whutStudent;
+                if (_manager.User == null) return null;
+                _whutStudent = _db.FindStudent(_manager.User.Uid);
+                return _whutStudent;
+            }
+        }
+
         public WhutService(IWhutDbContext<WhutStudent> db, IAccountManager<User> manager)
         {
             _db = db;
@@ -86,20 +100,6 @@ namespace Server.Service.Whut
             Student.Pwd = pwd;
             _db.UpdateStudent(Student);
             return WhutStatus.Ok;
-        }
-
-        /// <summary>
-        /// 获取学生
-        /// </summary>
-        public WhutStudent Student
-        {
-            get
-            {
-                if (_whutStudent != null) return _whutStudent;
-                if (_manager.User == null) return null;
-                _whutStudent = _db.FindStudent(_manager.User.Uid);
-                return _whutStudent;
-            }
         }
 
         /// <summary>

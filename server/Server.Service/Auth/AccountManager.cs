@@ -65,7 +65,6 @@ namespace Server.Service.Auth
             // 检查密码是否正确
             if (!User.MakePwdHash(pwd).SequenceEqual(user.PwHash))
                 return (AuthStatus.PasswordWrong, null);
-            _user = user;
             return (AuthStatus.Ok, MakeJwt(uid, user.Role));
         }
 

@@ -20,25 +20,19 @@ export default (View: any) => {
 			finished: false
 		}
 		componentWillMount() {
-			let user = this.props.user!;
-			if (user.login) {
-				if (isAdmin(user)) {
-					this.setState({ finished: true })
-				}
-				else {
+			const user = this.props.user!;
+			if (user.login)
+				isAdmin(user) ? this.setState({ finished: true }) :
 					message.warn(Tips.PermissionDenied, () => {
 						this.props.history.length > 0 ?
 							this.props.history.goBack() :
 							this.props.history.push('/login')
 					});
-				}
-			}
-			else {
+			else
 				this.validate();
-			}
 		}
 		async validate() {
-			let token = getToken();
+			const token = getToken();
 			if (!token) {
 				this.props.history.push('/login')
 				return;
@@ -58,7 +52,7 @@ export default (View: any) => {
 					[AuthStatus.TokenExpired]:
 						() => {
 							removeToken();
-							message.warn(Tips.TokenExpires, 1, () => {
+							message.warn(Tips.TokenExpires, () => {
 								this.props.history.push('/login');
 							})
 						}
@@ -75,7 +69,9 @@ export default (View: any) => {
 		}
 		render() {
 			return this.state.finished ? <View /> : <div style={{
-				textAlign: "center", paddingTop: "100px"
+				textAlign: "center",
+				paddingTop: "100px",
+				backgroundColor: '#fff',
 			}}>
 				<Spin size="large" />
 			</div>;

@@ -1,0 +1,59 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+.app-layout {
+    .header {
+        background-color: rgb(255, 255, 255);
+        margin-bottom: 10px;
+        .header-logo {
+            background-image: url(../../assets/img/logo.jpg);
+            margin-top: 12px;
+            height: 40px;
+            width: 40px;
+            background-size: cover;
+            float: left;
+            margin-right: 20px;
+        }
+        .header-menu {
+            background-color: rgba(255, 255, 255);
+            float: left;
+            .menu-list {
+                line-height: 64px;
+                p {
+                    line-height: 64px;
+                    display: inline-block;
+                    margin-left: 10px;
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    margin-bottom: 0;
+                    a {
+                        color: rgb(161, 161, 161);
+                    }
+                    &:hover {
+                        background-color: #e6f7ffb4;
+                        a {
+                            color: rgb(53, 53, 53);
+                        }
+                    }
+                }
+                .list-selected {
+                    a {
+                        color: rgb(53, 53, 53);
+                    }
+                    background-color: #e6f7ffb4;
+                }
+            }
+        }
+        .header-userinfo {
+			float: right;
+			.drop-menu{
+				letter-spacing: 4px;
+				color: rgb(148, 148, 148);
+				&:hover{
+					color: rgb(53, 53, 53);
+				}
+			}
+        }
+    }
+}

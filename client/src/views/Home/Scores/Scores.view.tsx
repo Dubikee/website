@@ -66,10 +66,8 @@ class ScoresView extends React.Component<IScoresViewPorps>{
 			okText: '是',
 			okType: 'danger',
 			cancelText: '否',
-			onOk: async () => await this.loadScores(false)
-			,
-			onCancel: async () => await this.loadScores(true)
-			,
+			onOk: async () => await this.loadScores(false),
+			onCancel: async () => await this.loadScores(true),
 		});
 	}
 	render() {

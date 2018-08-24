@@ -83,10 +83,10 @@ class LoginView extends React.Component<IHomeViewProps> {
 					<h1>LOGIN</h1>
 					<Form className="login-form">
 						<Form.Item>
-							<Input onChange={e => { this.setState({ uid: e.target.value }) }} prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Account" />
+							<Input size='large' onChange={e => { this.setState({ uid: e.target.value }) }} prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Account" />
 						</Form.Item>
 						<Form.Item>
-							<Input onChange={e => { this.setState({ pwd: e.target.value }) }} prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />} type="password" placeholder="Password" />
+							<Input size='large' onChange={e => { this.setState({ pwd: e.target.value }) }} prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />} type="password" placeholder="Password" />
 						</Form.Item>
 						<Form.Item className="form-item-last">
 							<Checkbox>Remember me</Checkbox>
