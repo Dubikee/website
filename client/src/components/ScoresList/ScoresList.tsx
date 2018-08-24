@@ -1,13 +1,10 @@
 import * as React from 'react';
 import './ScoresList.less';
-import { List, Button, Spin, Tag, Alert, Popover } from 'antd';
+import { List, Tag, Alert, Popover } from 'antd';
 import { Score } from "../../common/models/Score";
-import { nullable } from '../../utils';
 
 interface IScoresListPorps {
-	//onLoadMore: () => void;
 	loading: boolean,
-	// loadingMore: boolean,
 	data: Score[],
 	year: string
 }

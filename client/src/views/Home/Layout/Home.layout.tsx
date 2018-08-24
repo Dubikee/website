@@ -35,19 +35,19 @@ class HomeLayout extends React.Component<IHomeLayoutProps> {
 		let { name } = this.props.user!;
 		return <Layout className="home-layout">
 			<Layout.Header className="header">
-				<div className="logo" />
-				<div className="menu">
-					<div className="list">
+				<div className="header-logo" />
+				<div className="header-menu">
+					<div className="menu-list">
 						<p className="list-selected"><Link to="/home">首页</Link></p>
 						<p><Link to="/index">XXXX</Link></p>
 						<p><Link to="/index">XXXX</Link></p>
 					</div>
 				</div>
-				<div className='info'>
+				<div className='header-userinfo'>
 					<Dropdown className="drop-menu" overlay={menu}>
 						<Link to="#">
 							<Icon type='user' />
-							<span className='name'>{name}</span>
+							<span style={{ marginLeft: 10 }}>{name}</span>
 							<Icon type="down" />
 						</Link>
 					</Dropdown>
@@ -55,10 +55,11 @@ class HomeLayout extends React.Component<IHomeLayoutProps> {
 			</Layout.Header>
 			<Layout>
 				<Layout.Sider trigger={null}
-					collapsible
 					collapsed={this.state.collapsed}
 					width={200}
-					style={{ background: '#fff' }}>
+					style={{ background: '#fff' }}
+					collapsible
+				>
 					<Menu
 						mode="inline"
 						defaultSelectedKeys={['/home/index']}
@@ -66,9 +67,7 @@ class HomeLayout extends React.Component<IHomeLayoutProps> {
 						onSelect={({ key }) => this.handleClick(key)}
 						style={{ height: '100%', borderRight: 0 }}
 					>
-						<Menu.SubMenu
-							key="whut"
-							title={<span><Icon type="home" /><span>教务处</span></span>}>
+						<Menu.SubMenu key="whut" title={<span><Icon type="home" /><span>教务处</span></span>}>
 							<Menu.Item key="/home/index">课表</Menu.Item>
 							<Menu.Item key="/home/xk">选课</Menu.Item>
 							<Menu.Item key="/home/pj">评教</Menu.Item>
@@ -92,7 +91,7 @@ class HomeLayout extends React.Component<IHomeLayoutProps> {
 							backgroundColor: "#e1e1e1"
 						}}>
 							<Icon
-								className="trigger"
+								className="sider-trigger"
 								type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
 								onClick={() => this.setState({
 									collapsed: !this.state.collapsed
@@ -101,7 +100,7 @@ class HomeLayout extends React.Component<IHomeLayoutProps> {
 						</div>
 					</Menu>
 				</Layout.Sider>
-				<Layout className="right">
+				<Layout className="content-wrapper">
 					<Layout.Content style={{ backgroundColor: '#fff', minHeight: 630 }}>
 						{renderRouter(homeRoutes, homeRedirect)}
 					</Layout.Content>
