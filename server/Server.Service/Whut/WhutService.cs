@@ -174,6 +174,7 @@ namespace Server.Service.Whut
                 if (timetable == null)
                     return WhutStatus.PwdWrong;
                 Student.Table = timetable;
+                _db.UpdateStudent(Student);
                 return WhutStatus.Ok;
             }
             catch
@@ -235,6 +236,7 @@ namespace Server.Service.Whut
                     return WhutStatus.WhutServerCrashed;
                 Student.Scores = scores;
                 Student.Rink = rinks;
+                _db.UpdateStudent(Student);
                 return WhutStatus.Ok;
             }
             catch

@@ -7,5 +7,7 @@ export interface API{
     '/api/account/login':LoginModel
     '/api/account/validate':ValidateModel
     '/api/whut/table':TableModel
+    '/api/whut/updatetable':TableModel
     '/api/whut/scoresrink':ScoresRinkModel
+    '/api/whut/updatescoresrink':ScoresRinkModel
 }

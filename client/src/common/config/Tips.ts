@@ -1,4 +1,5 @@
 export let Tips = {
+	Ok: '完成',
 	NetworkError: "网络错误",
 	ServerFailure: "服务器故障",
 	PermissionDenied: "权限不足",
@@ -15,5 +16,4 @@ export let Tips = {
 	Landing: '正在登陆...',
 	PwdIsEmpty: '密码不可为空',
 	UidIsEmpty: '账号不可为空',
-	RefreshOk: '刷新完成'
 }

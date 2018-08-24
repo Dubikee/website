@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Server.Service.Whut
 {
-    public class TestWhutService:IWhutService<WhutStudent>
+    public class TestWhutService : IWhutService<WhutStudent>
     {
         public WhutStudent Student { get; } = new WhutStudent
         {
             StudentId = "0121618990514",
             Pwd = "**********",
             Uid = "17607105321",
-            Scores = new List<Score>()
+            Scores = new List<Score>
             {
                 new Score
                 {

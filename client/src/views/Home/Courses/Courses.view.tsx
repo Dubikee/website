@@ -3,7 +3,7 @@ import "./Courses.view.less"
 import { inject, observer } from 'mobx-react';
 import TimeTable from '../../../components/TimeTable/TimeTable';
 import { withRouter, RouteComponentProps } from 'react-router';
-import { message, Form, Switch, Icon, Button, Checkbox } from 'antd';
+import { message, Form, Switch, Icon, Button, Checkbox, Modal } from 'antd';
 import { nullable, getToken, removeToken, match } from '../../../utils';
 import { WhutStudent } from '../../../common/stores/WhutStudent';
 import { User } from '../../../common/stores/User';
@@ -31,20 +31,24 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 		if (tableLoaded)
 			this.setState({ loading: false })
 		else
-			this.loadTable();
+			this.loadTable(true);
 	}
-	async loadTable() {
+	async loadTable(useServerCache: boolean) {
 		try {
-			const { status, data } = await request('/api/whut/table')
+			const url = useServerCache ? '/api/whut/table' : '/api/whut/updatetable';
+			const { status, data } = await request(url)
 				.auth(getToken()!)
 				.get();
-			let ok = match({
+			this.setState({ loading: false })
+			const ok = match({
 				[WhutStatus.Ok]:
 					() => {
 						const student = this.props.student!;
 						const { table } = data;
-						if (table && table.length == 5 && table[0].length == 7)
-							student.setTables(table)
+						if (table && table.length == 5 && table[0].length == 7) {
+							student.setTables(table);
+							message.info(Tips.Ok)
+						}
 						else
 							message.error(Tips.ServerFailure);
 					},
@@ -56,8 +60,6 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 					() => message.error(Tips.WhutServerCrashed),
 				['_']:
 					() => { throw Error(`Status = ${status}`) },
-				['*']:
-					() => this.setState({ loading: false })
 			})
 			match({
 				200: () => ok(data.status),
@@ -69,21 +71,29 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 			})(status)
 		} catch (error) {
 			console.log(error)
-			message.error(Tips.ServerFailure)
 			this.setState({ loading: false })
+			message.error(Tips.ServerFailure)
 		}
 	}
-	async refresh() {
-		this.setState({ loading: true })
-		await this.loadTable();
+	refresh() {
+		this.setState({ loading: true });
+		Modal.confirm({
+			title: '是否清空服务器缓存？',
+			content: '清空缓存将对教务处重新发起请求',
+			okText: '是',
+			cancelText: '否',
+			okType: 'danger',
+			onOk: async () => await this.loadTable(false),
+			onCancel: async () => await this.loadTable(true),
+		});
 	}
 	render() {
-		return <div className="courses-view">
+		return <div>
 			<TimeTable {...this.state} data={this.props.student!.tables} className="timetable" />
 			<Form layout='inline' style={{
 				paddingTop: 30,
 				paddingBottom: 30,
-				textAlign:'center'
+				textAlign: 'center'
 			}}>
 				<Form.Item label="显示名称">
 					<Checkbox checked={this.state.showName} onChange={e => this.setState({ showName: e.target.checked })} />

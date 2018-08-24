@@ -8,7 +8,7 @@ import ScoresList from '../../../components/ScoresList/ScoresList';
 import { WhutStudent } from '../../../common/stores/WhutStudent';
 import { nullable, getToken, match } from '../../../utils';
 import { request } from '../../../utils/request';
-import { message, Tabs, Icon, Button, Row, Dropdown, Menu, Select } from 'antd';
+import { message, Tabs, Modal, Button, Row, Select } from 'antd';
 import { WhutStatus } from '../../../common/models/WhutStatus';
 
 interface IScoresViewPorps extends RouteComponentProps<any> {
@@ -25,24 +25,26 @@ class ScoresView extends React.Component<IScoresViewPorps>{
 	componentWillMount() {
 		let { rink, scores } = this.props.student!
 		if (!rink || scores.length == 0)
-			this.loadScores()
+			this.loadScores(true)
 		else
 			this.setState({ loading: false })
 	}
-	async loadScores() {
+	async loadScores(useServerCache: boolean) {
 		try {
-			let { status, data } = await request('/api/whut/scoresrink')
+			const url = useServerCache ? '/api/whut/scoresrink' : "/api/whut/updatescoresrink"
+			const { status, data } = await request(url)
 				.auth(getToken()!)
 				.get()
 			this.setState({ loading: false })
 			const ok = match({
 				[WhutStatus.Ok]:
 					() => {
-						let { rink, scores } = data;
-						let { student } = this.props;
+						const { rink, scores } = data;
+						const { student } = this.props;
 						if (rink) student!.setRink(rink);
 						if (scores) student!.setScores(scores);
 						this.setState({ loadingRink: false });
+						message.info(Tips.Ok)
 					}
 			});
 			match({
@@ -56,16 +58,25 @@ class ScoresView extends React.Component<IScoresViewPorps>{
 			message.error(Tips.NetworkError);
 		}
 	}
-	async refresh() {
+	refresh() {
 		this.setState({ loading: true });
-		await this.loadScores()
-		message.info(Tips.RefreshOk)
+		Modal.confirm({
+			title: '是否清空服务器缓存？',
+			content: '清空缓存将对教务处重新发起请求',
+			okText: '是',
+			okType: 'danger',
+			cancelText: '否',
+			onOk: async () => await this.loadScores(false)
+			,
+			onCancel: async () => await this.loadScores(true)
+			,
+		});
 	}
 	render() {
 		let { rink, scores } = this.props.student!;
 		let { loading, year } = this.state;
 		const yearSet = new Set(scores.map(x => x.schoolYear));
-		return <div className="scores-view">
+		return <div style={{ marginBottom: 10 }}>
 			<Tabs defaultActiveKey="2" >
 				<Tabs.TabPane tab="绩点排名" key="1">
 					<RinkCard loading={loading} data={rink} />
