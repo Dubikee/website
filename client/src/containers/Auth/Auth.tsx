@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { inject } from 'mobx-react';
-import { getToken, removeToken, nullable, match, isAdmin } from '../../utils';
+import { getToken, removeToken, nullable, match, isRole } from '../../utils';
 import { runInAction } from 'mobx';
 import { message, Spin } from 'antd';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -13,25 +13,28 @@ interface IAdimOnlyPorps extends RouteComponentProps<any> {
 	user: User | nullable
 }
 
-export default (View: any) => {
+const auth = (requriedRole: 'admin' | 'vistor' | 'master') => (View: any) => {
 	@inject('user')
 	class AdminOnly extends React.PureComponent<IAdimOnlyPorps> {
 		state = {
 			finished: false
 		}
 		componentWillMount() {
-			const user = this.props.user!;
-			if (user.login)
-				isAdmin(user) ? this.setState({ finished: true }) :
-					message.warn(Tips.PermissionDenied, () => {
-						this.props.history.length > 0 ?
-							this.props.history.goBack() :
-							this.props.history.push('/login')
-					});
+			const { login, role } = this.props.user!;
+			if (login)
+				this.checkRole(role);
 			else
-				this.validate();
+				this.requestValidate();
 		}
-		async validate() {
+		checkRole(userRole: string) {
+			isRole(userRole, requriedRole) ? this.setState({ finished: true }) :
+				message.warn(Tips.PermissionDenied, () => {
+					this.props.history.length > 0 ?
+						this.props.history.goBack() :
+						this.props.history.push('/login')
+				});
+		}
+		async requestValidate() {
 			const token = getToken();
 			if (!token) {
 				this.props.history.push('/login')
@@ -44,10 +47,9 @@ export default (View: any) => {
 				const ok = match({
 					[AuthStatus.Ok]:
 						() => {
-							let user = this.props.user!;
-							let { status, ...info } = data
-							runInAction(() => user.updateUser({ login: true, ...info }))
-							setTimeout(() => this.setState({ finished: true }), 300);
+							const { status, ...info } = data
+							runInAction(() => this.props.user!.updateUser({ login: true, ...info }))
+							this.checkRole(info.role!);
 						},
 					[AuthStatus.TokenExpired]:
 						() => {
@@ -55,12 +57,14 @@ export default (View: any) => {
 							message.warn(Tips.TokenExpires, () => {
 								this.props.history.push('/login');
 							})
-						}
+						},
+					['_']:
+						() => message.error(Tips.UnknownError)
 				})
 				match({
 					200: () => ok(data.status),
 					401: () => this.props.history.push('/login'),
-					'_': () => { throw Error(status.toString()) }
+					'_': () => message.error(Tips.UnknownError)
 				})(status)
 			} catch (error) {
 				console.log(error);
@@ -79,3 +83,9 @@ export default (View: any) => {
 	}
 	return withRouter(AdminOnly);
 }
+
+const vistorRequired = auth('vistor');
+const adminRequired = auth('admin');
+const masterRequired = auth('master');
+
+export { adminRequired, masterRequired, vistorRequired }

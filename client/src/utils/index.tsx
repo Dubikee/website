@@ -2,7 +2,6 @@ import registerServiceWorker from "./registerServiceWorker";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { RouteProps, RedirectProps, Switch, Route, Redirect } from "react-router";
-import { User } from "../common/stores/User";
 
 export let bootstrap = () => new Bootstrap();
 export type nullable = null | undefined
@@ -12,15 +11,33 @@ export interface IBootstrap {
 	mount(selector: string): IBootstrap;
 	start(): void;
 };
+export interface SwitchConfig {
+	routes: RouteProps[];
+	redirects?: RedirectProps[]
+}
 export let getToken = () => window.localStorage.getItem("jwt");
 export let setToken = (jwt: string) => window.localStorage.setItem("jwt", jwt)
 export let removeToken = () => window.localStorage.removeItem('jwt')
-export let isMaster = (user: User) => user && user.role == 'master';
-export let isAdmin = (user: User | nullable) => user && (user.role == 'master' || user.role == 'admin');
-export let renderRouter = (routes: RouteProps[], redirect?: RedirectProps[]) => <Switch>
-	{routes.map((x, i) => <Route key={i} {...x} />)}
-	{redirect ? redirect.map((x, i) => <Redirect key={i} {...x} />) : null}
-</Switch>;
+export let isRole = (userRole: string, requriedrole: 'admin' | 'vistor' | 'master') => {
+	const a = userRole === 'admin';
+	const v = userRole === 'vistor';
+	const m = userRole === 'master';
+	switch (requriedrole) {
+		case 'vistor':
+			return v || a || m;
+		case 'admin':
+			return a || m;
+		case 'master':
+			return m;
+	}
+}
+export let renderSwitch = (conf: SwitchConfig) => {
+	const { routes, redirects } = conf;
+	return <Switch>
+		{routes.map((x, i) => <Route key={i} {...x} />)}
+		{redirects ? redirects.map((x, i) => <Redirect key={i} {...x} />) : null}
+	</Switch>
+};
 
 export let match = (switcher: any) => (v: string | number) => {
 	if (switcher[v])

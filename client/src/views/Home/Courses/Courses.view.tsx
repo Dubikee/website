@@ -1,21 +1,20 @@
 import * as React from 'react'
-import "./Courses.view.less"
 import { inject, observer } from 'mobx-react';
 import TimeTable from '../../../components/TimeTable/TimeTable';
 import { withRouter, RouteComponentProps } from 'react-router';
-import { message, Form, Switch, Icon, Button, Checkbox, Modal } from 'antd';
+import { message, Form, Button, Checkbox, Modal } from 'antd';
 import { nullable, getToken, removeToken, match } from '../../../utils';
 import { WhutStudent } from '../../../common/stores/WhutStudent';
 import { User } from '../../../common/stores/User';
 import { request } from '../../../utils/request';
 import { Tips } from '../../../common/config/Tips';
 import { WhutStatus } from '../../../common/models/WhutStatus';
+import "./Courses.view.less"
 
 interface ICoursesViewProps extends RouteComponentProps<any> {
 	user: User | nullable,
 	student: WhutStudent | nullable
 }
-
 
 @inject('user', 'student')
 @observer
@@ -27,7 +26,7 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 		showLocation: true
 	}
 	componentWillMount() {
-		let { tableLoaded } = this.props.student!
+		const { tableLoaded } = this.props.student!
 		if (tableLoaded)
 			this.setState({ loading: false })
 		else
@@ -59,7 +58,7 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 				[WhutStatus.WhutServerCrashed]:
 					() => message.error(Tips.WhutServerCrashed),
 				['_']:
-					() => { throw Error(`Status = ${status}`) },
+					() => message.error(Tips.UnknownError)
 			})
 			match({
 				200: () => ok(data.status),
@@ -67,7 +66,7 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 					removeToken();
 					this.props.history.push('/login')
 				}),
-				'_': () => { throw Error(`HttpStatus=${status}`) }
+				'_': () => message.error(Tips.UnknownError)
 			})(status)
 		} catch (error) {
 			console.log(error)
@@ -90,11 +89,7 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 	render() {
 		return <div>
 			<TimeTable {...this.state} data={this.props.student!.tables} className="timetable" />
-			<Form layout='inline' style={{
-				paddingTop: 30,
-				paddingBottom: 30,
-				textAlign: 'center'
-			}}>
+			<Form layout='inline' className='tb-settings'>
 				<Form.Item label="显示名称">
 					<Checkbox checked={this.state.showName} onChange={e => this.setState({ showName: e.target.checked })} />
 				</Form.Item>

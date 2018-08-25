@@ -1,4 +1,3 @@
-import "./Login.view.less";
 import * as React from 'react';
 import { Row, Col, message, Form, Checkbox, Button, Input, Icon } from "antd";
 import { setToken, nullable, match } from "../../utils";
@@ -10,6 +9,7 @@ import { User } from "../../common/stores/User";
 import { Tips } from "../../common/config/Tips";
 import { request } from "../../utils/request";
 import { AuthStatus } from "../../common/models/AuthStatus";
+import "./Login.view.less";
 
 interface IHomeViewProps extends RouteComponentProps<any> {
 	user: User | nullable
@@ -24,10 +24,14 @@ class LoginView extends React.Component<IHomeViewProps> {
 	};
 	check() {
 		const { uid, pwd } = this.state;
-		if (!uid)
+		if (!uid) {
 			message.warn(Tips.UidIsEmpty);
-		if (!pwd)
-			message.warn(Tips.PwdIsEmpty)
+			return false;
+		}
+		if (!pwd) {
+			message.warn(Tips.PwdIsEmpty);
+			return false;
+		}
 		if (!(/^[0-9]{8,}$/).test(uid)) {
 			message.warn(Tips.UidIllegal)
 			return false;
@@ -40,16 +44,17 @@ class LoginView extends React.Component<IHomeViewProps> {
 	}
 	async login() {
 		if (!this.check()) return;
-		let user = this.props.user!;
+		const user = this.props.user!;
 		const hide = message.loading(Tips.Landing);
 		try {
 			const { status, data } = await request("/api/account/login")
 				.forms(this.state)
 				.post();
+			hide();
 			const ok = match({
 				[AuthStatus.Ok]:
 					() => {
-						let { status, jwt, ...info } = data
+						const { status, jwt, ...info } = data
 						setToken(jwt!)
 						runInAction(() => user.updateUser({ login: true, ...info }))
 						message.info(Tips.LoginSuccess, 1, () => {
@@ -66,7 +71,6 @@ class LoginView extends React.Component<IHomeViewProps> {
 				['_']:
 					() => message.error(Tips.UnknownError),
 			})
-			hide();
 			match({
 				200: () => ok(data.status),
 				'_': () => message.error(Tips.ServerFailure)
@@ -78,8 +82,8 @@ class LoginView extends React.Component<IHomeViewProps> {
 	}
 	render() {
 		return <div className="login-view">
-			<Row className="form-row" type="flex" justify="center">
-				<Col xs={18} sm={12} md={10} lg={8} xl={6} xxl={4} className='form-col'>
+			<Row className="form-wrapper" type="flex" justify="center">
+				<Col xs={18} sm={12} md={10} lg={8} xl={6} xxl={4} className='form-content'>
 					<h1>LOGIN</h1>
 					<Form className="login-form">
 						<Form.Item>
@@ -96,6 +100,9 @@ class LoginView extends React.Component<IHomeViewProps> {
 					</Form>
 				</Col>
 			</Row>
+			<div className='login-view-footer'>
+				<p>2017-2018 Made with <span style={{ color: 'red' }}>❤</span> by Dubikee</p>
+			</div>
 		</div>
 	}
 }

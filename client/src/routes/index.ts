@@ -1,21 +1,27 @@
-import { RouteProps, RedirectProps } from "react-router";
 import LoginView from "../views/Login/Login.view";
-import HomeLayout from "../views/Home/Layout/Home.layout";
+import Home from "../views/Home/Home";
+import Account from "../views/Account/Account.";
+import { SwitchConfig } from "../utils";
 
-export let indexRoutes: RouteProps[] = [
-	{
-		path: '/login',
-		component: LoginView
-	},
-	{
-		path: '/home',
-		component: HomeLayout
-	}
-]
-
-export let indexRedirect: RedirectProps[] = [
-	{
-		from: '/',
-		to: '/home/index'
-	}
-]
+export let index: SwitchConfig = {
+	routes: [
+		{
+			path: '/login',
+			component: LoginView
+		},
+		{
+			path: '/home',
+			component: Home
+		},
+		{
+			path: '/account',
+			component: Account
+		}
+	],
+	redirects: [
+		{
+			from: '/',
+			to: '/home/index'
+		}
+	]
+}

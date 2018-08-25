@@ -20,25 +20,26 @@
             float: left;
             .menu-list {
                 line-height: 64px;
-                p {
+                .menu-item {
                     line-height: 64px;
                     display: inline-block;
                     margin-left: 10px;
                     padding-left: 15px;
                     padding-right: 15px;
                     margin-bottom: 0;
-                    a {
-                        color: rgb(161, 161, 161);
+                    p {
+						color: rgb(161, 161, 161);
+						margin: 0;
                     }
                     &:hover {
                         background-color: #e6f7ffb4;
-                        a {
+                        p {
                             color: rgb(53, 53, 53);
                         }
                     }
                 }
-                .list-selected {
-                    a {
+                .item-selected {
+                    p {
                         color: rgb(53, 53, 53);
                     }
                     background-color: #e6f7ffb4;

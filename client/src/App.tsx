@@ -1,16 +1,16 @@
 import { Provider } from "mobx-react";
 import { ServicesStore } from "./services";
 import * as React from "react";
-import { renderRouter } from "./utils";
+import { renderSwitch } from "./utils";
 import 'antd/dist/antd.css';
 import './assets/iconfont/iconfont.css'
-import { indexRoutes, indexRedirect } from "./routes";
 import { BrowserRouter } from "react-router-dom";
+import { index } from "./routes";
 export default class App extends React.PureComponent {
 	render() {
 		return <Provider {...ServicesStore}>
 			<BrowserRouter basename='/'>
-				{renderRouter(indexRoutes, indexRedirect)}
+				{renderSwitch(index)}
 			</BrowserRouter>
 		</Provider>
 	}
