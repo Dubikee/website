@@ -1,14 +1,13 @@
 import * as React from 'react'
 import { Layout, Menu, Icon } from 'antd';
-import "./Home.layout.less"
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
-import { renderRouter } from '../../../utils';
-import { homeRoutes, homeRedirect } from '../../../routes/home';
-import AdminOnly from '../../../containers/AdminOnly/AdminOnly';
-import AppLayout from '../../../containers/AppLayout/App.Layout';
+import "./Home.less"
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { renderSwitch } from '../../utils';
+import { home } from '../../routes/home';
+import AppLayout from '../../containers/AppLayout/App.Layout';
+import { adminRequired } from '../../containers/Auth/Auth';
 
-
-class AuthLayout extends React.Component<RouteComponentProps<{}>> {
+class Home extends React.Component<RouteComponentProps<{}>> {
 	state = {
 		collapsed: false
 	}
@@ -62,7 +61,7 @@ class AuthLayout extends React.Component<RouteComponentProps<{}>> {
 			</Layout.Sider>
 			<Layout className="content-wrapper">
 				<Layout.Content style={{ backgroundColor: '#fff', minHeight: 630 }}>
-					{renderRouter(homeRoutes, homeRedirect)}
+					{renderSwitch(home)}
 				</Layout.Content>
 			</Layout>
 		</Layout>
@@ -72,4 +71,4 @@ class AuthLayout extends React.Component<RouteComponentProps<{}>> {
 	}
 }
 
-export default AdminOnly(AppLayout(withRouter(AuthLayout)))
+export default adminRequired(AppLayout(withRouter(Home)))
