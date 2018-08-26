@@ -4,7 +4,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { renderSwitch } from '../../utils';
 import AppLayout from '../../containers/AppLayout/App.Layout';
 import { vistorRequired } from '../../containers/Auth/Auth';
-import { account } from '../../routes/account';
+import { account } from '../../routes';
 
 
 class Account extends React.Component<RouteComponentProps<{}>> {

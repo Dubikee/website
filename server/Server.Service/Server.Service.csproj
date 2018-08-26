@@ -15,11 +15,12 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.9.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
+    <PackageReference Include="LinqPlus" Version="1.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.2" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.2.4" />
-    <PackageReference Include="NLog" Version="4.5.7" />
+    <PackageReference Include="NLog" Version="4.5.9" />
   </ItemGroup>
 
   <ItemGroup>

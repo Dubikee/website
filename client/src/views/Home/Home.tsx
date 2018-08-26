@@ -3,7 +3,7 @@ import { Layout, Menu, Icon } from 'antd';
 import "./Home.less"
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { renderSwitch } from '../../utils';
-import { home } from '../../routes/home';
+import { home } from '../../routes';
 import AppLayout from '../../containers/AppLayout/App.Layout';
 import { adminRequired } from '../../containers/Auth/Auth';
 

@@ -7,7 +7,7 @@ using Server.Shared.Utils;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using static System.String;
-
+using static LinqPlus.Linp;
 namespace Server.Service.Auth
 {
     public class AdminManager : IAdminManager<User>
@@ -73,10 +73,7 @@ namespace Server.Service.Auth
         /// <returns></returns>
         public AuthStatus AddUser(string uid, string name, string role, string pwd, string phone, string email)
         {
-            if (IsNullOrWhiteSpace(uid) ||
-                IsNullOrWhiteSpace(name) ||
-                IsNullOrWhiteSpace(pwd) ||
-                IsNullOrWhiteSpace(role))
+            if (AnyNullOrWhiteSpace(uid, name, role, pwd))
                 return AuthStatus.InputIllegal;
             if (!Regex.IsMatch(uid, _opt.UidRegex))
                 return AuthStatus.UidIllegal;

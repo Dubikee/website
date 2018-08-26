@@ -12,7 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 using static System.String;
-
+using static LinqPlus.Linp;
 namespace Server.Service.Auth
 {
     public class AccountManager : IAccountManager<User>
@@ -56,7 +56,7 @@ namespace Server.Service.Auth
         public (AuthStatus status, string jwt) Login(string uid, string pwd)
         {
             // 空值检查
-            if (IsNullOrWhiteSpace(uid) || IsNullOrWhiteSpace(pwd))
+            if (AnyNullOrWhiteSpace(uid, pwd))
                 return (AuthStatus.InputIllegal, null);
             // 判断Uid是否存在
             var user = _db.FindUser(uid);
@@ -89,19 +89,19 @@ namespace Server.Service.Auth
         /// <param name="email"></param>
         /// <returns></returns>
         public (AuthStatus status, string jwt) Register(
-            string uid, 
-            string name, 
-            string pwd, 
-            string phone, 
+            string uid,
+            string name,
+            string pwd,
+            string phone,
             string email)
         {
-            if (IsNullOrWhiteSpace(uid) || IsNullOrWhiteSpace(name) || IsNullOrWhiteSpace(pwd))
+            if (AnyNullOrWhiteSpace(uid, name, pwd))
                 return (AuthStatus.InputIllegal, null);
             if (!Regex.IsMatch(uid, _opt.UidRegex))
                 return (AuthStatus.UidIllegal, null);
             if (!Regex.IsMatch(pwd, _opt.PwdRegex))
                 return (AuthStatus.PasswordIllegal, null);
-            if (null != _db.FindUser(uid))
+            if (_db.FindUser(uid) != null)
                 return (AuthStatus.UidHasExist, null);
             _db.AddUser(new User
             (
@@ -138,18 +138,15 @@ namespace Server.Service.Auth
         /// <returns></returns>
         public AuthStatus UpdateUserInfo(string name, string phone, string email)
         {
+            if (AllNullOrWhiteSpace(name, phone, email))
+                return AuthStatus.InputIllegal;
             if (User == null)
                 return AuthStatus.TokenExpired;
-            var n = IsNullOrWhiteSpace(name);
-            var p = IsNullOrWhiteSpace(phone);
-            var e = IsNullOrWhiteSpace(email);
-            if (n && p && e)
-                return AuthStatus.InputIllegal;
-            if (!n)
+            if (!IsNullOrWhiteSpace(name))
                 User.Name = name;
-            if (!p)
+            if (!IsNullOrWhiteSpace(phone))
                 User.Phone = phone;
-            if (!e)
+            if (!IsNullOrWhiteSpace(email))
                 User.Email = email;
             _db.UpdateUser(User);
             return AuthStatus.Ok;
@@ -164,7 +161,7 @@ namespace Server.Service.Auth
         /// <returns></returns>
         public AuthStatus UpdateUserPwd(string oldPwd, string newPwd)
         {
-            if (IsNullOrWhiteSpace(oldPwd) || IsNullOrWhiteSpace(newPwd))
+            if (AnyNullOrWhiteSpace(oldPwd, newPwd))
                 return AuthStatus.InputIllegal;
             if (!Regex.IsMatch(newPwd, _opt.PwdRegex))
                 return AuthStatus.PasswordIllegal;

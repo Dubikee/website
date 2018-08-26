@@ -16,15 +16,5 @@ namespace Server.Shared.Utils
         {
             return user.Role.ToLower() == RoleTypes.Master;
         }
-
-        public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> run)
-        {
-            var index = 0;
-            foreach (var s in source)
-            {
-                run(s, index);
-                index++;
-            }
-        }
     }
 }

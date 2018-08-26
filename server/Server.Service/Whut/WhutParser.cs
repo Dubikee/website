@@ -1,12 +1,12 @@
 ﻿using AngleSharp.Extensions;
 using AngleSharp.Parser.Html;
+using LinqPlus;
 using Server.Shared.Models.Whut;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Server.Shared.Utils;
 
 namespace Server.Service.Whut
 {
@@ -15,6 +15,8 @@ namespace Server.Service.Whut
     /// </summary>
     public static class WhutParser
     {
+        private static readonly HtmlParser Parser = new HtmlParser();
+
         /// <summary>
         /// 从Html中获取分数查询的链接，从而得到query的snkey
         /// </summary>
@@ -23,15 +25,15 @@ namespace Server.Service.Whut
         public static async Task<string> ParseSnkeyAsync(this string html)
         {
             if (string.IsNullOrWhiteSpace(html)) return null;
-            var doc = await new HtmlParser().ParseAsync(html);
-            var keys = doc.QuerySelectorAll(".accordionContent .tree > li > ul > li > a")
+            var doc = await Parser.ParseAsync(html);
+            return doc.QuerySelectorAll(".accordionContent .tree > li > ul > li > a")
                 .Attr("target", "newTab")
                 .FirstOrDefault()?
                 .GetAttribute("href")?
                 .Split("?")
                 .FirstOrDefault(x => x.StartsWith("snkey"))?
-                .Split("=");
-            return keys != null && keys.Length >= 2 ? keys[1] : null;
+                .Split("=")
+                .TryIndexOf(1);
         }
 
         /// <summary>
@@ -39,19 +41,21 @@ namespace Server.Service.Whut
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        public static async Task<string[,]> ParseTimeTable(this string html)
+        public static async Task<string[,]> ParseTable(this string html)
         {
-            if (string.IsNullOrWhiteSpace(html)) return null;
-            var doc = await new HtmlParser().ParseAsync(html);
+            if (string.IsNullOrWhiteSpace(html))
+                return null;
+            var doc = await Parser.ParseAsync(html);
             var trs = doc.QuerySelectorAll(".kcb-wrap .mui-table tr")
                 .Where(x => x.ChildElementCount == 8)
                 .ToArray();
-            if (trs.Length != 5) return null;
+            if (trs.Length != 5)
+                return null;
             var timeTable = new string[5, 7];
-            trs.ForEach((tr, row) => tr.Children
+            trs.Each((tr, row) => tr.Children
                 .Skip(1)
                 .Select(td => td.InnerHtml)
-                .ForEach((text, col) => timeTable[row, col] = text)
+                .Each((text, col) => timeTable[row, col] = text)
             );
             return timeTable;
         }
@@ -63,10 +67,12 @@ namespace Server.Service.Whut
         /// <returns>如果html不包含分数table则返回null</returns>
         public static async Task<IEnumerable<Score>> ParseScoresAsync(this string html)
         {
-            if (string.IsNullOrWhiteSpace(html)) return null;
-            var doc = await new HtmlParser().ParseAsync(html);
+            if (string.IsNullOrWhiteSpace(html))
+                return null;
+            var doc = await Parser.ParseAsync(html);
             var list = doc.QuerySelectorAll(".pageContent .table > tbody > tr");
-            if (!list.Any()) return null;
+            if (!list.Any())
+                return null;
             return list.Where(tr => tr.ChildElementCount == 14).Select(tr =>
             {
                 var arr = tr.Children.Select(td => td.InnerHtml).ToArray();
@@ -94,7 +100,8 @@ namespace Server.Service.Whut
         /// <returns></returns>
         public static string GetCookie(this HttpResponseHeaders headers, string key)
         {
-            if (string.IsNullOrWhiteSpace(key)) return null;
+            if (string.IsNullOrWhiteSpace(key))
+                return null;
             return headers.FirstOrDefault(x => x.Key == "Set-Cookie").Value?
                 .FirstOrDefault(x => x.StartsWith(key))?
                 .Split(";")
@@ -109,10 +116,10 @@ namespace Server.Service.Whut
         public static async Task<Rink> ParseRinksAsync(this string html)
         {
             if (string.IsNullOrWhiteSpace(html)) return default;
-            var doc = await new HtmlParser().ParseAsync(html);
+            var doc = await Parser.ParseAsync(html);
             var arr = doc.QuerySelectorAll(".pageContent input")
                 .Select(x => x.GetAttribute("value"))
-                .Where(x => x != null)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
                 .ToArray();
             return arr.Length == 5
                 ? new Rink
@@ -132,38 +139,41 @@ namespace Server.Service.Whut
         /// <returns></returns>
         public static async Task<IEnumerable<EotInfo>> ParseEotInfoAsync(this string html)
         {
-            if (string.IsNullOrWhiteSpace(html)) return null;
-            var doc = await new HtmlParser().ParseAsync(html);
+            if (string.IsNullOrWhiteSpace(html))
+                return null;
+            var doc = await Parser.ParseAsync(html);
             var trs = doc.QuerySelectorAll(".pageContent .table > tbody > tr");
-            if (!trs.Any()) return null;
-            return trs.Where(tr => tr.ChildElementCount >= 5)
-                .Select(tr =>
+            if (!trs.Any())
+                return null;
+            var infos = new LinkedList<EotInfo>();
+            trs.Where(tr => tr.ChildElementCount >= 5)
+                .Each(tr =>
                 {
+                    var eot = new EotInfo();
                     //td应该是长度为5的string数组
-                    var arr = tr.Children.Select(x => x.InnerHtml).ToArray();
+                    var arr = tr.Children.Select(x => x.InnerHtml).ToArray();                 
                     //获得是否评教文本
                     var eval = tr.QuerySelector("td > font")?.InnerHtml;
-                    if (eval != "已评" && eval != "未评")
-                        return null;
+                    if (string.IsNullOrWhiteSpace(eval))
+                        return ;
+                    eot.IsEvaluate = eval == "已评";
                     //获得链接文本
                     var link = tr.QuerySelector("td > a")?.GetAttribute("href");
                     if (string.IsNullOrWhiteSpace(link))
-                        return null;
+                        return ;
+                    eot.EotLink = link;
                     //解析开始评教日期
-                    if (!DateTime.TryParse(arr[3], out var startTime))
-                        return null;
+                    if (!DateTime.TryParse(arr[3], out var starTime))
+                        return ;
+                    eot.StartTime = starTime;
                     //解析结束评教日期
                     if (!DateTime.TryParse(arr[4], out var endTime))
-                        return null;
-                    return new EotInfo
-                    {
-                        StartTime = startTime,
-                        EndTime = endTime,
-                        IsEvaluate = eval == "已评",
-                        EotLink = link
-                    };
-                })
-                .Where(x => x != null);
+                        return ;
+                    eot.EndTime = endTime;
+                    //加入列表
+                    infos.AddLast(eot);
+                });
+            return infos;
         }
     }
 }

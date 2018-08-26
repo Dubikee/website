@@ -9,7 +9,7 @@ interface IScoresListPorps {
 	year: string
 }
 
-function getInfo(totalMark: string) {
+const getInfo = (totalMark: string) => {
 	let color: 'green' | 'gold' | 'red' = 'red';
 	let cmark: string = totalMark;
 	let cgpa: string = totalMark;
@@ -97,15 +97,8 @@ class ScoresList extends React.PureComponent<IScoresListPorps> {
 	render() {
 		const { data, loading, year } = this.props;
 		const filter = (scores: Score[]) => year === '*' ? scores : scores.filter(x => x.schoolYear === this.props.year);
-		return <List
-			loading={loading}
-			dataSource={filter(data)}
-			itemLayout="horizontal"
-			renderItem={this.renderItem}
-		/>
+		return <List loading={loading} dataSource={filter(data)} itemLayout="horizontal" renderItem={this.renderItem} />
 	}
-
 }
-
 
 export default ScoresList

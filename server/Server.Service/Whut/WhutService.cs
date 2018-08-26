@@ -7,7 +7,7 @@ using System;
 using System.Threading.Tasks;
 using Server.Shared.Utils;
 using static System.String;
-
+using static LinqPlus.Linp;
 namespace Server.Service.Whut
 {
     public class WhutService : IWhutService<WhutStudent>
@@ -82,7 +82,7 @@ namespace Server.Service.Whut
             if (_manager.User == null)
                 return WhutStatus.UserNotFind;
 
-            if (IsNullOrWhiteSpace(studentId) || IsNullOrWhiteSpace(pwd))
+            if (AnyNullOrWhiteSpace(studentId, pwd))
                 return WhutStatus.InputIllegal;
 
             if (Student == null)
@@ -96,8 +96,8 @@ namespace Server.Service.Whut
                 return isAdded ? WhutStatus.CreateStudent : WhutStatus.UnknownError;
             }
 
-            Student.StudentId = studentId;
             Student.Pwd = pwd;
+            Student.StudentId = studentId;
             _db.UpdateStudent(Student);
             return WhutStatus.Ok;
         }
@@ -137,7 +137,7 @@ namespace Server.Service.Whut
         /// <returns></returns>
         public async Task<WhutStatus> TryLogin(string studentId, string pwd)
         {
-            if (IsNullOrWhiteSpace(studentId) || IsNullOrWhiteSpace(pwd))
+            if (AnyNullOrWhiteSpace(studentId, pwd))
                 return WhutStatus.InputIllegal;
             try
             {
@@ -170,10 +170,10 @@ namespace Server.Service.Whut
                     .Form("password", Student.Pwd)
                     .Form("type", "xs")
                     .PostStringAsync();
-                var timetable = await html.ParseTimeTable();
-                if (timetable == null)
+                var tb = await html.ParseTable();
+                if (tb == null)
                     return WhutStatus.PwdWrong;
-                Student.Table = timetable;
+                Student.Table = tb;
                 _db.UpdateStudent(Student);
                 return WhutStatus.Ok;
             }
@@ -266,20 +266,23 @@ namespace Server.Service.Whut
             var res = await ServerRequest.Request(url)
                 .Cookie(cerlogin)
                 .GetAsync();
-            if (res.Headers.Location == null) return default;
+            if (res.Headers.Location == null)
+                return default;
 
             //第二次请求
             res = await ServerRequest.Request(res.Headers.Location)
                 .Cookie(cerlogin)
                 .GetAsync();
             var sessionid = res.Headers.GetCookie("JSESSIONID");
-            if (res.Headers.Location == null || sessionid == null) return default;
+            if (res.Headers.Location == null || sessionid == null)
+                return default;
 
             //第三次请求
             res = await ServerRequest.Request(res.Headers.Location)
                 .Cookie(cerlogin)
                 .GetAsync();
-            if (res.Headers.Location == null) return default;
+            if (res.Headers.Location == null)
+                return default;
 
             //第四次请求
             res = await ServerRequest.Request(res.Headers.Location)
