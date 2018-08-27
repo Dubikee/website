@@ -10,7 +10,7 @@ namespace Server.Shared.Core
         string Uid { get; set; }
         string StudentId { get; set; }
         string Pwd { get; set; }
-        string[,] Table { get; set; }
+        string[][] Table { get; set; }
         IEnumerable<Score> Scores { get; set; }
         Rink Rink { get; set; }
     }

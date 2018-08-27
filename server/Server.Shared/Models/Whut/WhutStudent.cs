@@ -24,7 +24,7 @@ namespace Server.Shared.Models.Whut
         /// <summary>
         /// 课表
         /// </summary>
-        public string[,] Table { get; set; }
+        public string[][] Table { get; set; }
         /// <summary>
         /// 分数
         /// </summary>

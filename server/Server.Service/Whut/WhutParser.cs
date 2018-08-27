@@ -38,24 +38,20 @@ namespace Server.Service.Whut
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        public static async Task<string[,]> ParseTable(this string html)
+        public static async Task<string[][]> ParseTable(this string html)
         {
             if (string.IsNullOrWhiteSpace(html))
                 return null;
             var doc = await Parser.ParseAsync(html);
-            var trs = doc.QuerySelectorAll(".kcb-wrap .mui-table tr")
+            return doc.QuerySelectorAll(".kcb-wrap .mui-table tr")
                 .Where(x => x.ChildElementCount == 8)
                 .ToArray()
-                .Pipeline(arr => arr.Length == 5 ? arr : null);
-            if (trs == null)
-                return null;
-            var tb = new string[5, 7];
-            trs.Each((tr, row) => tr.Children
-                .Skip(1)
-                .Select(td => td.InnerHtml)
-                .Each((text, col) => tb[row, col] = text)
-            );
-            return tb;
+                .Pipeline(trs => trs.Length == 5 ? trs : null)?
+                .Select(tr => tr.Children
+                    .Skip(1)
+                    .Select(td => td.InnerHtml)
+                    .ToArray()
+                ).ToArray();
         }
 
         /// <summary>
