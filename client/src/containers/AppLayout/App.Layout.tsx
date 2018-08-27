@@ -52,7 +52,7 @@ export default (View: any) => {
 			}
 		}
 		render() {
-			const { name } = this.props.user!;
+			const { login, name } = this.props.user!;
 			const { selected } = this.state;
 			return <Layout className="app-layout">
 				<Layout.Header className="header">
@@ -73,15 +73,17 @@ export default (View: any) => {
 							</div>
 						</div>
 					</div>
-					<div className='header-userinfo'>
-						<Dropdown className="drop-menu" overlay={menu}>
-							<Link to="#">
-								<Icon type='user' />
-								<span style={{ marginLeft: 10 }}>{name}</span>
-								<Icon type="down" />
-							</Link>
-						</Dropdown>
-					</div>
+					{
+						login ? <div className='header-userinfo'>
+							<Dropdown className="drop-menu" overlay={menu}>
+								<Link to="#">
+									<Icon type='user' />
+									<span style={{ marginLeft: 10 }}>{name}</span>
+									<Icon type="down" />
+								</Link>
+							</Dropdown>
+						</div> : null
+					}
 				</Layout.Header>
 				<View />
 				<Layout.Footer style={{ textAlign: 'center' }}>

@@ -45,6 +45,18 @@ class ScoresView extends React.Component<IScoresViewPorps>{
 						if (scores) student!.setScores(scores);
 						this.setState({ loadingRink: false });
 						message.info(Tips.Ok)
+					},
+				[WhutStatus.StudentNotFind]:
+					() => {
+						message.warn(Tips.NoStudent);
+					},
+				[WhutStatus.WhutServerCrashed]:
+					() => {
+						message.error(Tips.WhutServerCrashed);
+					},
+				['_']:
+					() => {
+						message.error(Tips.UnknownError);
 					}
 			});
 			match({
