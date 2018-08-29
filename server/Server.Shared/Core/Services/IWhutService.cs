@@ -3,7 +3,7 @@ using Server.Shared.Results;
 
 namespace Server.Shared.Core.Services
 {
-    public interface IWhutService<T> where T : IWhutStudent
+    public interface IWhutService<T> where T : IStudent 
     {
         T Student { get; }
         Task<WhutStatus> TryLogin();

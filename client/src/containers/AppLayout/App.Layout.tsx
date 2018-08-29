@@ -6,17 +6,7 @@ import { User } from '../../common/stores/User';
 import { nullable } from '../../utils';
 import './App.layout.less'
 
-const menu = <Menu>
-	<Menu.Item>
-		<Link to="#">账号管理</Link>
-	</Menu.Item>
-	<Menu.Item>
-		<Link to="#">注销账号</Link>
-	</Menu.Item>
-	<Menu.Item>
-		<Link to="#">重新登陆</Link>
-	</Menu.Item>
-</Menu>
+
 
 interface IAppLayoutProps extends RouteComponentProps<{}> {
 	user: User | nullable
@@ -54,6 +44,18 @@ export default (View: any) => {
 		render() {
 			const { login, name } = this.props.user!;
 			const { selected } = this.state;
+			const url = this.props.location.pathname;
+			const menu = <Menu>
+				<Menu.Item>
+					<Link to="/account/index">账号管理</Link>
+				</Menu.Item>
+				<Menu.Item>
+					<Link to="/logout">注销账号</Link>
+				</Menu.Item>
+				<Menu.Item>
+					<Link to={{ pathname: '/login', state: { from: url } }}>重新登陆</Link>
+				</Menu.Item>
+			</Menu>
 			return <Layout className="app-layout">
 				<Layout.Header className="header">
 					<div className="header-logo" />
@@ -76,7 +78,7 @@ export default (View: any) => {
 					{
 						login ? <div className='header-userinfo'>
 							<Dropdown className="drop-menu" overlay={menu}>
-								<Link to="#">
+								<Link to="/account/index">
 									<Icon type='user' />
 									<span style={{ marginLeft: 10 }}>{name}</span>
 									<Icon type="down" />

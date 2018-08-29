@@ -59,7 +59,7 @@ namespace Server.Service.Whut
         /// </summary>
         /// <param name="html"></param>
         /// <returns>如果html不包含分数table则返回null</returns>
-        public static async Task<IEnumerable<Score>> ParseScoresAsync(this string html)
+        public static async Task<IEnumerable<ScoreDetail>> ParseScoresAsync(this string html)
         {
             if (string.IsNullOrWhiteSpace(html))
                 return null;
@@ -70,7 +70,7 @@ namespace Server.Service.Whut
                 .Select(tr =>
                 {
                     var arr = tr.Children.Select(td => td.InnerHtml).ToArray();
-                    return new Score
+                    return new ScoreDetail
                     {
                         SchoolYear = arr[0],
                         CourseCode = arr[1],
@@ -107,7 +107,7 @@ namespace Server.Service.Whut
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        public static async Task<Rink> ParseRinksAsync(this string html)
+        public static async Task<RinkDetail> ParseRinksAsync(this string html)
         {
             if (string.IsNullOrWhiteSpace(html))
                 return default;
@@ -117,7 +117,7 @@ namespace Server.Service.Whut
                 .WhereNot(string.IsNullOrWhiteSpace)
                 .ToArray()
                 .Pipeline(arr => arr.Length == 5 ? arr : null)?
-                .Pipeline(arr => new Rink
+                .Pipeline(arr => new RinkDetail
                 {
                     PureGpa = arr[0],
                     TotalGpa = arr[1],
@@ -131,7 +131,7 @@ namespace Server.Service.Whut
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        public static async Task<IEnumerable<EotInfo>> ParseEotInfoAsync(this string html)
+        public static async Task<IEnumerable<EotDetail>> ParseEotInfoAsync(this string html)
         {
             if (string.IsNullOrWhiteSpace(html))
                 return null;
@@ -157,7 +157,7 @@ namespace Server.Service.Whut
                     //解析结束评教日期
                     if (!DateTime.TryParse(tdArr[4].InnerHtml, out var endTime))
                         return default;
-                    return (true, new EotInfo
+                    return (true, new EotDetail
                     {
                         IsEvaluate = eval == "已评",
                         EotLink = link,

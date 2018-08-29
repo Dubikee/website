@@ -29,6 +29,7 @@ class HttpClient<T> {
 	public auth(jwt: string) {
 		return this.header('Authorization', 'Bearer ' + jwt)
 	}
+
 	public async get() {
 		let config: AxiosRequestConfig = {}
 		if (this.headers)

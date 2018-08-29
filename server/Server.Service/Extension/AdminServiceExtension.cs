@@ -14,7 +14,7 @@ namespace Server.Service.Extension
         /// <returns></returns>
         public static IServiceCollection AddAdminService(this IServiceCollection services)
         {
-            services.AddScoped<IAdminManager<User>, AdminManager>();
+            services.AddScoped<IAdminManager<AppUser>, AdminManager>();
             return services;
         }
     }

@@ -23,13 +23,13 @@ namespace Server.DB.WhutDb
             return _students.FindOne(x => x.Uid == uid);
         }
 
-        public bool AddStudent(WhutStudent student)
+        public bool AddStudent(WhutStudent whutStudent)
         {
-            if (string.IsNullOrWhiteSpace(student.Uid))
+            if (string.IsNullOrWhiteSpace(whutStudent.Uid))
             {
                 return false;
             }
-            _students.Insert(student);
+            _students.Insert(whutStudent);
             return true;
         }
 
@@ -38,9 +38,9 @@ namespace Server.DB.WhutDb
             return _students.Delete(x => x.Uid == uid) > 0;
         }
 
-        public bool UpdateStudent(WhutStudent student)
+        public bool UpdateStudent(WhutStudent whutStudent)
         {
-            return _students.Update(student);
+            return _students.Update(whutStudent);
         }
     }
 }

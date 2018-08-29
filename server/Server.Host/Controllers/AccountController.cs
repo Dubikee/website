@@ -11,10 +11,10 @@ namespace Server.Host.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly IAccountManager<User> _manager;
+        private readonly IAccountManager<AppUser> _manager;
         private static readonly ILogger Log = LogManager.GetCurrentClassLogger();
 
-        public AccountController(IAccountManager<User> manager)
+        public AccountController(IAccountManager<AppUser> manager)
         {
             _manager = manager;
         }

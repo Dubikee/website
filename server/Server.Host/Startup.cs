@@ -6,8 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using NLog.Web;
+using Server.Host.Middlewares.IPLock;
 using Server.Service.Extension;
 using System;
+using Server.Host.Middlewares.JwtCheck;
 
 namespace Server.Host
 {
@@ -23,6 +25,18 @@ namespace Server.Host
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddJwtChecker().AddRedis(opt =>
+                {
+                    opt.RedisConnection = "localhost";
+                    opt.IPDataBase = 1;
+                    opt.JwtDataBase = 2;
+                })
+                .AddIPLocker(opt =>
+                {
+                    opt.MaxVisitsTimes = 100;
+                    opt.LockedTime = TimeSpan.FromMinutes(5);
+                    opt.LimitTime = TimeSpan.FromMinutes(1);
+                });
             services.AddAdminService()
                 .AddWhutService()
                 .AddJwtAuth(opt =>
@@ -52,6 +66,8 @@ namespace Server.Host
 
             log.AddNLog();
             env.ConfigureNLog("Nlog.config");
+            app.UseIPLocker();
+            app.UseJwtChecker();
             app.UseAuthentication();
             app.UseMvc(routes => { routes.MapRoute("api", "/api/{controller}/{action}/{uid?}"); });
         }

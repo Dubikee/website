@@ -25,7 +25,7 @@ namespace Server.Service.Extension
             var op = new AuthOptions();
             optionAction?.Invoke(op);
             services.TryAddSingleton(op);
-            services.TryAddScoped<IAccountManager<User>, AccountManager>();
+            services.TryAddScoped<IAccountManager<AppUser>, AccountManager>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddAuthentication(o =>
             {

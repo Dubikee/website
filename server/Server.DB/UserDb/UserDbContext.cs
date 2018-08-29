@@ -6,15 +6,15 @@ using System.Collections.Generic;
 
 namespace Server.DB.UserDb
 {
-    public class UserDbContext : IUserDbContext<User>
+    public class UserDbContext : IUserDbContext<AppUser>
     {
-        private readonly LiteCollection<User> _users;
+        private readonly LiteCollection<AppUser> _users;
 
-        public IEnumerable<User> Users => _users.FindAll();
+        public IEnumerable<AppUser> Users => _users.FindAll();
 
         public UserDbContext(DbOptions opt)
         {
-            _users = new LiteDatabase(opt.DbPath).GetCollection<User>(opt.UserCollectionName);
+            _users = new LiteDatabase(opt.DbPath).GetCollection<AppUser>(opt.UserCollectionName);
         }
 
 
@@ -23,7 +23,7 @@ namespace Server.DB.UserDb
         /// 添加用户，User不可为null
         /// </summary>
         /// <param name="user"></param>
-        public void AddUser(User user)
+        public void AddUser(AppUser user)
         {
             _users.Insert(user);
         }
@@ -34,7 +34,7 @@ namespace Server.DB.UserDb
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public User FindUser(string uid)
+        public AppUser FindUser(string uid)
         {
             return _users.FindOne(x => x.Uid == uid);
         }
@@ -46,7 +46,7 @@ namespace Server.DB.UserDb
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public bool UpdateUser(User user)
+        public bool UpdateUser(AppUser user)
         {
             return _users.Update(user);
         }
@@ -57,7 +57,7 @@ namespace Server.DB.UserDb
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public bool DeleteUser(User user)
+        public bool DeleteUser(AppUser user)
         {
             return _users.Delete(user.Id);
 

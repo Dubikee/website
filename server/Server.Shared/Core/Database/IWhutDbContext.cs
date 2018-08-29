@@ -2,7 +2,7 @@
 
 namespace Server.Shared.Core.Database
 {
-    public interface IWhutDbContext<T> where T : IWhutStudent
+    public interface IWhutDbContext<T> where T : IStudent
     {
         /// <summary>
         /// 所有学生

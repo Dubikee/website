@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Server.Shared.Utils;
 using static System.String;
 using static LinqPlus.Linp;
+
 namespace Server.Service.Whut
 {
     public class WhutService : IWhutService<WhutStudent>
@@ -49,7 +50,7 @@ namespace Server.Service.Whut
 
         private WhutStudent _whutStudent;
         private readonly IWhutDbContext<WhutStudent> _db;
-        private readonly IAccountManager<User> _manager;
+        private readonly IAccountManager<AppUser> _manager;
 
         /// <summary>
         /// 获取学生
@@ -65,7 +66,7 @@ namespace Server.Service.Whut
             }
         }
 
-        public WhutService(IWhutDbContext<WhutStudent> db, IAccountManager<User> manager)
+        public WhutService(IWhutDbContext<WhutStudent> db, IAccountManager<AppUser> manager)
         {
             _db = db;
             _manager = manager;

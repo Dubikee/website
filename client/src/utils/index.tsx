@@ -38,8 +38,15 @@ export let renderSwitch = (conf: SwitchConfig) => {
 		{redirects ? redirects.map((x, i) => <Redirect key={i} {...x} />) : null}
 	</Switch>
 };
-
-export let match = (switcher: any) => (v: string | number) => {
+export let parseStatus = (error: any) => {
+	if (error && error.response && error.response.status) {
+		return error.response.status as number;
+	}
+	else {
+		return null;
+	}
+}
+export let match = (v: string | number) => (switcher: any) => {
 	if (switcher[v])
 		switcher[v]()
 	else if (switcher['_'])

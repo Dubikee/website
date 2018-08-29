@@ -1,6 +1,6 @@
 ﻿namespace Server.Shared.Models.Whut
 {
-    public class Rink
+    public class RinkDetail
     {
         /// <summary>
         /// 必修课绩点

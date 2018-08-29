@@ -24,7 +24,7 @@ namespace Server.Service.Extension
             var opt = new DbOptions();
             optionAction?.Invoke(opt);
             services.TryAddSingleton(opt);
-            services.TryAddScoped<IUserDbContext<User>, UserDbContext>();
+            services.TryAddScoped<IUserDbContext<AppUser>, UserDbContext>();
             services.AddScoped<IWhutDbContext<WhutStudent>, WhutDbContext>();
             return services;
         }

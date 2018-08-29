@@ -6,7 +6,7 @@ import RinkCard from '../../../components/RinkCard/RinkCard';
 import { Tips } from '../../../common/config/Tips';
 import ScoresList from '../../../components/ScoresList/ScoresList';
 import { WhutStudent } from '../../../common/stores/WhutStudent';
-import { nullable, getToken, match } from '../../../utils';
+import { nullable, getToken, match, removeToken, parseStatus } from '../../../utils';
 import { request } from '../../../utils/request';
 import { message, Tabs, Modal, Button, Row, Select } from 'antd';
 import { WhutStatus } from '../../../common/models/WhutStatus';
@@ -32,42 +32,57 @@ class ScoresView extends React.Component<IScoresViewPorps>{
 	async loadScores(useServerCache: boolean) {
 		try {
 			const url = useServerCache ? '/api/whut/scoresrink' : "/api/whut/updatescoresrink"
-			const { status, data } = await request(url)
+			const res = await request(url)
 				.auth(getToken()!)
 				.get()
 			this.setState({ loading: false })
-			const ok = match({
-				[WhutStatus.Ok]:
-					() => {
-						const { rink, scores } = data;
-						const { student } = this.props;
-						if (rink) student!.setRink(rink);
-						if (scores) student!.setScores(scores);
-						this.setState({ loadingRink: false });
-						message.info(Tips.Ok)
-					},
-				[WhutStatus.StudentNotFind]:
-					() => {
-						message.warn(Tips.NoStudent);
-					},
-				[WhutStatus.WhutServerCrashed]:
-					() => {
-						message.error(Tips.WhutServerCrashed);
-					},
-				['_']:
-					() => {
-						message.error(Tips.UnknownError);
-					}
-			});
-			match({
-				200: () => ok(data.status),
-				401: () => message.warn(Tips.TokenExpires),
-				'_': () => message.error(Tips.ServerFailure)
-			})(status)
+			if (res.status == 200) {
+				const { status, rink, scores } = res.data;
+				match(status)({
+					[WhutStatus.Ok]:
+						() => {
+							const { student } = this.props;
+							if (rink)
+								student!.setRink(rink);
+							if (scores)
+								student!.setScores(scores);
+							this.setState({ loadingRink: false });
+							message.info(Tips.Ok)
+						},
+					[WhutStatus.StudentNotFind]:
+						() => {
+							message.warn(Tips.NoStudent);
+						},
+					[WhutStatus.WhutServerCrashed]:
+						() => {
+							message.error(Tips.WhutServerCrashed);
+						},
+					['_']:
+						() => {
+							message.error(Tips.UnknownError);
+						}
+				});
+			}
+			else {
+				throw Error(res.statusText);
+			}
 		} catch (error) {
 			this.setState({ loading: false })
-			console.log(error)
-			message.error(Tips.NetworkError);
+			const status = parseStatus(error);
+			if (status) {
+				match(status)({
+					401: () => message.warn(Tips.TokenExpires, () => {
+						removeToken();
+						this.props.history.push('/login', { from: this.props.location.pathname });
+					}),
+					423: () => message.error(Tips.Locked),
+					'_': () => message.error(Tips.ServerFailure)
+				})
+			}
+			else {
+				console.log(error);
+				message.error(Tips.NetworkError);
+			}
 		}
 	}
 	refresh() {
@@ -81,6 +96,9 @@ class ScoresView extends React.Component<IScoresViewPorps>{
 			onOk: async () => await this.loadScores(false),
 			onCancel: async () => await this.loadScores(true),
 		});
+	}
+	gotologin() {
+		this.props.history.push('/login', { from: this.props.location.pathname });
 	}
 	render() {
 		let { rink, scores } = this.props.student!;

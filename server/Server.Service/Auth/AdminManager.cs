@@ -10,18 +10,18 @@ using static System.String;
 using static LinqPlus.Linp;
 namespace Server.Service.Auth
 {
-    public class AdminManager : IAdminManager<User>
+    public class AdminManager : IAdminManager<AppUser>
     {
         private readonly AuthOptions _opt;
-        private readonly IUserDbContext<User> _db;
+        private readonly IUserDbContext<AppUser> _db;
 
         /// <inheritdoc />
         /// <summary>
         /// 所有用户
         /// </summary>
-        public IEnumerable<User> Users => _db.Users;
+        public IEnumerable<AppUser> Users => _db.Users;
 
-        public AdminManager(IUserDbContext<User> db, AuthOptions opt)
+        public AdminManager(IUserDbContext<AppUser> db, AuthOptions opt)
         {
             _db = db;
             _opt = opt;
@@ -33,7 +33,7 @@ namespace Server.Service.Auth
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public (AuthStatus status, User user) FindUser(string uid)
+        public (AuthStatus status, AppUser user) FindUser(string uid)
         {
             if (IsNullOrWhiteSpace(uid))
                 return (AuthStatus.InputIllegal, null);
@@ -81,7 +81,7 @@ namespace Server.Service.Auth
                 return AuthStatus.PasswordIllegal;
             if (_db.FindUser(uid) != null)
                 return AuthStatus.UidHasExist;
-            _db.AddUser(new User
+            _db.AddUser(new AppUser
             (
                 uid: uid,
                 name: name,
@@ -118,7 +118,7 @@ namespace Server.Service.Auth
             if (!IsNullOrWhiteSpace(role))
                 user.Role = role;
             if (!IsNullOrWhiteSpace(pwd))
-                user.PwHash = User.MakePwdHash(pwd);
+                user.PwHash = AppUser.MakePwdHash(pwd);
             return AuthStatus.Ok;
         }
     }

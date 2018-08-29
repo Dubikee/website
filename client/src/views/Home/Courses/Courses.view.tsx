@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import TimeTable from '../../../components/TimeTable/TimeTable';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { message, Form, Button, Checkbox, Modal } from 'antd';
-import { nullable, getToken, removeToken, match } from '../../../utils';
+import { nullable, getToken, removeToken, match, parseStatus } from '../../../utils';
 import { WhutStudent } from '../../../common/stores/WhutStudent';
 import { User } from '../../../common/stores/User';
 import { request } from '../../../utils/request';
@@ -35,43 +35,53 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 	async loadTable(useServerCache: boolean) {
 		try {
 			const url = useServerCache ? '/api/whut/table' : '/api/whut/updatetable';
-			const { status, data } = await request(url)
+			const res = await request(url)
 				.auth(getToken()!)
 				.get();
 			this.setState({ loading: false })
-			const ok = match({
-				[WhutStatus.Ok]:
-					() => {
-						const student = this.props.student!;
-						const { table } = data;
-						if (table && table.length == 5 && table[0].length == 7) {
-							student.setTables(table);
-							message.info(Tips.Ok)
-						}
-						else
-							message.error(Tips.ServerFailure);
-					},
-				[WhutStatus.StudentNotFind]:
-					() => message.warn(Tips.NoStudent),
-				[WhutStatus.PwdWrong]:
-					() => message.warn(Tips.WhutPwdWrong),
-				[WhutStatus.WhutServerCrashed]:
-					() => message.error(Tips.WhutServerCrashed),
-				['_']:
-					() => message.error(Tips.UnknownError)
-			})
-			match({
-				200: () => ok(data.status),
-				401: () => message.error(Tips.TokenExpires, () => {
-					removeToken();
-					this.props.history.push('/login')
-				}),
-				'_': () => message.error(Tips.UnknownError)
-			})(status)
+			if (res.status = 200) {
+				const { status, table } = res.data;
+				match(status)({
+					[WhutStatus.Ok]:
+						() => {
+							const student = this.props.student!;
+							if (table && table.length == 5 && table[0].length == 7) {
+								student.setTables(table);
+								message.info(Tips.Ok)
+							}
+							else
+								message.error(Tips.ServerFailure);
+						},
+					[WhutStatus.StudentNotFind]:
+						() => message.warn(Tips.NoStudent),
+					[WhutStatus.PwdWrong]:
+						() => message.warn(Tips.WhutPwdWrong),
+					[WhutStatus.WhutServerCrashed]:
+						() => message.error(Tips.WhutServerCrashed),
+					['_']:
+						() => message.error(Tips.UnknownError)
+				})
+			}
+			else {
+				throw Error(res.statusText);
+			}
 		} catch (error) {
-			console.log(error)
 			this.setState({ loading: false })
-			message.error(Tips.ServerFailure)
+			const status = parseStatus(error);
+			if (status) {
+				match(status)({
+					401: () => message.error(Tips.TokenExpires, () => {
+						removeToken();
+						this.props.history.push('/login', { from: this.props.location.pathname });
+					}),
+					423: () => message.error(Tips.Locked),
+					'_': () => message.error(Tips.UnknownError)
+				})
+			}
+			else {
+				console.log(error)
+				message.error(Tips.ServerFailure)
+			}
 		}
 	}
 	refresh() {

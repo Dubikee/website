@@ -2,7 +2,7 @@
 
 namespace Server.Shared.Models.Whut
 {
-    public class EotInfo
+    public class EotDetail
     {
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }

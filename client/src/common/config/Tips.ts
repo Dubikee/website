@@ -16,4 +16,5 @@ export let Tips = {
 	Landing: '正在登陆...',
 	PwdIsEmpty: '密码不可为空',
 	UidIsEmpty: '账号不可为空',
+	Locked: '请求过于频繁，请五分钟之后再试'
 }

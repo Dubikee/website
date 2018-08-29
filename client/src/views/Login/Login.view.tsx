@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Row, Col, message, Form, Checkbox, Button, Input, Icon } from "antd";
-import { setToken, nullable, match } from "../../utils";
+import { setToken, nullable, match, parseStatus } from "../../utils";
 import { inject, observer } from "mobx-react";
 import { ServiceNames } from "src/services";
 import { RouteComponentProps, withRouter } from "react-router";
@@ -11,7 +11,7 @@ import { request } from "../../utils/request";
 import { AuthStatus } from "../../common/models/AuthStatus";
 import "./Login.view.less";
 
-interface IHomeViewProps extends RouteComponentProps<any> {
+interface IHomeViewProps extends RouteComponentProps<{ from: string | nullable }> {
 	user: User | nullable
 }
 
@@ -47,37 +47,49 @@ class LoginView extends React.Component<IHomeViewProps> {
 		const user = this.props.user!;
 		const hide = message.loading(Tips.Landing);
 		try {
-			const { status, data } = await request("/api/account/login")
+			const res = await request("/api/account/login")
 				.forms(this.state)
 				.post();
 			hide();
-			const ok = match({
-				[AuthStatus.Ok]:
-					() => {
-						const { status, jwt, ...info } = data
-						setToken(jwt!)
-						runInAction(() => user.updateUser({ login: true, ...info }))
-						message.info(Tips.LoginSuccess, 1, () => {
-							if (this.props.history.length > 0)
-								this.props.history.goBack();
-							else
-								this.props.history.push('/home/index');
-						})
-					},
-				[AuthStatus.PasswordWrong]:
-					() => message.error(Tips.PwdWrong),
-				[AuthStatus.UIdNotFind]:
-					() => message.error(Tips.UidNotExist),
-				['_']:
-					() => message.error(Tips.UnknownError),
-			})
-			match({
-				200: () => ok(data.status),
-				'_': () => message.error(Tips.ServerFailure)
-			})(status)
+			if (res.status == 200) {
+				const { status, jwt, ...info } = res.data;
+				match(status)({
+					[AuthStatus.Ok]:
+						() => {
+							setToken(jwt!)
+							runInAction(() => user.updateUser({ login: true, ...info }))
+							message.info(Tips.LoginSuccess, 1, () => {
+								const { state } = this.props.location;
+								if (state && state['from'])
+									this.props.history.push(state['from']);
+								else
+									this.props.history.push('/home/index');
+							})
+						},
+					[AuthStatus.PasswordWrong]:
+						() => message.error(Tips.PwdWrong),
+					[AuthStatus.UIdNotFind]:
+						() => message.error(Tips.UidNotExist),
+					['_']:
+						() => message.error(Tips.UnknownError),
+				})
+			}
+			else {
+				throw Error(res.statusText);
+			}
 		} catch (error) {
-			hide()
-			message.error(Tips.NetworkError)
+			hide();
+			const status = parseStatus(error);
+			if (status) {
+				match(status)({
+					423: () => message.error(Tips.Locked),
+					'_': () => message.error(Tips.UnknownError)
+				})
+			}
+			else {
+				console.log(error);
+				message.error(Tips.NetworkError);
+			}
 		}
 	}
 	render() {

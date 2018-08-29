@@ -4,7 +4,7 @@ using Server.Shared.Core;
 
 namespace Server.Shared.Models.Auth
 {
-    public class User : IUser
+    public class AppUser : IUser
     {
         public int Id { get; set; }
         public string Uid { get; set; }
@@ -17,7 +17,7 @@ namespace Server.Shared.Models.Auth
         /// <summary>
         /// 无参构造函数
         /// </summary>
-        public User()
+        public AppUser()
         {
         }
 
@@ -30,7 +30,7 @@ namespace Server.Shared.Models.Auth
         /// <param name="pwd"></param>
         /// <param name="phone"></param>
         /// <param name="email"></param>
-        public User(
+        public AppUser(
             string uid,
             string name,
             string role,
@@ -54,10 +54,10 @@ namespace Server.Shared.Models.Auth
         public static byte[] MakePwdHash(string pwd) => MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(pwd));
     }
 
-    public static class UserExtension
+    public static class AppUserExtension
     {
         public static void Deconstruct(
-            this User user,
+            this AppUser user,
             out string uid,
             out string name,
             out string role,

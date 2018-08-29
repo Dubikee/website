@@ -11,22 +11,25 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
+using Server.Shared.Utils;
 using static System.String;
 using static LinqPlus.Linp;
+
 namespace Server.Service.Auth
 {
-    public class AccountManager : IAccountManager<User>
+    public class AccountManager : IAccountManager<AppUser>
     {
-        private User _user;
+        private AppUser _user;
         private readonly AuthOptions _opt;
         private readonly HttpContext _ctx;
-        private readonly IUserDbContext<User> _db;
+        private readonly IUserDbContext<AppUser> _db;
+        private readonly IForbiddenJwtStore _jwtStore;
 
         /// <inheritdoc />
         /// <summary>
         /// 当前用户
         /// </summary>
-        public User User
+        public AppUser User
         {
             get
             {
@@ -39,10 +42,11 @@ namespace Server.Service.Auth
             }
         }
 
-        public AccountManager(IUserDbContext<User> db, IHttpContextAccessor accessor, AuthOptions opt)
+        public AccountManager(IUserDbContext<AppUser> db, IHttpContextAccessor accessor, AuthOptions opt, IForbiddenJwtStore jwtStore)
         {
             _db = db;
             _opt = opt;
+            _jwtStore = jwtStore;
             _ctx = accessor.HttpContext;
         }
 
@@ -63,7 +67,7 @@ namespace Server.Service.Auth
             if (user == null)
                 return (AuthStatus.UIdNotFind, null);
             // 检查密码是否正确
-            if (!User.MakePwdHash(pwd).SequenceEqual(user.PwHash))
+            if (!AppUser.MakePwdHash(pwd).SequenceEqual(user.PwHash))
                 return (AuthStatus.PasswordWrong, null);
             _user = user;
             return (AuthStatus.Ok, MakeJwt(uid, user.Role));
@@ -75,7 +79,10 @@ namespace Server.Service.Auth
         /// <returns></returns>
         public bool Logout()
         {
-            throw new NotImplementedException();
+            var jwt = _ctx.Request.Headers.GetJwt();
+            if (string.IsNullOrWhiteSpace(jwt))
+                throw new Exception("JWT不可能不空");
+            return _jwtStore.Push(jwt);
         }
 
         /// <inheritdoc />
@@ -103,7 +110,7 @@ namespace Server.Service.Auth
                 return (AuthStatus.PasswordIllegal, null);
             if (_db.FindUser(uid) != null)
                 return (AuthStatus.UidHasExist, null);
-            _db.AddUser(new User
+            _db.AddUser(new AppUser
             (
                 uid: uid,
                 name: name,
@@ -165,9 +172,9 @@ namespace Server.Service.Auth
                 return AuthStatus.InputIllegal;
             if (!Regex.IsMatch(newPwd, _opt.PwdRegex))
                 return AuthStatus.PasswordIllegal;
-            if (!User.MakePwdHash(oldPwd).SequenceEqual(User.PwHash))
+            if (!AppUser.MakePwdHash(oldPwd).SequenceEqual(User.PwHash))
                 return AuthStatus.PasswordWrong;
-            User.PwHash = User.MakePwdHash(newPwd);
+            User.PwHash = AppUser.MakePwdHash(newPwd);
             _db.UpdateUser(User);
             return AuthStatus.Ok;
         }

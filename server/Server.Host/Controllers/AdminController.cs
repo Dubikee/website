@@ -11,10 +11,10 @@ namespace Server.Host.Controllers
     [Authorize(Policy = "MasterOnly")]
     public class AdminController : ControllerBase
     {
-        private readonly IAdminManager<User> _manager;
+        private readonly IAdminManager<AppUser> _manager;
         private static readonly ILogger Log = LogManager.GetCurrentClassLogger();
 
-        public AdminController(IAdminManager<User> manager)
+        public AdminController(IAdminManager<AppUser> manager)
         {
             _manager = manager;
         }
