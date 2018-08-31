@@ -13,7 +13,7 @@ class Home extends React.Component<RouteComponentProps<{}>> {
 	}
 	render() {
 		return <Layout>
-			<Layout.Sider trigger={null}
+			<Layout.Sider className="home-slider" trigger={null}
 				collapsed={this.state.collapsed}
 				width={200}
 				style={{ background: '#fff' }}

@@ -15,6 +15,7 @@ namespace Server.Service.Extension
             var opt = new RedisOptions();
             optionsAction?.Invoke(opt);
             var redis = ConnectionMultiplexer.Connect(opt.RedisConnection);
+            services.AddSingleton(opt);
             services.AddSingleton(redis);
             return services;
         }

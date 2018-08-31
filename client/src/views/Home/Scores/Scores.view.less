@@ -1,2 +1,32 @@
+.scores-views{
+	margin-bottom: 10px;
+	.cp-controller, .ph-controller{
+	 	margin-left: 25px;
+	  	margin-right: 40px;
+	   	padding: 8px 0 8px 0; 
+	}
+	.ph-controller{
+		display: none;
+	}
+}
+@media screen and (max-width: 600px) {
+	.scores-views{
+		.cp-controller{
+			display: none;
+		}
+		.ph-controller{
+			display: block;
+			padding-top: 0;
+			padding-bottom: 3px;
+			margin-right: 25px;
+		}
+	}
+}
 
-
+@media screen and (max-width: 380px) {
+	.scores-views{
+		.controller{
+			margin-right: 30px;
+		}
+	}
+}

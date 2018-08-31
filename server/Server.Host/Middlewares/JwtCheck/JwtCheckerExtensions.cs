@@ -1,8 +1,7 @@
-﻿using System;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Server.Service.Auth;
 using Server.Shared.Core.Services;
-using Server.Shared.Options;
 
 namespace Server.Host.Middlewares.JwtCheck
 {
@@ -15,7 +14,7 @@ namespace Server.Host.Middlewares.JwtCheck
 
         public static IServiceCollection AddJwtChecker(this IServiceCollection services)
         {
-            return services.AddScoped<IForbiddenJwtStore, IForbiddenJwtStore>();
+            return services.AddScoped<IForbiddenJwtStore, ForbiddenJwtStore>();
         }
     }
 }

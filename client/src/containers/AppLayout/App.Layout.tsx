@@ -57,7 +57,7 @@ export default (View: any) => {
 				</Menu.Item>
 			</Menu>
 			return <Layout className="app-layout">
-				<Layout.Header className="header">
+				<Layout.Header className="cp-header">
 					<div className="header-logo" />
 					<div className="header-menu">
 						<div className="menu-list">

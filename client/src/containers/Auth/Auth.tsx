@@ -74,7 +74,7 @@ const auth = (requriedRole: 'admin' | 'vistor' | 'master') => (View: any) => {
 						401: () => this.gotologin(),
 						423: () => message.error(Tips.Locked),
 						'_': () => message.error(Tips.UnknownError)
-					})
+					}) 
 				}
 				else {
 					console.log(error);

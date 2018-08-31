@@ -3,7 +3,8 @@
 	background-size: cover;
     position: absolute;
     height: 100%;
-    width: 100%;
+	width: 100%;
+	min-height: 600px;
     .form-wrapper {
         position: relative;
         top: 20%;
@@ -56,5 +57,16 @@
 			font-size: 14px;
 			letter-spacing: 2px;
 		}
+	}
+}
+@media screen and (max-width: 700px) {
+    .login-view{
+		.form-wrapper {
+			.form-content {
+				>h1 {
+					font-weight: 400;
+				}
+			}
+		}	
 	}
 }
