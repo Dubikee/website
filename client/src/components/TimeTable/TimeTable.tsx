@@ -42,10 +42,7 @@ class TimeTable extends React.PureComponent<ITimeTableProps> {
 						</Popover>
 					}
 					else
-						return <div>
-							<br />
-							<br />
-						</div>
+						return <div><br /><br /></div>
 				}
 			} as ColumnProps<Course>
 		})
