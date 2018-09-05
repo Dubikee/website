@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using Server.Host.Middlewares.IPLock;
+using Server.Host.Middlewares.JwtCheck;
 using Server.Service.Extension;
 using System;
-using Server.Host.Middlewares.JwtCheck;
 
 namespace Server.Host
 {

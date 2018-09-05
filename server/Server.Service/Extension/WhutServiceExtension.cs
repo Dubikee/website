@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Server.Service.Whut;
 using Server.Shared.Core.Services;
-using Server.Shared.Models.Whut;
 
 namespace Server.Service.Extension
 {

@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Server.Shared.Models.Auth;
-using Server.Shared.Models.Whut;
-using Server.Shared.Options;
-using System;
 using Server.DB;
 using Server.DB.Models;
 using Server.Shared.Core.DB;
+using Server.Shared.Models.Auth;
 
 namespace Server.Service.Extension
 {

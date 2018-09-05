@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
-using Server.Shared;
 using Server.Shared.Core.Services;
 using Server.Shared.Models.Auth;
 using System.Threading.Tasks;
+
 namespace Server.Host.Controllers
 {
     [Authorize(Policy = "AdminOnly")]

@@ -5,23 +5,18 @@ import { RouteComponentProps } from "react-router";
 import RinkCard from "../../../components/RinkCard/RinkCard";
 import { Tips } from "../../../common/config/Tips";
 import ScoresList from "../../../components/ScoresList/ScoresList";
-import { WhutStudent } from "../../../common/stores/WhutStudent";
-import {
-	nullable,
-	getToken,
-	match,
-	removeToken,
-	parseStatus
-} from "../../../utils";
+import { nullable, getToken, removeToken } from "../../../utils";
 import { request } from "../../../API/request";
-import { message, Tabs, Modal, Button, Row, Select } from "antd";
-import { Status } from "../../../API/Status";
+import { message, Tabs, Modal, Button, Select } from "antd";
+import { ScoresStore } from "../../../common/stores/ScoresStore";
+import { RinkStore } from "../../../common/stores/RinkStore";
 
 interface IScoresViewPorps extends RouteComponentProps<any> {
-	student: WhutStudent | nullable;
+	scoresStore: ScoresStore | nullable;
+	rinkStore: RinkStore | nullable;
 }
 
-@inject("student")
+@inject("scoresStore", "rinkStore")
 @observer
 class ScoresView extends React.Component<IScoresViewPorps> {
 	state = {
@@ -29,43 +24,43 @@ class ScoresView extends React.Component<IScoresViewPorps> {
 		year: "*"
 	};
 	componentWillMount() {
-		let { rink, scores } = this.props.student!;
-		if (!rink || scores.length == 0) this.loadScores(true);
+		let { scores } = this.props.scoresStore!;
+		if (scores.length == 0) this.loadScores();
 		else this.setState({ loading: false });
 	}
-	async loadScores(reload: boolean) {
+	async loadScores() {
 		await request("/api/whut/scores")
 			.auth(getToken()!)
-			.with({
+			.on({
 				before: () => {
 					this.setState({ loading: false });
 				},
-				onOk: ({ scores }) => {
-					const { student } = this.props;
-					if (scores) student!.setScores(scores);
-					this.setState({ loadingRink: false });
+				Ok: ({ scores }) => {
+					const { scoresStore } = this.props;
+					if (scores) scoresStore!.setScores(scores);
+					this.setState({ loading: false });
 					message.info(Tips.Ok);
 				},
-				onWhutIdNotFind: () => {
+				WhutIdNotFind: () => {
 					message.warn(Tips.NoStudent);
 				},
-				onWhutCrashed: () => {
-					message.error(Tips.WhutServerCrashed)
+				WhutCrashed: () => {
+					message.error(Tips.WhutServerCrashed);
 				},
-				on401Unauthorized: () => {
+				Unauthorized401: () => {
 					message.warn(Tips.TokenExpires, () => {
 						removeToken();
 						this.props.history.push("/login", {
 							from: this.props.location.pathname
 						});
-					})
+					});
 				},
-				on423Locked: () => {
-					message.error(Tips.Locked)
+				Locked423: () => {
+					message.error(Tips.Locked);
 				},
-				onUnknownError: () => {
+				UnknownError: () => {
 					message.error(Tips.NetworkError);
-				},
+				}
 			})
 			.get();
 	}
@@ -77,8 +72,8 @@ class ScoresView extends React.Component<IScoresViewPorps> {
 			okText: "是",
 			okType: "danger",
 			cancelText: "否",
-			onOk: async () => await this.loadScores(false),
-			onCancel: async () => await this.loadScores(true)
+			onOk: async () => await this.loadScores(),
+			onCancel: async () => await this.loadScores()
 		});
 	}
 	gotologin() {
@@ -87,14 +82,17 @@ class ScoresView extends React.Component<IScoresViewPorps> {
 		});
 	}
 	render() {
-		let { rink, scores } = this.props.student!;
+		let { scores } = this.props.scoresStore!;
 		let { loading, year } = this.state;
 		const yearSet = new Set(scores.map(x => x.schoolYear));
 		return (
 			<div className="scores-views">
 				<Tabs defaultActiveKey="2">
 					<Tabs.TabPane tab="绩点排名" key="1">
-						<RinkCard loading={loading} data={rink} />
+						<RinkCard
+							loading={loading}
+							data={this.props.rinkStore!.rink}
+						/>
 					</Tabs.TabPane>
 					<Tabs.TabPane tab="考试成绩" key="2">
 						<div className="cp-controller">

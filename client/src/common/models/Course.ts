@@ -1,7 +1,5 @@
 export class Course {
 	name: string;
-	start: number;
-	end: number;
-	teacher: string
+	time: string
 	location: string;
 }

@@ -3,26 +3,19 @@ import { inject, observer } from "mobx-react";
 import TimeTable from "../../../components/TimeTable/TimeTable";
 import { withRouter, RouteComponentProps } from "react-router";
 import { message, Form, Button, Checkbox, Modal } from "antd";
-import {
-	nullable,
-	getToken,
-	removeToken,
-	match,
-	parseStatus
-} from "../../../utils";
-import { WhutStudent } from "../../../common/stores/WhutStudent";
+import { nullable, getToken, removeToken } from "../../../utils";
 import { User } from "../../../common/stores/User";
 import { request } from "../../../API/request";
 import { Tips } from "../../../common/config/Tips";
-import { Status } from "../../../API/Status";
 import "./Courses.view.less";
+import { TableStore } from "../../../common/stores/TableStore";
 
 interface ICoursesViewProps extends RouteComponentProps<any> {
 	user: User | nullable;
-	student: WhutStudent | nullable;
+	tableStore: TableStore | nullable;
 }
 
-@inject("user", "student")
+@inject("user", "tableStore")
 @observer
 class CoursesView extends React.Component<ICoursesViewProps> {
 	state = {
@@ -32,39 +25,39 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 		showLocation: true
 	};
 	componentWillMount() {
-		const { tableLoaded } = this.props.student!;
-		if (tableLoaded) this.setState({ loading: false });
+		const { loaded } = this.props.tableStore!;
+		if (loaded) this.setState({ loading: false });
 		else this.loadTable(true);
 	}
 	async loadTable(reload: boolean = false) {
 		await request("/api/whut/table")
 			.form("reload", reload)
 			.auth(getToken()!)
-			.with({
+			.on({
 				before: () => {
 					this.setState({ loading: false });
 				},
-				onOk: dat => {
-					const student = this.props.student!;
+				Ok: dat => {
+					const student = this.props.tableStore!!;
 					const { table } = dat;
 					if (table && table.length == 5 && table[0].length == 7) {
 						student.setTables(table);
 						message.info(Tips.Ok);
 					} else message.error(Tips.ServerFailure);
 				},
-				onUnknownError: () => {
+				UnknownError: () => {
 					message.error(Tips.ServerFailure);
 				},
-				onWhutIdNotFind: () => {
+				WhutIdNotFind: () => {
 					message.warn(Tips.NoStudent);
 				},
-				onWhutPwdWrong: () => {
+				WhutPwdWrong: () => {
 					message.warn(Tips.WhutPwdWrong);
 				},
-				onWhutCrashed: () => {
+				WhutCrashed: () => {
 					message.error(Tips.WhutServerCrashed);
 				},
-				on401Unauthorized: () => {
+				Unauthorized401: () => {
 					message.error(Tips.TokenExpires, () => {
 						removeToken();
 						this.props.history.push("/login", {
@@ -72,7 +65,7 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 						});
 					});
 				},
-				on423Locked: () => {
+				Locked423: () => {
 					message.error(Tips.Locked);
 				}
 			})
@@ -95,7 +88,7 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 			<div>
 				<TimeTable
 					{...this.state}
-					data={this.props.student!.tables}
+					data={this.props.tableStore!.table}
 					className="timetable"
 				/>
 				<Form layout="inline" className="tb-settings">

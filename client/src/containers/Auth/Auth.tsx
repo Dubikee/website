@@ -4,18 +4,13 @@ import {
 	getToken,
 	removeToken,
 	nullable,
-	match,
-	isRole,
-	parseStatus
-} from "../../utils";
+	isRole} from "../../utils";
 import { runInAction } from "mobx";
 import { message, Spin } from "antd";
 import { RouteComponentProps, withRouter } from "react-router";
 import { Tips } from "../../common/config/Tips";
 import { request } from "../../API/request";
 import { User } from "../../common/stores/User";
-import { AuthStatus } from "../../common/models/AuthStatus";
-import Axios from "axios";
 
 interface IAdimOnlyPorps extends RouteComponentProps<any> {
 	user: User | nullable;
@@ -51,8 +46,8 @@ const auth = (requriedRole: "admin" | "vistor" | "master") => (View: any) => {
 			}
 			await request("/api/account/validate")
 				.auth(token)
-				.with({
-					onOk: dat => {
+				.on({
+					Ok: dat => {
 						const { status, ...info } = dat;
 						runInAction(() =>
 							this.props.user!.updateUser({
@@ -62,19 +57,19 @@ const auth = (requriedRole: "admin" | "vistor" | "master") => (View: any) => {
 						);
 						this.checkRole(info.role!);
 					},
-					onTokenExpired: () => {
+					TokenExpired: () => {
 						removeToken();
 						message.warn(Tips.TokenExpires, () => {
 							this.gotologin();
 						});
 					},
-					on401Unauthorized: () => {
+					Unauthorized401: () => {
 						this.gotologin();
 					},
-					on403Forbidden: () => {
+					Forbidden403: () => {
 						message.error(Tips.Locked);
 					},
-					onUnknownError: () => {
+					UnknownError: () => {
 						message.error(Tips.UnknownError);
 					}
 				})

@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Layout } from 'antd';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { renderSwitch } from '../../utils';
-import AppLayout from '../../containers/AppLayout/App.Layout';
 import { vistorRequired } from '../../containers/Auth/Auth';
 import { account } from '../../routes';
 
@@ -20,4 +19,4 @@ class Account extends React.Component<RouteComponentProps<{}>> {
 	}
 }
 
-export default vistorRequired(AppLayout(withRouter(Account)))
+export default vistorRequired(withRouter(Account))
