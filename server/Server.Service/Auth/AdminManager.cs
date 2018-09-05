@@ -1,13 +1,15 @@
-﻿using Server.Shared.Core.Database;
-using Server.Shared.Core.Services;
+﻿using Server.Shared.Core.Services;
 using Server.Shared.Models.Auth;
 using Server.Shared.Options;
-using Server.Shared.Results;
 using Server.Shared.Utils;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Server.Shared;
+using Server.Shared.Core.DB;
 using static System.String;
 using static LinqPlus.Linp;
+using static Server.Shared.Models.Auth.AppUserExtension;
+
 namespace Server.Service.Auth
 {
     public class AdminManager : IAdminManager<AppUser>
@@ -33,12 +35,12 @@ namespace Server.Service.Auth
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public (AuthStatus status, AppUser user) FindUser(string uid)
+        public (Status status, AppUser user) FindUser(string uid)
         {
             if (IsNullOrWhiteSpace(uid))
-                return (AuthStatus.InputIllegal, null);
-            var u = _db.FindUser(uid);
-            return u == null ? (AuthStatus.UIdNotFind, null) : (AuthStatus.Ok, u);
+                return (Status.InputIllegal, null);
+            var u = _db.Find(uid);
+            return u == null ? (Status.UidNotFind, null) : (Status.Ok, u);
         }
 
         /// <inheritdoc />
@@ -47,79 +49,50 @@ namespace Server.Service.Auth
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public AuthStatus DeleteUser(string uid)
+        public Status DeleteUser(string uid)
         {
             if (IsNullOrWhiteSpace(uid))
-                return AuthStatus.InputIllegal;
-            var user = _db.FindUser(uid);
+                return Status.InputIllegal;
+            var user = _db.Find(uid);
             if (user == null)
-                return AuthStatus.UIdNotFind;
+                return Status.UidNotFind;
             if (user.IsMaster())
-                return AuthStatus.NotAllowed;
-            _db.DeleteUser(user);
-            return AuthStatus.Ok;
+                return Status.NotAllowed;
+            _db.Delete(user);
+            return Status.Ok;
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        /// 添加用户
-        /// </summary>
-        /// <param name="uid"></param>
-        /// <param name="name"></param>
-        /// <param name="pwd"></param>
-        /// <param name="role"></param>
-        /// <param name="phone"></param>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        public AuthStatus AddUser(string uid, string name, string role, string pwd, string phone, string email)
+        public Status AddUser(UserInfos m)
         {
-            if (AnyNullOrWhiteSpace(uid, name, role, pwd))
-                return AuthStatus.InputIllegal;
-            if (!Regex.IsMatch(uid, _opt.UidRegex))
-                return AuthStatus.UidIllegal;
-            if (!Regex.IsMatch(pwd, _opt.PwdRegex))
-                return AuthStatus.PasswordIllegal;
-            if (_db.FindUser(uid) != null)
-                return AuthStatus.UidHasExist;
-            _db.AddUser(new AppUser
-            (
-                uid: uid,
-                name: name,
-                role: RoleTypes.Vistor,
-                pwd: pwd,
-                phone: phone,
-                email: email
-            ));
-            return AuthStatus.Ok;
+            if (AnyNullOrWhiteSpace(m.Uid, m.Name, m.Role, m.Pwd))
+                return Status.InputIllegal;
+            if (!Regex.IsMatch(m.Uid, _opt.UidRegex))
+                return Status.UidIllegal;
+            if (!Regex.IsMatch(m.Pwd, _opt.PwdRegex))
+                return Status.PwdIllegal;
+            if (_db.Find(m.Uid) != null)
+                return Status.UidHasExist;
+            _db.Add(new AppUser(m));
+            return Status.Ok;
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        /// 更改用户
-        /// </summary>
-        /// <param name="uid"></param>
-        /// <param name="name"></param>
-        /// <param name="phone"></param>
-        /// <param name="email"></param>
-        /// <param name="role"></param>
-        /// <param name="pwd"></param>
-        /// <returns></returns>
-        public AuthStatus EditUser(string uid, string name, string role, string pwd, string phone, string email)
+
+        public Status EditUser(UserInfos m)
         {
-            var (res, user) = FindUser(uid);
-            if (res != AuthStatus.Ok)
+            var (res, user) = FindUser(m.Uid);
+            if (res != Status.Ok)
                 return res;
-            if (!IsNullOrWhiteSpace(name))
-                user.Name = name;
-            if (!IsNullOrWhiteSpace(phone))
-                user.Phone = phone;
-            if (!IsNullOrWhiteSpace(email))
-                user.Email = email;
-            if (!IsNullOrWhiteSpace(role))
-                user.Role = role;
-            if (!IsNullOrWhiteSpace(pwd))
-                user.PwHash = AppUser.MakePwdHash(pwd);
-            return AuthStatus.Ok;
+            if (!IsNullOrWhiteSpace(m.Name))
+                user.Name = m.Name;
+            if (!IsNullOrWhiteSpace(m.Phone))
+                user.Phone = m.Phone;
+            if (!IsNullOrWhiteSpace(m.Email))
+                user.Email = m.Email;
+            if (!IsNullOrWhiteSpace(m.Role))
+                user.Role = m.Role;
+            if (!IsNullOrWhiteSpace(m.Pwd))
+                user.PwHash = MakePwdHash(m.Pwd);
+            return Status.Ok;
         }
     }
 }

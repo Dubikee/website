@@ -1,6 +1,6 @@
 ﻿namespace Server.Shared.Models.Whut
 {
-    public class ScoreDetail
+    public class ScoresDetail
     {
         /// <summary>
         /// 学年学期

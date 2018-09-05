@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Server.DB.UserDb;
-using Server.DB.WhutDb;
-using Server.Shared.Core.Database;
 using Server.Shared.Models.Auth;
 using Server.Shared.Models.Whut;
 using Server.Shared.Options;
 using System;
+using Server.DB;
+using Server.DB.Models;
+using Server.Shared.Core.DB;
 
 namespace Server.Service.Extension
 {
@@ -16,16 +16,14 @@ namespace Server.Service.Extension
         /// 注入用户数据库依赖
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="optionAction"></param>
         /// <returns></returns>
-        public static IServiceCollection AddAppDbContext(this IServiceCollection services,
-            Action<DbOptions> optionAction = null)
+        public static IServiceCollection AddAppDbContext(this IServiceCollection services)
         {
-            var opt = new DbOptions();
-            optionAction?.Invoke(opt);
-            services.TryAddSingleton(opt);
             services.TryAddScoped<IUserDbContext<AppUser>, UserDbContext>();
-            services.AddScoped<IWhutDbContext<WhutStudent>, WhutDbContext>();
+            services.TryAddScoped<IBaseDbContext<EotDbModel>, EotDbContext>();
+            services.TryAddScoped<IBaseDbContext<RinkDbModel>, RinkDbContext>();
+            services.TryAddScoped<IBaseDbContext<ScoresDbModel>, ScoresDbContext>();
+            services.TryAddScoped<IBaseDbContext<TableDbModel>, TableDbContext>();
             return services;
         }
     }

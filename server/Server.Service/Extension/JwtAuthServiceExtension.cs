@@ -20,12 +20,14 @@ namespace Server.Service.Extension
         /// <param name="services"></param>
         /// <param name="optionAction"></param>
         /// <returns></returns>
-        public static IServiceCollection AddJwtAuth(this IServiceCollection services, Action<AuthOptions> optionAction = null)
+        public static IServiceCollection AddJwtAuth(this IServiceCollection services,
+            Action<AuthOptions> optionAction = null)
         {
             var op = new AuthOptions();
             optionAction?.Invoke(op);
             services.TryAddSingleton(op);
             services.TryAddScoped<IAccountManager<AppUser>, AccountManager>();
+            services.TryAddScoped<IAdminManager<AppUser>, AdminManager>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddAuthentication(o =>
             {

@@ -1,20 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using Server.Shared;
 using Server.Shared.Core.Services;
-using Server.Shared.Models.Whut;
-using Server.Shared.Results;
+using Server.Shared.Models.Auth;
 using System.Threading.Tasks;
-
 namespace Server.Host.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     public class WhutController : ControllerBase
     {
-        private readonly IWhutService<WhutStudent> _whut;
+        private readonly IWhutService _whut;
         private static readonly ILogger Log = LogManager.GetCurrentClassLogger();
 
-        public WhutController(IWhutService<WhutStudent> whut)
+        public WhutController(IWhutService whut, IAccountManager<AppUser> manager)
         {
             _whut = whut;
         }
@@ -33,132 +32,39 @@ namespace Server.Host.Controllers
             return Ok(new {status});
         }
 
-        /// <summary>
-        /// 更新信息
-        /// </summary>
-        /// <param name="studentId"></param>
-        /// <param name="pwd"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult UpdateInfo(string studentId, string pwd)
-        {
-            var status = _whut.UpdateInfo(studentId, pwd);
-            Log.Info($"{Request.Path} 学号=[{studentId}] 密码=[{pwd}] => status=[{status}]");
-            return Ok(new {status});
-        }
 
         /// <summary>
         /// 获取课表
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> Table()
+        public async Task<IActionResult> Table(bool reload = false)
         {
-            if (_whut.Student == null)
-            {
-                Log.Info($"{Request.Path} status=[StudentNotFind]");
-                return Ok(new
-                {
-                    status = WhutStatus.StudentNotFind
-                });
-            }
-
-            var status = WhutStatus.Ok;
-            if (_whut.Student.Table == null)
-                status = await _whut.UpdateTable();
+            var (status, table) = await _whut.GetTable(reload);
             Log.Info($"{Request.Path} status=[{status}]");
-            return Ok(new
-            {
-                status,
-                table = _whut.Student.Table
-            });
+            return Ok(new {status, table});
         }
 
+
         /// <summary>
-        /// 更新课表
+        /// 更新绩点排名
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> UpdateTable()
+        public async Task<IActionResult> Scores(bool reload = false)
         {
-            if (_whut.Student == null)
-            {
-                Log.Info($"{Request.Path} status=[StudentNotFind]");
-                return Ok(new
-                {
-                    status = WhutStatus.StudentNotFind
-                });
-            }
-
-            var status = await _whut.UpdateTable();
-            if (status != WhutStatus.Ok)
-            {
-                Log.Info($"{Request.Path} status=[{status}]");
-                return Ok(new {status});
-            }
-
-            Log.Info($"{Request.Path} studentId=[{_whut.Student.StudentId}] status=[Ok]");
-            return Ok(new
-            {
-                status,
-                table = _whut.Student.Table
-            });
+            var (status, scores) = await _whut.GetScores(reload);
+            Log.Info($"{Request.Path} status=[Ok]");
+            return Ok(new {status, scores});
         }
 
         /// <summary>
         /// 更新绩点排名
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> UpdateScoresRink()
+        public async Task<IActionResult> Rink(bool reload = false)
         {
-            if (_whut.Student == null)
-            {
-                Log.Info($"{Request.Path} status=[StudentNotFind]");
-                return Ok(new
-                {
-                    status = WhutStatus.StudentNotFind
-                });
-            }
-
-            var status = await _whut.UpdateScoresRink();
-            if (status != WhutStatus.Ok)
-            {
-                Log.Info($"{Request.Path} status=[{status}]");
-                return Ok(new {status});
-            }
-
-            Log.Info($"{Request.Path} studentId=[{_whut.Student.StudentId}] status=[Ok]");
-            return Ok(new
-            {
-                status = WhutStatus.Ok,
-                scores = _whut.Student.Scores,
-                rinks = _whut.Student.Rink
-            });
-        }
-
-        /// <summary>
-        /// 获取绩点排名
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IActionResult> ScoresRink()
-        {
-            if (_whut.Student == null)
-            {
-                Log.Info($"{Request.Path} status=[StudentNotFind]");
-                return Ok(new
-                {
-                    status = WhutStatus.StudentNotFind
-                });
-            }
-
-            var status = WhutStatus.Ok;
-            if (_whut.Student.Scores == null || _whut.Student.Rink == null)
-                status = await _whut.UpdateScoresRink();
-            Log.Info($"{Request.Path} studentId=[{_whut.Student.StudentId}] status=[{status}]");
-            return Ok(new
-            {
-                status,
-                scores = _whut.Student.Scores,
-                rink = _whut.Student.Rink
-            });
+            var (status, rink) = await _whut.GetRink(reload);
+            Log.Info($"{Request.Path} status=[Ok]");
+            return Ok(new {status, rink});
         }
     }
 }

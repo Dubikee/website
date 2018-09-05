@@ -7,7 +7,7 @@ import { RouteComponentProps, withRouter } from "react-router";
 import { runInAction } from "mobx";
 import { User } from "../../common/stores/User";
 import { Tips } from "../../common/config/Tips";
-import { request } from "../../utils/request";
+import { request } from "../../API/request";
 import { AuthStatus } from "../../common/models/AuthStatus";
 import "./Login.view.less";
 
@@ -46,51 +46,37 @@ class LoginView extends React.Component<IHomeViewProps> {
 		if (!this.check()) return;
 		const user = this.props.user!;
 		const hide = message.loading(Tips.Landing);
-		try {
-			const res = await request("/api/account/login")
-				.forms(this.state)
-				.post();
-			hide();
-			if (res.status == 200) {
-				const { status, jwt, ...info } = res.data;
-				match(status)({
-					[AuthStatus.Ok]:
-						() => {
-							setToken(jwt!)
-							runInAction(() => user.updateUser({ login: true, ...info }))
-							message.info(Tips.LoginSuccess, 1, () => {
-								const { state } = this.props.location;
-								if (state && state['from'])
-									this.props.history.push(state['from']);
-								else
-									this.props.history.push('/home/index');
-							})
-						},
-					[AuthStatus.PasswordWrong]:
-						() => message.error(Tips.PwdWrong),
-					[AuthStatus.UIdNotFind]:
-						() => message.error(Tips.UidNotExist),
-					['_']:
-						() => message.error(Tips.UnknownError),
-				})
-			}
-			else {
-				throw Error(res.statusText);
-			}
-		} catch (error) {
-			hide();
-			const status = parseStatus(error);
-			if (status) {
-				match(status)({
-					423: () => message.error(Tips.Locked),
-					'_': () => message.error(Tips.UnknownError)
-				})
-			}
-			else {
-				console.log(error);
-				message.error(Tips.NetworkError);
-			}
-		}
+		await request("/api/account/login")
+			.forms(this.state)
+			.with({
+				before: () => {
+					hide();
+				},
+				onOk: ({ status, jwt, ...info }) => {
+					setToken(jwt!)
+					runInAction(() => user.updateUser({ login: true, ...info }))
+					message.info(Tips.LoginSuccess, 1, () => {
+						const { state } = this.props.location;
+						if (state && state['from'])
+							this.props.history.push(state['from']);
+						else
+							this.props.history.push('/home/index');
+					})
+				},
+				onUnknownError: () => {
+					message.error(Tips.NetworkError);
+				},
+				onPwdWrong: () => {
+					message.error(Tips.PwdWrong);
+				},
+				onUidNotFind: () => {
+					message.error(Tips.UidNotExist)
+				},
+				on423Locked: () => {
+					message.error(Tips.Locked)
+				}
+			})
+			.post();
 	}
 	render() {
 		return <div className="login-view">

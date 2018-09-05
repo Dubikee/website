@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
-using Server.Host.Models;
+using Server.Shared;
 using Server.Shared.Core.Services;
 using Server.Shared.Models.Auth;
-using Server.Shared.Results;
 
 namespace Server.Host.Controllers
 {
@@ -29,8 +29,9 @@ namespace Server.Host.Controllers
         {
 
             var (status, user) = _manager.FindUser(uid);
+            var ( _, name, role, phone, email, whutId, _) = user;
             Log.Info($"{Request.Path} uid=[{uid}] => user=[{user}]");
-            return Ok(new {code = status, user});
+            return Ok(new {code = status, name, role, phone, email, whutId});
         }
 
         /// <summary>
@@ -43,8 +44,15 @@ namespace Server.Host.Controllers
             Log.Info($"{Request.Path} => users");
             return Ok(new
             {
-                status = AuthStatus.Ok,
-                users = _manager.Users
+                status = Status.Ok,
+                users = _manager.Users.Select(x => new
+                {
+                    name = x.Name,
+                    role = x.Role,
+                    phone = x.Phone,
+                    email = x.Email,
+                    whutId = x.WhutId
+                })
             });
         }
 
@@ -67,16 +75,9 @@ namespace Server.Host.Controllers
         /// <param name="m"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult AddUser(UserModel m)
+        public IActionResult AddUser(UserInfos m)
         {
-            var code = _manager.AddUser(
-                uid: m.Uid,
-                name: m.Name,
-                role: m.Role,
-                pwd: m.Pwd,
-                phone: m.Phone,
-                email: m.Email
-            );
+            var code = _manager.AddUser(m);
             Log.Info($"{Request.Path} uid=[{m.Uid}] name=[{m.Name}] role=[{m.Role}] => code=[{code}]");
             return Ok(new {code});
         }
@@ -87,16 +88,9 @@ namespace Server.Host.Controllers
         /// <param name="m"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult EditUser(UserModel m)
+        public IActionResult EditUser(UserInfos m)
         {
-            var code = _manager.EditUser(
-                uid: m.Uid,
-                name: m.Name,
-                role: m.Role,
-                pwd: m.Pwd,
-                phone: m.Phone,
-                email: m.Email
-            );
+            var code = _manager.EditUser(m);
             Log.Info($"{Request.Path} uid=[{m.Uid}] name=[{m.Name}] role=[{m.Role}] => code=[{code}]");
             return Ok(new {code});
         }

@@ -2,19 +2,11 @@
 {
     public class DbOptions
     {
-        /// <summary>
-        /// 数据库位置
-        /// </summary>
         public string DbPath { get; set; }
-
-        /// <summary>
-        /// User数据表名称
-        /// </summary>
-        public string UserCollectionName { get; set; }
-
-        /// <summary>
-        /// whut数据表名称
-        /// </summary>
-        public string WhutCollectionName { get; set; }
+        public string EotName { get; set; } = "EOT";
+        public string RinkName { get; set; } = "RINK";
+        public string ScoresName { get; set; } = "SCORES";
+        public string TableName { get; set; } = "TABLE";
+        public string UserName { get; set; } = "USER";
     }
 }

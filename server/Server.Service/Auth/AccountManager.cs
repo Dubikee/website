@@ -1,25 +1,25 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
-using Server.Shared.Core.Database;
+using Server.Shared.Core.DB;
 using Server.Shared.Core.Services;
 using Server.Shared.Models.Auth;
 using Server.Shared.Options;
-using Server.Shared.Results;
+using Server.Shared.Utils;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
-using Server.Shared.Utils;
-using static System.String;
+using Server.Shared;
 using static LinqPlus.Linp;
+using static Server.Shared.Models.Auth.AppUserExtension;
 
 namespace Server.Service.Auth
 {
     public class AccountManager : IAccountManager<AppUser>
     {
-        private AppUser _user;
+        private AppUser _appUser;
         private readonly AuthOptions _opt;
         private readonly HttpContext _ctx;
         private readonly IUserDbContext<AppUser> _db;
@@ -29,20 +29,24 @@ namespace Server.Service.Auth
         /// <summary>
         /// 当前用户
         /// </summary>
-        public AppUser User
+        public AppUser AppUser
         {
             get
             {
-                if (_user != null) return _user;
+                if (_appUser != null)
+                    return _appUser;
                 var uid = _ctx.User.Claims
                     .FirstOrDefault(x => x.Type == _opt.UidClaimType)?.Value;
                 if (uid != null)
-                    _user = _db.FindUser(uid);
-                return _user;
+                    _appUser = _db.Find(uid);
+                return _appUser;
             }
         }
 
-        public AccountManager(IUserDbContext<AppUser> db, IHttpContextAccessor accessor, AuthOptions opt, IForbiddenJwtStore jwtStore)
+        public AccountManager(IUserDbContext<AppUser> db,
+            IHttpContextAccessor accessor,
+            AuthOptions opt,
+            IForbiddenJwtStore jwtStore)
         {
             _db = db;
             _opt = opt;
@@ -57,20 +61,20 @@ namespace Server.Service.Auth
         /// <param name="uid"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        public (AuthStatus status, string jwt) Login(string uid, string pwd)
+        public (Status status, string jwt) Login(string uid, string pwd)
         {
             // 空值检查
             if (AnyNullOrWhiteSpace(uid, pwd))
-                return (AuthStatus.InputIllegal, null);
+                return (Status.InputIllegal, null);
             // 判断Uid是否存在
-            var user = _db.FindUser(uid);
+            var user = _db.Find(uid);
             if (user == null)
-                return (AuthStatus.UIdNotFind, null);
+                return (Status.UidNotFind, null);
             // 检查密码是否正确
-            if (!AppUser.MakePwdHash(pwd).SequenceEqual(user.PwHash))
-                return (AuthStatus.PasswordWrong, null);
-            _user = user;
-            return (AuthStatus.Ok, MakeJwt(uid, user.Role));
+            if (!MakePwdHash(pwd).SequenceEqual(user.PwHash))
+                return (Status.PwdWrong, null);
+            _appUser = user;
+            return (Status.Ok, MakeJwt(uid, user.Role));
         }
 
         /// <summary>
@@ -81,45 +85,28 @@ namespace Server.Service.Auth
         {
             var jwt = _ctx.Request.Headers.GetJwt();
             if (string.IsNullOrWhiteSpace(jwt))
-                throw new Exception("JWT不可能不空");
+                throw new Exception("JWT不可能空");
             return _jwtStore.Push(jwt);
         }
 
-        /// <inheritdoc />
+
         /// <summary>
         /// 注册
         /// </summary>
-        /// <param name="uid"></param>
-        /// <param name="name"></param>
-        /// <param name="pwd"></param>
-        /// <param name="phone"></param>
-        /// <param name="email"></param>
+        /// <param name="m"></param>
         /// <returns></returns>
-        public (AuthStatus status, string jwt) Register(
-            string uid,
-            string name,
-            string pwd,
-            string phone,
-            string email)
+        public (Status status, string jwt) Register(UserInfos m)
         {
-            if (AnyNullOrWhiteSpace(uid, name, pwd))
-                return (AuthStatus.InputIllegal, null);
-            if (!Regex.IsMatch(uid, _opt.UidRegex))
-                return (AuthStatus.UidIllegal, null);
-            if (!Regex.IsMatch(pwd, _opt.PwdRegex))
-                return (AuthStatus.PasswordIllegal, null);
-            if (_db.FindUser(uid) != null)
-                return (AuthStatus.UidHasExist, null);
-            _db.AddUser(new AppUser
-            (
-                uid: uid,
-                name: name,
-                role: RoleTypes.Vistor,
-                pwd: pwd,
-                phone: phone,
-                email: email
-            ));
-            return (AuthStatus.Ok, MakeJwt(uid, RoleTypes.Vistor));
+            if (AnyNullOrWhiteSpace(m.Uid, m.Name, m.Pwd))
+                return (Status.InputIllegal, null);
+            if (!Regex.IsMatch(m.Uid, _opt.UidRegex))
+                return (Status.UidIllegal, null);
+            if (!Regex.IsMatch(m.Pwd, _opt.PwdRegex))
+                return (Status.PwdIllegal, null);
+            if (_db.Find(m.Uid) != null)
+                return (Status.UidHasExist, null);
+            _db.Add(new AppUser(m));
+            return (Status.Ok, MakeJwt(m.Uid, RoleTypes.Vistor));
         }
 
         /// <inheritdoc />
@@ -127,36 +114,35 @@ namespace Server.Service.Auth
         /// 移除用户
         /// </summary>
         /// <returns></returns>
-        public AuthStatus DeleteUser()
+        public Status DeleteUser()
         {
-            if (User == null)
-                return AuthStatus.TokenExpired;
-            _db.DeleteUser(User);
-            return AuthStatus.Ok;
+            if (AppUser == null)
+                return Status.TokenExpired;
+            _db.Delete(AppUser);
+            return Status.Ok;
         }
 
-        /// <inheritdoc />
         /// <summary>
-        /// 更新信息
+        /// UpdateInfo
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="phone"></param>
-        /// <param name="email"></param>
+        /// <param name="m"></param>
         /// <returns></returns>
-        public AuthStatus UpdateUserInfo(string name, string phone, string email)
+        public Status UpdateInfo(UserInfos m)
         {
-            if (AllNullOrWhiteSpace(name, phone, email))
-                return AuthStatus.InputIllegal;
-            if (User == null)
-                return AuthStatus.TokenExpired;
-            if (!IsNullOrWhiteSpace(name))
-                User.Name = name;
-            if (!IsNullOrWhiteSpace(phone))
-                User.Phone = phone;
-            if (!IsNullOrWhiteSpace(email))
-                User.Email = email;
-            _db.UpdateUser(User);
-            return AuthStatus.Ok;
+            if (AppUser == null)
+                return Status.TokenExpired;
+            if (m.Name != null)
+                AppUser.Name = m.Name;
+            if (m.Phone != null)
+                AppUser.Phone = m.Phone;
+            if (m.Email != null)
+                AppUser.Email = m.Email;
+            if (m.WhutId != null)
+                AppUser.WhutId = m.WhutId;
+            if (m.WhutPwd != null)
+                AppUser.WhutPwd = m.WhutPwd;
+            _db.Update(AppUser);
+            return Status.Ok;
         }
 
         /// <inheritdoc />
@@ -166,17 +152,17 @@ namespace Server.Service.Auth
         /// <param name="oldPwd"></param>
         /// <param name="newPwd"></param>
         /// <returns></returns>
-        public AuthStatus UpdateUserPwd(string oldPwd, string newPwd)
+        public Status UpdatePwd(string oldPwd, string newPwd)
         {
             if (AnyNullOrWhiteSpace(oldPwd, newPwd))
-                return AuthStatus.InputIllegal;
+                return Status.InputIllegal;
             if (!Regex.IsMatch(newPwd, _opt.PwdRegex))
-                return AuthStatus.PasswordIllegal;
-            if (!AppUser.MakePwdHash(oldPwd).SequenceEqual(User.PwHash))
-                return AuthStatus.PasswordWrong;
-            User.PwHash = AppUser.MakePwdHash(newPwd);
-            _db.UpdateUser(User);
-            return AuthStatus.Ok;
+                return Status.PwdIllegal;
+            if (!MakePwdHash(oldPwd).SequenceEqual(AppUser.PwHash))
+                return Status.PwdWrong;
+            AppUser.PwHash = MakePwdHash(newPwd);
+            _db.Update(AppUser);
+            return Status.Ok;
         }
 
         /// <summary>

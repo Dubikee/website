@@ -1,9 +1,7 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-using Server.Service.Auth;
+﻿using Microsoft.AspNetCore.Http;
 using Server.Shared.Core.Services;
-using StackExchange.Redis;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Server.Host.Middlewares.JwtCheck
 {

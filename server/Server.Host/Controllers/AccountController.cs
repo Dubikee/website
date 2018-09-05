@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
-using Server.Host.Models;
+using Server.Shared;
 using Server.Shared.Core.Services;
 using Server.Shared.Models.Auth;
-using Server.Shared.Results;
 
 namespace Server.Host.Controllers
 {
@@ -31,10 +30,10 @@ namespace Server.Host.Controllers
         {
             var (status, jwt) = _manager.Login(uid, pwd);
             Log.Info($"{Request.Path} uid=[{uid}] pwd=[***] =>code=[{status}]");
-            if (status != AuthStatus.Ok)
+            if (status != Status.Ok)
                 return Ok(new {status});
-            var (_, name, role, phone, email) = _manager.User;
-            return Ok(new {status, jwt, uid, name, phone, email, role});
+            var (_, name, role, phone, email, whutId, _) = _manager.AppUser;
+            return Ok(new {status, jwt, uid, name, phone, email, whutId, role});
         }
 
         /// <summary>
@@ -44,30 +43,23 @@ namespace Server.Host.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Register(UserModel m)
+        public ActionResult Register(UserInfos m)
         {
-            var (status, jwt) = _manager.Register(
-                uid: m.Uid,
-                name: m.Name,
-                pwd: m.Pwd,
-                phone: m.Phone,
-                email: m.Email);
+            var (status, jwt) = _manager.Register(m);
             Log.Info($"{Request.Path} uid=[{m.Uid}] name=[{m.Name}]... =>code=[{status}]");
-            return status == AuthStatus.Ok ? Ok(new {status, jwt}) : Ok(new {status});
+            return status == Status.Ok ? Ok(new {status, jwt}) : Ok(new {status});
         }
 
         /// <summary>
-        /// 修改信息
+        /// 
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="phone"></param>
-        /// <param name="email"></param>
+        /// <param name="m"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult UpdateInfo(string name, string phone, string email)
+        public ActionResult UpdateInfo(UserInfos m)
         {
-            var status = _manager.UpdateUserInfo(name, phone, email);
-            Log.Info($"{Request.Path} name=[{name}] phone=[{phone}] email=[{email}] =>code=[{status}]");
+            var status = _manager.UpdateInfo(m);
+            Log.Info($"{Request.Path} name=[{m.Name}] phone=[{m.Phone}] email=[{m.Email}] =>code=[{status}]");
             return Ok(new {status});
         }
 
@@ -80,7 +72,7 @@ namespace Server.Host.Controllers
         [HttpPost]
         public ActionResult UpdatePwd(string oldPwd, string newPwd)
         {
-            var status = _manager.UpdateUserPwd(oldPwd, newPwd);
+            var status = _manager.UpdatePwd(oldPwd, newPwd);
             Log.Info($"{Request.Path} oldPwd=[{oldPwd}] newPwd=[{newPwd}] =>code=[{status}]");
             return Ok(new {status});
         }
@@ -88,11 +80,11 @@ namespace Server.Host.Controllers
         [HttpGet]
         public ActionResult Validate()
         {
-            if (_manager.User == null)
-                return Ok(new {status = AuthStatus.TokenExpired});
-            Log.Info($"{Request.Path} => uid=[{_manager.User.Id}] ...");
-            var (uid, name, role, phone, email) = _manager.User;
-            return Ok(new {status = AuthStatus.Ok, uid, name, phone, email, role});
+            if (_manager.AppUser == null)
+                return Ok(new {status = Status.TokenExpired});
+            Log.Info($"{Request.Path} => uid=[{_manager.AppUser.Id}] ...");
+            var (uid, name, role, phone, email, whutId, _) = _manager.AppUser;
+            return Ok(new {status = Status.Ok, uid, name, phone, email, whutId, role});
         }
     }
 }

@@ -1,16 +1,17 @@
-﻿using System.Threading.Tasks;
-using Server.Shared.Results;
+﻿using Server.Shared.Models.Whut;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Server.Shared.Core.Services
 {
-    public interface IWhutService<T> where T : IStudent 
+    public interface IWhutService
     {
-        T Student { get; }
-        Task<WhutStatus> TryLogin();
-        WhutStatus UpdateInfo(string studentId, string pwd);
-        Task<WhutStatus> TryLogin(string studentId, string pwd);
-        Task<WhutStatus> UpdateTable();
-        Task<WhutStatus> UpdateScoresRink();
+        Task<Status> TryLogin();
+        Task<Status> TryLogin(string studentId, string pwd);
+        Task<(Status, string[][])> GetTable(bool reload = false);
+        Task<(Status, RinkDetail)> GetRink(bool reload = false);
+        Task<(Status, IEnumerable<ScoresDetail>)> GetScores(bool reload = false);
         Task<int> Evaluate();
     }
 }
+

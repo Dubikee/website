@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Shared.Options;
-using StackExchange.Redis;
 using System;
 
 namespace Server.Host.Middlewares.IPLock
@@ -10,6 +9,7 @@ namespace Server.Host.Middlewares.IPLock
     // ReSharper disable once InconsistentNaming
     public static class IPLockerExtensions
     {
+
         // ReSharper disable once InconsistentNaming
         public static IApplicationBuilder UseIPLocker(this IApplicationBuilder builder)
         {

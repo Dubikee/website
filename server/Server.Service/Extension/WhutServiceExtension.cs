@@ -14,7 +14,7 @@ namespace Server.Service.Extension
         /// <returns></returns>
         public static IServiceCollection AddWhutService(this IServiceCollection services)
         {
-            return services.AddScoped<IWhutService<WhutStudent>, WhutService>();
+            return services.AddScoped<IWhutService, WhutService>();
         }
     }
 }

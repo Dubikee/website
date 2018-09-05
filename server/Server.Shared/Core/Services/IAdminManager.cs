@@ -1,52 +1,18 @@
 ﻿using System.Collections.Generic;
-using Server.Shared.Results;
+using Server.Shared.Models.Auth;
 
 namespace Server.Shared.Core.Services
 {
-    public interface IAdminManager<TUser> where TUser : IUser
+    public interface IAdminManager<TUser> where TUser : IAppUser
     {
-        /// <summary>
-        /// 查找所有用户
-        /// </summary>
-        /// <returns></returns>
         IEnumerable<TUser> Users { get; }
 
-        /// <summary>
-        /// Uid查询用户
-        /// </summary>
-        /// <param name="uid"></param>
-        /// <returns></returns>
-        (AuthStatus status, TUser user) FindUser(string uid);
+        (Status status, TUser user) FindUser(string uid);
 
-        /// <summary>
-        /// 通过Uid删除用户
-        /// </summary>
-        /// <param name="uid"></param>
-        /// <returns></returns>
-        AuthStatus DeleteUser(string uid);
+        Status DeleteUser(string uid);
 
-        /// <summary>
-        /// 添加用户
-        /// </summary>
-        /// <param name="uid"></param>
-        /// <param name="name"></param>
-        /// <param name="pwd"></param>
-        /// <param name="role"></param>
-        /// <param name="phone"></param>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        AuthStatus AddUser(string uid, string name, string role, string pwd, string phone, string email);
+        Status AddUser(UserInfos m);
 
-        /// <summary>
-        /// 更改用户
-        /// </summary>
-        /// <param name="uid"></param>
-        /// <param name="name"></param>
-        /// <param name="phone"></param>
-        /// <param name="email"></param>
-        /// <param name="role"></param>
-        /// <param name="pwd"></param>
-        /// <returns></returns>
-        AuthStatus EditUser(string uid, string name, string role, string pwd, string phone, string email);
+        Status EditUser(UserInfos m);
     }
 }

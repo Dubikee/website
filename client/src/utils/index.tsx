@@ -43,7 +43,7 @@ export let parseStatus = (error: any) => {
 		return error.response.status as number;
 	}
 	else {
-		return null;
+		return -1;
 	}
 }
 export let match = (v: string | number) => (switcher: any) => {

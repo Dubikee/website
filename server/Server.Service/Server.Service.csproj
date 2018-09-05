@@ -16,6 +16,7 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.9.10" />
     <PackageReference Include="LinqPlus" Version="1.1.0" />
+    <PackageReference Include="LiteDB" Version="4.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.2" />

@@ -37,24 +37,19 @@ namespace Server.Host
                     opt.LockedTime = TimeSpan.FromMinutes(5);
                     opt.LimitTime = TimeSpan.FromMinutes(1);
                 });
-            services.AddAdminService()
-                .AddWhutService()
-                .AddJwtAuth(opt =>
-                {
-                    opt.Key = Configuration["AuthOptions:Key"];
-                    opt.Audience = Configuration["AuthOptions:Audience"];
-                    opt.Issuer = Configuration["AuthOptions:Audience"];
-                    opt.UidRegex = Configuration["AuthOptions:UidRegex"];
-                    opt.PwdRegex = Configuration["AuthOptions:PwdRegex"];
-                    opt.UidClaimType = Configuration["AuthOptions:UidClaimType"];
-                    opt.Expires = TimeSpan.FromDays(30);
-                })
-                .AddAppDbContext(opt =>
-                {
-                    opt.DbPath = Configuration["DbOptions:DbPath"];
-                    opt.UserCollectionName = Configuration["DbOptions:UserCollectionName"];
-                    opt.WhutCollectionName = Configuration["DbOptions:WhutCollectionName"];
-                });
+            services.AddWhutService();
+            services.AddAppDbContext()
+                .AddLiteDb(opt => { opt.DbPath = Configuration["DbOptions:DbPath"]; });
+            services.AddJwtAuth(opt =>
+            {
+                opt.Key = Configuration["AuthOptions:Key"];
+                opt.Audience = Configuration["AuthOptions:Audience"];
+                opt.Issuer = Configuration["AuthOptions:Audience"];
+                opt.UidRegex = Configuration["AuthOptions:UidRegex"];
+                opt.PwdRegex = Configuration["AuthOptions:PwdRegex"];
+                opt.UidClaimType = Configuration["AuthOptions:UidClaimType"];
+                opt.Expires = TimeSpan.FromDays(30);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory log)
@@ -66,8 +61,8 @@ namespace Server.Host
 
             log.AddNLog();
             env.ConfigureNLog("Nlog.config");
-            app.UseIPLocker();
-            app.UseJwtChecker();
+            //app.UseIPLocker();
+            //app.UseJwtChecker();
             app.UseAuthentication();
             app.UseMvc(routes => { routes.MapRoute("api", "/api/{controller}/{action}/{uid?}"); });
         }

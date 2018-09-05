@@ -1,17 +1,20 @@
-﻿using Server.Shared.Core.Database;
+﻿using Server.DB.Models;
+using Server.Shared;
+using Server.Shared.Core.DB;
 using Server.Shared.Core.Services;
 using Server.Shared.Models.Auth;
 using Server.Shared.Models.Whut;
-using Server.Shared.Results;
-using System;
-using System.Threading.Tasks;
 using Server.Shared.Utils;
-using static System.String;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using NLog;
 using static LinqPlus.Linp;
+using static System.String;
 
 namespace Server.Service.Whut
 {
-    public class WhutService : IWhutService<WhutStudent>
+    public class WhutService : IWhutService
     {
         /// <summary>
         /// 登陆地址
@@ -48,85 +51,59 @@ namespace Server.Service.Whut
         /// </summary>
         private string CerLogin { get; set; }
 
-        private WhutStudent _whutStudent;
-        private readonly IWhutDbContext<WhutStudent> _db;
         private readonly IAccountManager<AppUser> _manager;
+        private readonly IBaseDbContext<EotDbModel> _eotDb;
+        private readonly IBaseDbContext<RinkDbModel> _rinkDb;
+        private readonly IBaseDbContext<ScoresDbModel> _scoresDb;
+        private readonly IBaseDbContext<TableDbModel> _tableDb;
 
-        /// <summary>
-        /// 获取学生
-        /// </summary>
-        public WhutStudent Student
-        {
-            get
-            {
-                if (_whutStudent != null) return _whutStudent;
-                if (_manager.User == null) return null;
-                _whutStudent = _db.FindStudent(_manager.User.Uid);
-                return _whutStudent;
-            }
-        }
+        public AppUser AppUser => _manager.AppUser;
 
-        public WhutService(IWhutDbContext<WhutStudent> db, IAccountManager<AppUser> manager)
+        public WhutService(IAccountManager<AppUser> manager,
+            IBaseDbContext<EotDbModel> eotDb,
+            IBaseDbContext<RinkDbModel> rinkDb,
+            IBaseDbContext<ScoresDbModel> scoresDb,
+            IBaseDbContext<TableDbModel> tableDb)
         {
-            _db = db;
             _manager = manager;
+            _eotDb = eotDb;
+            _rinkDb = rinkDb;
+            _scoresDb = scoresDb;
+            _tableDb = tableDb;
         }
 
-        /// <summary>
-        /// 更新学生信息
-        /// </summary>
-        /// <param name="studentId"></param>
-        /// <param name="pwd"></param>
-        /// <returns></returns>
-        public WhutStatus UpdateInfo(string studentId, string pwd)
-        {
-            if (_manager.User == null)
-                return WhutStatus.UserNotFind;
-
-            if (AnyNullOrWhiteSpace(studentId, pwd))
-                return WhutStatus.InputIllegal;
-
-            if (Student == null)
-            {
-                var isAdded = _db.AddStudent(new WhutStudent
-                {
-                    StudentId = studentId,
-                    Pwd = pwd,
-                    Uid = _manager.User.Uid
-                });
-                return isAdded ? WhutStatus.CreateStudent : WhutStatus.UnknownError;
-            }
-
-            Student.Pwd = pwd;
-            Student.StudentId = studentId;
-            _db.UpdateStudent(Student);
-            return WhutStatus.Ok;
-        }
 
         /// <summary>
         /// 此学生登陆尝试
         /// </summary>
         /// <returns></returns>
-        public async Task<WhutStatus> TryLogin()
+        public async Task<Status> TryLogin()
         {
-            if (Student == null)
-                return WhutStatus.StudentNotFind;
+            if (AppUser == null)
+                return Status.TokenExpired;
+            if (AnyNullOrWhiteSpace(AppUser.WhutId, AppUser.WhutPwd))
+                return Status.WhutIdNotFind;
             try
             {
                 var res = await LoginUrl
-                    .Form("userName", Student.StudentId)
-                    .Form("password", Student.Pwd)
+                    .Form("userName", AppUser.WhutId)
+                    .Form("password", AppUser.WhutPwd)
                     .Form("type", "xs")
                     .PostAsync();
-                var cerLogin = res.Headers.GetCookie("CERLOGIN");
-                if (IsNullOrWhiteSpace(cerLogin))
-                    return WhutStatus.PwdWrong;
-                CerLogin = cerLogin;
-                return WhutStatus.Ok;
+                if (res.IsSuccessStatusCode)
+                {
+                    var cerLogin = res.Headers.GetCookie("CERLOGIN");
+                    if (IsNullOrWhiteSpace(cerLogin))
+                        return Status.WhutPwdWrong;
+                    CerLogin = cerLogin;
+                    return Status.Ok;
+                }
+
+                return Status.WhutCrashed;
             }
             catch
             {
-                return WhutStatus.WhutServerCrashed;
+                return Status.WhutCrashed;
             }
         }
 
@@ -136,10 +113,8 @@ namespace Server.Service.Whut
         /// <param name="studentId"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        public async Task<WhutStatus> TryLogin(string studentId, string pwd)
+        public async Task<Status> TryLogin(string studentId, string pwd)
         {
-            if (AnyNullOrWhiteSpace(studentId, pwd))
-                return WhutStatus.InputIllegal;
             try
             {
                 var res = await LoginUrl
@@ -147,12 +122,21 @@ namespace Server.Service.Whut
                     .Form("password", pwd)
                     .Form("type", "xs")
                     .PostAsync();
-                var cerLogin = res.Headers.GetCookie("CERLOGIN");
-                return IsNullOrWhiteSpace(cerLogin) ? WhutStatus.PwdWrong : WhutStatus.Ok;
+                if (res.IsSuccessStatusCode)
+                {
+                    var cerLogin = res.Headers.GetCookie("CERLOGIN");
+                    if (IsNullOrWhiteSpace(cerLogin))
+                        return Status.WhutPwdWrong;
+                    CerLogin = cerLogin;
+                    return Status.Ok;
+                }
+
+                return Status.WhutCrashed;
+
             }
             catch
             {
-                return WhutStatus.WhutServerCrashed;
+                return Status.WhutCrashed;
             }
         }
 
@@ -160,27 +144,38 @@ namespace Server.Service.Whut
         /// 刷新课表
         /// </summary>
         /// <returns></returns>
-        public async Task<WhutStatus> UpdateTable()
+        public async Task<(Status, string[][])> GetTable(bool reload = false)
         {
-            if (Student == null)
-                return WhutStatus.StudentNotFind;
             try
             {
-                var html = await LoginUrl
-                    .Form("userName", Student.StudentId)
-                    .Form("password", Student.Pwd)
-                    .Form("type", "xs")
-                    .PostBodyAsync();
-                var tb = await html.ParseTable();
-                if (tb == null)
-                    return WhutStatus.PwdWrong;
-                Student.Table = tb;
-                _db.UpdateStudent(Student);
-                return WhutStatus.Ok;
+                if (AppUser == null)
+                    return (Status.TokenExpired, null);
+                if (AnyNullOrWhiteSpace(AppUser.WhutId, AppUser.WhutPwd))
+                    return (Status.WhutIdNotFind, null);
+                var model = _tableDb.FindOrCreate(AppUser);
+                if (reload || model.Table == null)
+                {
+                    var res = await TryLogin();
+                    if (res != Status.Ok)
+                        return (res, null);
+                    var html = await LoginUrl
+                        .Form("userName", AppUser.WhutId)
+                        .Form("password", AppUser.WhutPwd)
+                        .Form("type", "xs")
+                        .PostBodyAsync();
+                    var tb = await html.ParseTable();
+                    if (tb == null)
+                        return (Status.WhutPwdWrong, null);
+                    model.Table = tb;
+                    _tableDb.Update(model);
+                    return (Status.Ok, tb);
+                }
+
+                return (Status.Ok, model.Table);
             }
             catch
             {
-                return WhutStatus.WhutServerCrashed;
+                return (Status.WhutCrashed, null);
             }
         }
 
@@ -188,61 +183,104 @@ namespace Server.Service.Whut
         /// 刷新分数
         /// </summary>
         /// <returns></returns>
-        public async Task<WhutStatus> UpdateScoresRink()
+        public async Task<(Status, IEnumerable<ScoresDetail>)> GetScores(bool reload = false)
         {
-            if (Student == null)
-                return WhutStatus.StudentNotFind;
-            try
+           try
             {
-                //检查登陆凭证是否为空
-                if (IsNullOrWhiteSpace(CerLogin))
+                if (AppUser == null)
+                    return (Status.TokenExpired, null);
+                if (AnyNullOrWhiteSpace(AppUser.WhutId, AppUser.WhutPwd))
+                    return (Status.WhutIdNotFind, null);
+                var model = _scoresDb.FindOrCreate(AppUser);
+                if (reload || model.ScoresDetails == null)
                 {
-                    //为空重新登陆
-                    var r = await TryLogin();
-                    if (r != WhutStatus.Ok)
-                        return r;
+                    var res = await TryLogin();
+                    if (res != Status.Ok)
+                        return (res, null);
+                    //得到SessionId和位置
+                    var (sessionid, location) = await GetSessionAndLocation(CerLogin, ScoreEntryUrl);
+                    if (sessionid == null || location == null)
+                        return (Status.WhutCrashed, null);
+
+                    //分数查询主页面
+                    var html = await location
+                        .Cookie(CerLogin)
+                        .Cookie(sessionid)
+                        .GetBodyAsync();
+                    //学科学分查询
+                    var snkey = await html.ParseSnkeyAsync();
+                    if (IsNullOrWhiteSpace(snkey))
+                        return (Status.WhutPwdWrong, null);
+                    html = await ScoreQueryUrl
+                        .Cookie(sessionid)
+                        .Form("numPerPage", "100")
+                        .Form("pageNum", "1")
+                        .Form("snkey", snkey)
+                        .Form("xh", AppUser.WhutId)
+                        .PostBodyAsync();
+                    var scores = await html.ParseScoresAsync();
+                    if (scores == null)
+                        return (Status.WhutPwdWrong, null);
+                    model.ScoresDetails = scores;
+                    _scoresDb.Update(model);
+                    return (Status.Ok, scores);
                 }
 
-                //得到SessionId和位置
-                var (sessionid, location) = await GetSessionAndLocation(CerLogin, ScoreEntryUrl);
-                if (sessionid == null || location == null)
-                    return WhutStatus.UnknownError;
-
-                //分数查询主页面
-                var html = await location
-                    .Cookie(CerLogin)
-                    .Cookie(sessionid)
-                    .GetBodyAsync();
-                //学科学分查询
-                var snkey = await html.ParseSnkeyAsync();
-                if (IsNullOrWhiteSpace(snkey))
-                    return WhutStatus.PwdWrong;
-                html = await ScoreQueryUrl
-                    .Cookie(sessionid)
-                    .Form("numPerPage", "100")
-                    .Form("pageNum", "1")
-                    .Form("snkey", snkey)
-                    .Form("xh", Student.StudentId)
-                    .PostBodyAsync();
-                var scores = await html.ParseScoresAsync();
-                if (scores == null)
-                    return WhutStatus.WhutServerCrashed;
-
-                //绩点及排名查询查询请求
-                html = await RinkQueryUrl
-                    .Cookie(sessionid)
-                    .GetBodyAsync();
-                var rinks = await html.ParseRinksAsync();
-                if (rinks == null)
-                    return WhutStatus.WhutServerCrashed;
-                Student.Scores = scores;
-                Student.Rink = rinks;
-                _db.UpdateStudent(Student);
-                return WhutStatus.Ok;
+                return (Status.Ok, model.ScoresDetails);
             }
             catch
             {
-                return WhutStatus.WhutServerCrashed;
+                return (Status.WhutCrashed, null);
+            }
+        }
+
+
+        public async Task<(Status, RinkDetail)> GetRink(bool reload = false)
+        {
+            try
+            {
+                if (AppUser == null)
+                    return (Status.TokenExpired, null);
+                if (AnyNullOrWhiteSpace(AppUser.WhutId, AppUser.WhutPwd))
+                    return (Status.WhutIdNotFind, null);
+                var model = _rinkDb.FindOrCreate(AppUser);
+                if (reload || model.RinkDetail == null)
+                {
+                    var res = await TryLogin();
+                    if (res != Status.Ok)
+                        return (res, null);
+                    //得到SessionId和位置
+                    var (sessionid, location) = await GetSessionAndLocation(CerLogin, ScoreEntryUrl);
+                    if (sessionid == null || location == null)
+                        return (Status.WhutPwdWrong, null);
+
+                    //分数查询主页面
+                    var html = await location
+                        .Cookie(CerLogin)
+                        .Cookie(sessionid)
+                        .GetBodyAsync();
+                    //学科学分查询
+                    var snkey = await html.ParseSnkeyAsync();
+                    if (IsNullOrWhiteSpace(snkey))
+                        return (Status.WhutPwdWrong, null);
+
+                    //绩点及排名查询查询请求
+                    html = await RinkQueryUrl
+                        .Cookie(sessionid)
+                        .GetBodyAsync();
+                    var rink = await html.ParseRinksAsync();
+                    if (rink == null)
+                        return (Status.WhutCrashed, null);
+                    model.RinkDetail = rink;
+                    _rinkDb.Update(model);
+                    return (Status.Ok, rink);
+                }
+
+                return (Status.Ok, model.RinkDetail);
+            }
+            catch
+            {
+                return (Status.WhutCrashed, null);
             }
         }
 
@@ -286,3 +324,4 @@ namespace Server.Service.Whut
 
     }
 }
+

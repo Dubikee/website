@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Server.Service.Whut
@@ -49,7 +50,8 @@ namespace Server.Service.Whut
                 .Pipeline(trs => trs.Length == 5 ? trs : null)?
                 .Select(tr => tr.Children
                     .Skip(1)
-                    .Select(td => td.InnerHtml)
+                    .Select(td => td.Children.FirstOrDefault()?.TextContent)
+                    .Select(txt => txt == null ? null : Regex.Replace(txt, "(\n|\\s)*", string.Empty))
                     .ToArray()
                 ).ToArray();
         }
@@ -59,7 +61,7 @@ namespace Server.Service.Whut
         /// </summary>
         /// <param name="html"></param>
         /// <returns>如果html不包含分数table则返回null</returns>
-        public static async Task<IEnumerable<ScoreDetail>> ParseScoresAsync(this string html)
+        public static async Task<IEnumerable<ScoresDetail>> ParseScoresAsync(this string html)
         {
             if (string.IsNullOrWhiteSpace(html))
                 return null;
@@ -70,7 +72,7 @@ namespace Server.Service.Whut
                 .Select(tr =>
                 {
                     var arr = tr.Children.Select(td => td.InnerHtml).ToArray();
-                    return new ScoreDetail
+                    return new ScoresDetail
                     {
                         SchoolYear = arr[0],
                         CourseCode = arr[1],

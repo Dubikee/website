@@ -1,10 +1,10 @@
-﻿using LiteDB;
-using Server.Shared.Core.Database;
+﻿using System.Collections.Generic;
+using LiteDB;
+using Server.Shared.Core.DB;
 using Server.Shared.Models.Auth;
 using Server.Shared.Options;
-using System.Collections.Generic;
 
-namespace Server.DB.UserDb
+namespace Server.DB
 {
     public class UserDbContext : IUserDbContext<AppUser>
     {
@@ -12,9 +12,9 @@ namespace Server.DB.UserDb
 
         public IEnumerable<AppUser> Users => _users.FindAll();
 
-        public UserDbContext(DbOptions opt)
+        public UserDbContext(LiteDatabase db, DbOptions opt)
         {
-            _users = new LiteDatabase(opt.DbPath).GetCollection<AppUser>(opt.UserCollectionName);
+            _users = db.GetCollection<AppUser>(opt.UserName);
         }
 
 
@@ -22,10 +22,10 @@ namespace Server.DB.UserDb
         /// <summary>
         /// 添加用户，User不可为null
         /// </summary>
-        /// <param name="user"></param>
-        public void AddUser(AppUser user)
+        /// <param name="appUser"></param>
+        public void Add(AppUser appUser)
         {
-            _users.Insert(user);
+            _users.Insert(appUser);
         }
 
         /// <inheritdoc />
@@ -34,7 +34,7 @@ namespace Server.DB.UserDb
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public AppUser FindUser(string uid)
+        public AppUser Find(string uid)
         {
             return _users.FindOne(x => x.Uid == uid);
         }
@@ -44,22 +44,22 @@ namespace Server.DB.UserDb
         /// <summary>
         /// 更新User，User不可为null
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="appUser"></param>
         /// <returns></returns>
-        public bool UpdateUser(AppUser user)
+        public bool Update(AppUser appUser)
         {
-            return _users.Update(user);
+            return _users.Update(appUser);
         }
 
         /// <inheritdoc />
         /// <summary>
         /// 删除User，User不可位null
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="appUser"></param>
         /// <returns></returns>
-        public bool DeleteUser(AppUser user)
+        public bool Delete(AppUser appUser)
         {
-            return _users.Delete(user.Id);
+            return _users.Delete(appUser.Id);
 
         }
     }

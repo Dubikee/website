@@ -9,14 +9,14 @@ namespace Server.Shared.Utils
 {
     public static class Utils
     {
-        public static bool IsAdmin(this AppUser user)
+        public static bool IsAdmin(this AppUser appUser)
         {
-            return user.Role.ToLower() == RoleTypes.Admin;
+            return appUser.Role.ToLower() == RoleTypes.Admin;
         }
 
-        public static bool IsMaster(this AppUser user)
+        public static bool IsMaster(this AppUser appUser)
         {
-            return user.Role.ToLower() == RoleTypes.Master;
+            return appUser.Role.ToLower() == RoleTypes.Master;
         }
 
         public static string GetJwt(this IHeaderDictionary headers)
