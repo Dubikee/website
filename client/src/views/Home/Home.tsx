@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon, Drawer } from 'antd';
 import "./Home.less"
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { renderSwitch } from '../../utils';
@@ -59,6 +59,39 @@ class Home extends React.Component<RouteComponentProps<{}>> {
 					</div>
 				</Menu>
 			</Layout.Sider>
+			<Drawer
+				placement="left"
+				closable={false}
+				// onClose={this.onClose}
+				visible={false}
+			>
+				<Menu
+					mode="inline"
+					defaultSelectedKeys={['/home/index']}
+					defaultOpenKeys={['whut']}
+					onSelect={({ key }) => this.handleClick(key)}
+					style={{ height: '100%', borderRight: 0 }}
+				>
+					<Menu.SubMenu key="whut" title={<span><Icon type="home" /><span>教务处</span></span>}>
+						<Menu.Item key="/home/index">课表</Menu.Item>
+						<Menu.Item key="/home/xk">选课</Menu.Item>
+						<Menu.Item key="/home/pj">评教</Menu.Item>
+						<Menu.Item key="/home/scores">成绩</Menu.Item>
+					</Menu.SubMenu>
+					< Menu.SubMenu key="sub2" title={<span><Icon type="laptop" /><span>服务器</span></span>}>
+						<Menu.Item key="5">option5</Menu.Item>
+						<Menu.Item key="6">option6</Menu.Item>
+						<Menu.Item key="7">option7</Menu.Item>
+						<Menu.Item key="8">option8</Menu.Item>
+					</Menu.SubMenu>
+					<Menu.SubMenu key="sub3" title={<span><Icon type="notification" /><span>定时任务</span></span>}>
+						<Menu.Item key="9">option9</Menu.Item>
+						<Menu.Item key="10">option10</Menu.Item>
+						<Menu.Item key="11">option11</Menu.Item>
+						<Menu.Item key="12">option12</Menu.Item>
+					</Menu.SubMenu>
+				</Menu>
+			</Drawer>
 			<Layout className="content-wrapper">
 				<Layout.Content style={{ backgroundColor: '#fff', minHeight: 630 }}>
 					{renderSwitch(home)}

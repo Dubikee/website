@@ -7,7 +7,6 @@ import { Course } from "../../common/models/Course";
 interface ITimeTableProps {
 	loading: boolean;
 	showName: boolean;
-	showTeacher: boolean;
 	showLocation: boolean;
 	className?: string;
 	data: {}[];
@@ -32,7 +31,7 @@ class TimeTable extends React.PureComponent<ITimeTableProps> {
 			return {
 				title: day,
 				dataIndex: `day${i}`,
-				width: 60,
+				width: 80,
 				align: "center",
 				render: (course: Course) => {
 					if (course) {
@@ -53,7 +52,7 @@ class TimeTable extends React.PureComponent<ITimeTableProps> {
 									color="geekblue"
 									visible={this.props.showName}
 								>
-									{name}
+									{name.length > 10 ? name.slice(0, 7) + " . . ." : name}
 								</Tag>
 								<Tag
 									color="cyan"

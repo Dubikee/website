@@ -21,7 +21,6 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 	state = {
 		loading: true,
 		showName: true,
-		showTeacher: true,
 		showLocation: true
 	};
 	componentWillMount() {
@@ -85,26 +84,13 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 	}
 	render() {
 		return (
-			<div>
-				<TimeTable
-					{...this.state}
-					data={this.props.tableStore!.table}
-					className="timetable"
-				/>
+			<div style={{ margin: "0px 15px 5px 15px" }}>
 				<Form layout="inline" className="tb-settings">
 					<Form.Item label="显示名称">
 						<Checkbox
 							checked={this.state.showName}
 							onChange={e =>
 								this.setState({ showName: e.target.checked })
-							}
-						/>
-					</Form.Item>
-					<Form.Item label="显示老师">
-						<Checkbox
-							checked={this.state.showTeacher}
-							onChange={e =>
-								this.setState({ showTeacher: e.target.checked })
 							}
 						/>
 					</Form.Item>
@@ -118,9 +104,8 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 							}
 						/>
 					</Form.Item>
-					<Form.Item>
+					<Form.Item style={{ float: 'right' }}>
 						<Button
-							size="small"
 							type="dashed"
 							onClick={() => this.refresh()}
 							icon="reload"
@@ -129,6 +114,12 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 						</Button>
 					</Form.Item>
 				</Form>
+
+				<TimeTable
+					{...this.state}
+					data={this.props.tableStore!.table}
+					className="timetable"
+				/>
 			</div>
 		);
 	}
