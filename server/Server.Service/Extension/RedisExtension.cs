@@ -13,6 +13,8 @@ namespace Server.Service.Extension
             var opt = new RedisOptions();
             optionsAction?.Invoke(opt);
             var redis = ConnectionMultiplexer.Connect(opt.RedisConnection);
+            var db = redis.GetDatabase();
+            Console.WriteLine("Redis Ping:" + db.Ping());
             services.AddSingleton(opt);
             services.AddSingleton(redis);
             return services;

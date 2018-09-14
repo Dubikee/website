@@ -23,8 +23,7 @@ namespace Server.Service.Auth
         private readonly AuthOptions _opt;
         private readonly HttpContext _ctx;
         private readonly IUserDbContext<AppUser> _db;
-        private readonly IForbiddenJwtStore _jwtStore;
-
+ 
         /// <inheritdoc />
         /// <summary>
         /// 当前用户
@@ -45,12 +44,10 @@ namespace Server.Service.Auth
 
         public AccountManager(IUserDbContext<AppUser> db,
             IHttpContextAccessor accessor,
-            AuthOptions opt,
-            IForbiddenJwtStore jwtStore)
+            AuthOptions opt)
         {
             _db = db;
             _opt = opt;
-            _jwtStore = jwtStore;
             _ctx = accessor.HttpContext;
         }
 
@@ -83,10 +80,7 @@ namespace Server.Service.Auth
         /// <returns></returns>
         public bool Logout()
         {
-            var jwt = _ctx.Request.Headers.GetJwt();
-            if (string.IsNullOrWhiteSpace(jwt))
-                throw new Exception("JWT不可能空");
-            return _jwtStore.Push(jwt);
+            return false;
         }
 
 
