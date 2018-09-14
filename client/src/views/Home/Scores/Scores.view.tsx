@@ -28,9 +28,10 @@ class ScoresView extends React.Component<IScoresViewPorps> {
 		if (scores.length == 0) this.loadScores();
 		else this.setState({ loading: false });
 	}
-	async loadScores() {
+	async loadScores(reload = false) {
 		await request("/api/whut/scores")
 			.auth(getToken()!)
+			.form("reload", reload)
 			.on({
 				before: () => {
 					this.setState({ loading: false });
@@ -72,7 +73,7 @@ class ScoresView extends React.Component<IScoresViewPorps> {
 			okText: "是",
 			okType: "danger",
 			cancelText: "否",
-			onOk: async () => await this.loadScores(),
+			onOk: async () => await this.loadScores(true),
 			onCancel: async () => await this.loadScores()
 		});
 	}
