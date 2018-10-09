@@ -36,19 +36,19 @@ class ScoresView extends React.Component<IScoresViewPorps> {
 				before: () => {
 					this.setState({ loading: false });
 				},
-				Ok: ({ scores }) => {
+				ok: ({ scores }) => {
 					const { scoresStore } = this.props;
 					if (scores) scoresStore!.setScores(scores);
 					this.setState({ loading: false });
 					message.info(Tips.Ok);
 				},
-				WhutIdNotFind: () => {
+				whutIdNotFind: () => {
 					message.warn(Tips.NoStudent);
 				},
-				WhutCrashed: () => {
+				whutCrashed: () => {
 					message.error(Tips.WhutServerCrashed);
 				},
-				Unauthorized401: () => {
+				unauthorized401: () => {
 					message.warn(Tips.TokenExpires, () => {
 						removeToken();
 						this.props.history.push("/login", {
@@ -56,10 +56,10 @@ class ScoresView extends React.Component<IScoresViewPorps> {
 						});
 					});
 				},
-				Locked423: () => {
+				locked423: () => {
 					message.error(Tips.Locked);
 				},
-				UnknownError: () => {
+				unknownError: () => {
 					message.error(Tips.NetworkError);
 				}
 			})

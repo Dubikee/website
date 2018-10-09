@@ -47,7 +47,7 @@ const auth = (requriedRole: "admin" | "vistor" | "master") => (View: any) => {
 			await request("/api/account/validate")
 				.auth(token)
 				.on({
-					Ok: dat => {
+					ok: dat => {
 						const { status, ...info } = dat;
 						runInAction(() =>
 							this.props.user!.updateUser({
@@ -57,19 +57,19 @@ const auth = (requriedRole: "admin" | "vistor" | "master") => (View: any) => {
 						);
 						this.checkRole(info.role!);
 					},
-					TokenExpired: () => {
+					tokenExpired: () => {
 						removeToken();
 						message.warn(Tips.TokenExpires, () => {
 							this.gotologin();
 						});
 					},
-					Unauthorized401: () => {
+					unauthorized401: () => {
 						this.gotologin();
 					},
-					Forbidden403: () => {
+					forbidden403: () => {
 						message.error(Tips.Locked);
 					},
-					UnknownError: () => {
+					unknownError: () => {
 						message.error(Tips.UnknownError);
 					}
 				})

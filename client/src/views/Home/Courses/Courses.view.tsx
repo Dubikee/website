@@ -36,7 +36,7 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 				before: () => {
 					this.setState({ loading: false });
 				},
-				Ok: dat => {
+				ok: dat => {
 					const student = this.props.tableStore!!;
 					const { table } = dat;
 					if (table && table.length == 5 && table[0].length == 7) {
@@ -44,19 +44,19 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 						message.info(Tips.Ok);
 					} else message.error(Tips.ServerFailure);
 				},
-				UnknownError: () => {
+				unknownError: () => {
 					message.error(Tips.ServerFailure);
 				},
-				WhutIdNotFind: () => {
+				whutIdNotFind: () => {
 					message.warn(Tips.NoStudent);
 				},
-				WhutPwdWrong: () => {
+				whutPwdWrong: () => {
 					message.warn(Tips.WhutPwdWrong);
 				},
-				WhutCrashed: () => {
+				whutCrashed: () => {
 					message.error(Tips.WhutServerCrashed);
 				},
-				Unauthorized401: () => {
+				unauthorized401: () => {
 					message.error(Tips.TokenExpires, () => {
 						removeToken();
 						this.props.history.push("/login", {
@@ -64,7 +64,7 @@ class CoursesView extends React.Component<ICoursesViewProps> {
 						});
 					});
 				},
-				Locked423: () => {
+				locked423: () => {
 					message.error(Tips.Locked);
 				}
 			})

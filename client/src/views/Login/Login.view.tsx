@@ -50,7 +50,7 @@ class LoginView extends React.Component<IHomeViewProps> {
 				before: () => {
 					hide();
 				},
-				Ok: ({ status, jwt, ...info }) => {
+				ok: ({ status, jwt, ...info }) => {
 					setToken(jwt!);
 					runInAction(() =>
 						user.updateUser({ login: true, ...info })
@@ -62,16 +62,16 @@ class LoginView extends React.Component<IHomeViewProps> {
 						else this.props.history.push("/home/index");
 					});
 				},
-				UnknownError: () => {
+				unknownError: () => {
 					message.error(Tips.NetworkError);
 				},
-				PwdWrong: () => {
+				pwdWrong: () => {
 					message.error(Tips.PwdWrong);
 				},
-				UidNotFind: () => {
+				uidNotFind: () => {
 					message.error(Tips.UidNotExist);
 				},
-				Locked423: () => {
+				locked423: () => {
 					message.error(Tips.Locked);
 				}
 			})
@@ -132,8 +132,7 @@ class LoginView extends React.Component<IHomeViewProps> {
 									htmlType="submit"
 									className="login-form-button"
 								>
-									{" "}
-									Log in{" "}
+									Log in
 								</Button>
 							</Form.Item>
 						</Form>

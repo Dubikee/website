@@ -24,25 +24,25 @@ export enum Status {
 }
 
 interface IResponseCallBack<T> {
-	Ok: (data: T) => any;
+	ok: (data: T) => any;
 	before?: () => any;
-	NotAllowed?: () => any;
-	TokenExpired?: () => any;
-	UidIllegal?: () => any;
-	UidNotFind?: () => any;
-	UidHasExist?: () => any;
-	PwdWrong?: () => any;
-	PwdIllegal?: () => any;
-	WhutPwdWrong?: () => any;
-	WhutIdNotFind?: () => any;
-	InputIllegal?: () => any;
-	WhutCrashed?: () => any;
+	notAllowed?: () => any;
+	tokenExpired?: () => any;
+	uidIllegal?: () => any;
+	uidNotFind?: () => any;
+	uidHasExist?: () => any;
+	pwdWrong?: () => any;
+	pwdIllegal?: () => any;
+	whutPwdWrong?: () => any;
+	whutIdNotFind?: () => any;
+	inputIllegal?: () => any;
+	whutCrashed?: () => any;
 	///请求错误
-	Unauthorized401?: () => any;
-	Forbidden403?: () => any;
-	Locked423?: () => any;
+	unauthorized401?: () => any;
+	forbidden403?: () => any;
+	locked423?: () => any;
 	///未处理的错误
-	UnknownError: () => any;
+	unknownError: () => any;
 }
 
 class HttpClient<T extends BaseModel> {
@@ -103,7 +103,7 @@ class HttpClient<T extends BaseModel> {
 			}
 			const { data } = res;
 			console.log(
-				`${this.url} response ok with data status ${data.status}`
+				`${this.url} response ok with status ${data.status}`
 			);
 			if (this.callbacks.before) {
 				this.callbacks.before();
@@ -111,46 +111,48 @@ class HttpClient<T extends BaseModel> {
 			}
 			switch (data.status) {
 				case Status.Ok:
-					if (this.callbacks.Ok) this.callbacks.Ok(data);
+					if (this.callbacks.ok)
+						this.callbacks.ok(data);
 					break;
 				case Status.NotAllowed:
-					if (this.callbacks.NotAllowed)
-						this.callbacks.NotAllowed();
+					if (this.callbacks.notAllowed)
+						this.callbacks.notAllowed();
 					break;
 				case Status.TokenExpired:
-					if (this.callbacks.TokenExpired)
-						this.callbacks.TokenExpired();
+					if (this.callbacks.tokenExpired)
+						this.callbacks.tokenExpired();
 					break;
 				case Status.UidIllegal:
-					if (this.callbacks.UidIllegal)
-						this.callbacks.UidIllegal();
+					if (this.callbacks.uidIllegal)
+						this.callbacks.uidIllegal();
 					break;
 				case Status.UidNotFind:
-					if (this.callbacks.UidNotFind)
-						this.callbacks.UidNotFind();
+					if (this.callbacks.uidNotFind)
+						this.callbacks.uidNotFind();
 					break;
 				case Status.UidHasExist:
-					if (this.callbacks.UidHasExist)
-						this.callbacks.UidHasExist();
+					if (this.callbacks.uidHasExist)
+						this.callbacks.uidHasExist();
 					break;
 				case Status.PwdWrong:
-					if (this.callbacks.PwdWrong) this.callbacks.PwdWrong();
+					if (this.callbacks.pwdWrong)
+						this.callbacks.pwdWrong();
 					break;
 				case Status.PwdIllegal:
-					if (this.callbacks.PwdIllegal)
-						this.callbacks.PwdIllegal();
+					if (this.callbacks.pwdIllegal)
+						this.callbacks.pwdIllegal();
 					break;
 				case Status.WhutPwdWrong:
-					if (this.callbacks.WhutPwdWrong)
-						this.callbacks.WhutPwdWrong();
+					if (this.callbacks.whutPwdWrong)
+						this.callbacks.whutPwdWrong();
 					break;
 				case Status.WhutCrashed:
-					if (this.callbacks.WhutCrashed)
-						this.callbacks.WhutCrashed();
+					if (this.callbacks.whutCrashed)
+						this.callbacks.whutCrashed();
 					break;
 				case Status.InputIllegal:
-					if (this.callbacks.InputIllegal)
-						this.callbacks.InputIllegal();
+					if (this.callbacks.inputIllegal)
+						this.callbacks.inputIllegal();
 					break;
 			}
 		} catch (error) {
@@ -161,21 +163,22 @@ class HttpClient<T extends BaseModel> {
 			if (!runBefore && this.callbacks.before) this.callbacks.before();
 			switch (code) {
 				case 401:
-					if (this.callbacks.Unauthorized401)
-						this.callbacks.Unauthorized401();
+					if (this.callbacks.unauthorized401)
+						this.callbacks.unauthorized401();
 					break;
 				case 403:
-					if (this.callbacks.Forbidden403)
-						this.callbacks.Forbidden403();
+					if (this.callbacks.forbidden403)
+						this.callbacks.forbidden403();
 					break;
 				case 423:
-					if (this.callbacks.Locked423)
-						this.callbacks.Locked423();
+					if (this.callbacks.locked423)
+						this.callbacks.locked423();
 					break;
 				default:
-					if (this.callbacks.UnknownError)
-						this.callbacks.UnknownError();
+					if (this.callbacks.unknownError)
+						this.callbacks.unknownError();
 			}
 		}
 	}
 }
+

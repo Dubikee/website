@@ -36,6 +36,11 @@ export default (View: any) => {
 				<Layout className="app-layout">
 					<Layout.Header className="cp-header">
 						<div className="header-logo" />
+						<div className="header-links">
+							<div className='link-item'>
+								<a href="http://www.luokun.xyz:8888">NoteBook</a>
+							</div>
+						</div>
 						{login ? (
 							<div className="header-userinfo">
 								<Dropdown className="drop-menu" overlay={menu}>

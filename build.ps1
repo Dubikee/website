@@ -9,7 +9,7 @@ else {
 
 Set-Location ./server
 dotnet.exe restore
-dotnet.exe publish -o ../../build -c Release
+dotnet.exe publish -o ../../build/server -c Release
 Set-Location ../client
 npm run build
 Set-Location ..
