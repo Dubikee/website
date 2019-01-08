@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\MS485\.Rider2018.2\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\MS485\.Rider2018.2\system\resharper-host\local\Transient\ReSharperHost\v182\SolutionCaches\_www.luokun.xyz.-1330622808.00" t="ExcludeRecursive" />
+    <e p="D:\WorkSpace\Git\www.luokun.xyz\server" t="IncludeFlat">
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Server.DB" t="IncludeRecursive">
+        <e p="BaseDbContext.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="EotDbContext.cs" t="Include" />
+        <e p="Models" t="Include">
+          <e p="EotDbModel.cs" t="Include" />
+          <e p="RinkDbModel.cs" t="Include" />
+          <e p="ScoresDbModel.cs" t="Include" />
+          <e p="TableDbModel.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp2.2" t="Include">
+              <e p="Server.DB.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="RinkDbContext.cs" t="Include" />
+        <e p="ScoresDbContext.cs" t="Include" />
+        <e p="Server.DB.csproj" t="IncludeRecursive" />
+        <e p="TableDbContext.cs" t="Include" />
+        <e p="UserDbContext.cs" t="Include" />
+      </e>
+      <e p="Server.Host" t="IncludeRecursive">
+        <e p="app.db" t="Include" />
+        <e p="appsettings.Development.json" t="Include" />
+        <e p="appsettings.json" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Controllers" t="Include">
+          <e p="AccountController.cs" t="Include" />
+          <e p="AdminController.cs" t="Include" />
+          <e p="WhutController.cs" t="Include" />
+        </e>
+        <e p="Middlewares" t="Include">
+          <e p="IPLock" t="Include">
+            <e p="IPLocker.cs" t="Include" />
+            <e p="IPLockerExtensions.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Nlog.config" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp2.2" t="Include">
+              <e p="Server.Host.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="launchSettings.json" t="Include" />
+          <e p="PublishProfiles" t="Include">
+            <e p="FolderProfile.pubxml" t="Include" />
+          </e>
+        </e>
+        <e p="Server.Host.csproj" t="IncludeRecursive" />
+        <e p="Startup.cs" t="Include" />
+      </e>
+      <e p="Server.Jobs" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp2.2" t="Include">
+              <e p="Server.Jobs.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Server.Jobs.csproj" t="IncludeRecursive" />
+        <e p="TimeJob.cs" t="Include" />
+      </e>
+      <e p="Server.Service" t="IncludeRecursive">
+        <e p="Auth" t="Include">
+          <e p="AccountManager.cs" t="Include" />
+          <e p="AdminManager.cs" t="Include" />
+        </e>
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Extension" t="Include">
+          <e p="DbContextExtension.cs" t="Include" />
+          <e p="JwtAuthServiceExtension.cs" t="Include" />
+          <e p="LiteDbExtension.cs" t="Include" />
+          <e p="RedisExtension.cs" t="Include" />
+          <e p="WhutServiceExtension.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp2.2" t="Include">
+              <e p="Server.Service.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Server.Service.csproj" t="IncludeRecursive" />
+        <e p="Whut" t="Include">
+          <e p="WhutParser.cs" t="Include" />
+          <e p="WhutService.cs" t="Include" />
+          <e p="WhutUtils.cs" t="Include" />
+        </e>
+      </e>
+      <e p="Server.Shared" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Core" t="Include">
+          <e p="DB" t="Include">
+            <e p="IBaseDbContext.cs" t="Include" />
+            <e p="IBaseDbModel.cs" t="Include" />
+            <e p="IUserDbContext.cs" t="Include" />
+          </e>
+          <e p="IAppUser.cs" t="Include" />
+          <e p="Services" t="Include">
+            <e p="IAccountManager.cs" t="Include" />
+            <e p="IAdminManager.cs" t="Include" />
+            <e p="IWhutService.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Models" t="Include">
+          <e p="Auth" t="Include">
+            <e p="AppUser.cs" t="Include" />
+            <e p="RoleTypes.cs" t="Include" />
+            <e p="UserInfos.cs" t="Include" />
+          </e>
+          <e p="Whut" t="Include">
+            <e p="EotDetail.cs" t="Include" />
+            <e p="RinkDetail.cs" t="Include" />
+            <e p="ScoresDetail.cs" t="Include" />
+          </e>
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp2.2" t="Include">
+              <e p="Server.Shared.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Options" t="Include">
+          <e p="AuthOptions.cs" t="Include" />
+          <e p="DbOptions.cs" t="Include" />
+          <e p="IPLockerOptions.cs" t="Include" />
+          <e p="RedisOptions.cs" t="Include" />
+        </e>
+        <e p="Properties" t="Include">
+          <e p="PublishProfiles" t="Include">
+            <e p="FolderProfile.pubxml" t="Include" />
+          </e>
+        </e>
+        <e p="Server.Shared.csproj" t="IncludeRecursive" />
+        <e p="Status.cs" t="Include" />
+        <e p="Utils" t="Include">
+          <e p="ServerHttpClient.cs" t="Include" />
+          <e p="Utils.cs" t="Include" />
+        </e>
+      </e>
+      <e p="www.luokun.xyz.sln" t="IncludeFlat" />
+    </e>
+  </component>
+</project>
