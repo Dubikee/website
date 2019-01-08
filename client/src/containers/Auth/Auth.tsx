@@ -4,7 +4,8 @@ import {
 	getToken,
 	removeToken,
 	nullable,
-	isRole} from "../../utils";
+	isRole
+} from "../../utils";
 import { runInAction } from "mobx";
 import { message, Spin } from "antd";
 import { RouteComponentProps, withRouter } from "react-router";
@@ -80,16 +81,16 @@ const auth = (requriedRole: "admin" | "vistor" | "master") => (View: any) => {
 			return this.state.finished ? (
 				<View />
 			) : (
-				<div
-					style={{
-						textAlign: "center",
-						paddingTop: "100px",
-						backgroundColor: "#fff"
-					}}
-				>
-					<Spin size="large" />
-				</div>
-			);
+					<div
+						style={{
+							textAlign: "center",
+							paddingTop: "100px",
+							backgroundColor: "#fff"
+						}}
+					>
+						<Spin size="large" />
+					</div>
+				);
 		}
 	}
 	return withRouter(AdminOnly);

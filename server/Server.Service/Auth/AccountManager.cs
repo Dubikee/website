@@ -172,7 +172,7 @@ namespace Server.Service.Auth
                 new Claim(_opt.UidClaimType, uid),
                 new Claim(ClaimTypes.Role, role)
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_opt.Key));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_opt.Key)); 
             var jwt = new JwtSecurityToken(
                 issuer: _opt.Issuer,
                 audience: _opt.Audience,

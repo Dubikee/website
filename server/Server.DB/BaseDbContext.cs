@@ -10,7 +10,7 @@ namespace Server.DB
     {
         private readonly LiteCollection<T> _data;
 
-        public BaseDbContext(LiteDatabase db, string name)
+        protected BaseDbContext(LiteDatabase db, string name)
         {
             _data = db.GetCollection<T>(name);
         }
@@ -60,7 +60,6 @@ namespace Server.DB
 
         public int DeleteAll(Func<T, bool> condition = null)
         {
-
             return condition == null ? _data.Delete(x => condition(x)) : _data.Delete(x => true);
         }
 
