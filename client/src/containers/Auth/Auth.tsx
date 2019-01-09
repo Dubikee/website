@@ -20,7 +20,7 @@ interface IAdimOnlyPorps extends RouteComponentProps<any> {
 const auth = (requriedRole: "admin" | "vistor" | "master") => (View: any) => {
 	@inject("user")
 	@observer
-	class AdminOnly extends React.Component<IAdimOnlyPorps> {
+	class Auth extends React.Component<IAdimOnlyPorps> {
 		state = {
 			finished: false
 		};
@@ -93,7 +93,7 @@ const auth = (requriedRole: "admin" | "vistor" | "master") => (View: any) => {
 				);
 		}
 	}
-	return withRouter(AdminOnly);
+	return withRouter(Auth);
 };
 
 const vistorRequired = auth("vistor");
